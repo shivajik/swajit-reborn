@@ -1,15 +1,24 @@
+import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, ArrowUp } from "lucide-react";
+
+const quickLinks = [
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Products", href: "/products" },
+  { label: "Infrastructure", href: "/infrastructure" },
+  { label: "Clients", href: "/clients" },
+  { label: "Contact Us", href: "/contact" },
+];
 
 const Footer = () => {
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
-    <footer id="contact" className="bg-primary text-primary-foreground">
+    <footer className="bg-primary text-primary-foreground">
       <div className="max-w-7xl mx-auto section-padding pb-8">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-          {/* Company */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
+            <Link to="/" className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
                 <span className="text-accent-foreground font-heading font-black text-lg">S</span>
               </div>
@@ -17,35 +26,34 @@ const Footer = () => {
                 <span className="font-heading font-bold text-sm block">SWAJIT ENGINEERING</span>
                 <span className="text-accent text-[10px] tracking-widest">PVT. LTD.</span>
               </div>
-            </div>
+            </Link>
             <p className="text-sm text-primary-foreground/60 leading-relaxed">
               India's No. 1 conveyor chain manufacturer. Delivering precision-engineered industrial chains since 1992.
             </p>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h4 className="font-heading font-bold text-accent mb-4 uppercase text-sm tracking-wider">Quick Links</h4>
             <ul className="space-y-2 text-sm text-primary-foreground/60">
-              {["Home", "About Us", "Products", "Clients", "Career", "Contact Us"].map((l) => (
-                <li key={l}>
-                  <a href={`#${l.toLowerCase().replace(/\s/g, "")}`} className="hover:text-accent transition-colors">{l}</a>
+              {quickLinks.map((l) => (
+                <li key={l.label}>
+                  <Link to={l.href} className="hover:text-accent transition-colors">{l.label}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Industries */}
           <div>
             <h4 className="font-heading font-bold text-accent mb-4 uppercase text-sm tracking-wider">Industries</h4>
             <ul className="space-y-2 text-sm text-primary-foreground/60">
               {["Sugar", "Cement", "Steel", "Chemical", "Automobile", "Boiler & Thermal", "Solvent"].map((i) => (
-                <li key={i} className="hover:text-accent transition-colors cursor-pointer">{i}</li>
+                <li key={i}>
+                  <Link to="/products" className="hover:text-accent transition-colors">{i}</Link>
+                </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
             <h4 className="font-heading font-bold text-accent mb-4 uppercase text-sm tracking-wider">Contact Us</h4>
             <ul className="space-y-3 text-sm text-primary-foreground/60">
@@ -65,7 +73,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="border-t border-primary-foreground/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-primary-foreground/40">
             © {new Date().getFullYear()} Swajit Engineering Pvt. Ltd. All rights reserved.
