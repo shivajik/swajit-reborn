@@ -106,7 +106,6 @@ const Index = () => (
         </div>
       </section>
     </PageLayout>
-  </div>
 );
 
 export default Index;
