@@ -22,6 +22,12 @@ import Infrastructure from "./pages/Infrastructure";
 import Clients from "./pages/Clients";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminProducts from "./pages/AdminProducts";
+import AdminHeroSlides from "./pages/AdminHeroSlides";
+import AdminClients from "./pages/AdminClients";
+import AdminPageContent from "./pages/AdminPageContent";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +63,12 @@ const App = () => (
           <Route path="/infrastructure" element={<Infrastructure />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/products" element={<AdminProducts />} />
+          <Route path="/admin/hero-slides" element={<AdminHeroSlides />} />
+          <Route path="/admin/clients" element={<AdminClients />} />
+          <Route path="/admin/content" element={<AdminPageContent />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
