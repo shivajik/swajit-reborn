@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import hero1 from "@/assets/hero-1.jpg";
@@ -10,18 +11,21 @@ const slides = [
     title: "India's No. 1 Conveyor Chain Manufacturer",
     subtitle: "Precision-engineered industrial chains trusted by 300+ factories nationwide",
     cta: "Explore Products",
+    ctaLink: "/products",
     image: hero1,
   },
   {
     title: "32+ Years of Engineering Excellence",
     subtitle: "Founded in 1992, delivering world-class conveyor solutions across 18+ countries",
     cta: "Know More",
+    ctaLink: "/about",
     image: hero2,
   },
   {
     title: "Customized Solutions for Every Industry",
     subtitle: "Sugar, Cement, Steel, Chemical, Automobile — tailored chain solutions for all",
     cta: "View Industries",
+    ctaLink: "/products",
     image: hero3,
   },
 ];
@@ -37,32 +41,20 @@ const HeroSection = () => {
     return () => clearInterval(timer);
   }, [next]);
 
-  const scrollTo = (href: string) => {
-    const el = document.querySelector(href);
-    el?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <section id="home" className="relative min-h-[80vh] md:min-h-screen flex items-center overflow-hidden">
-      {/* Background images with crossfade */}
       {slides.map((slide, i) => (
         <div
           key={i}
           className="absolute inset-0 transition-opacity duration-1000"
           style={{ opacity: i === current ? 1 : 0 }}
         >
-          <img
-            src={slide.image}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+          <img src={slide.image} alt="" className="absolute inset-0 w-full h-full object-cover" />
         </div>
       ))}
 
-      {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-primary/75" />
 
-      {/* Subtle decorative elements */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute top-20 right-20 w-96 h-96 border border-accent/30 rounded-full" />
         <div className="absolute bottom-20 left-10 w-64 h-64 border border-accent/20 rounded-full" />
@@ -85,23 +77,19 @@ const HeroSection = () => {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Button
-              onClick={() => scrollTo("#products")}
-              className="bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase tracking-wider px-8 py-6 text-sm"
-            >
-              {slides[current].cta}
-            </Button>
-            <Button
-              onClick={() => scrollTo("#about")}
-              variant="outline"
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-heading uppercase tracking-wider px-8 py-6 text-sm"
-            >
-              About Us
-            </Button>
+            <Link to={slides[current].ctaLink}>
+              <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase tracking-wider px-8 py-6 text-sm">
+                {slides[current].cta}
+              </Button>
+            </Link>
+            <Link to="/about">
+              <Button variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-heading uppercase tracking-wider px-8 py-6 text-sm">
+                About Us
+              </Button>
+            </Link>
           </div>
         </div>
 
-        {/* Slide indicators */}
         <div className="flex items-center gap-3 mt-12">
           {slides.map((_, i) => (
             <button
@@ -115,7 +103,6 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Nav arrows */}
       <button onClick={prev} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary-foreground/40 hover:text-accent transition-colors hidden md:block">
         <ChevronLeft className="w-10 h-10" />
       </button>
