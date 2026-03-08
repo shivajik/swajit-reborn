@@ -7,6 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
   Save, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Eye, EyeOff, Navigation, FilePlus, Pencil, X,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -37,6 +41,7 @@ const AdminNavigation = () => {
   // Custom page edit
   const [editingPage, setEditingPage] = useState<EditingPage | null>(null);
   const [savingPage, setSavingPage] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<NavItem | null>(null);
 
   const fetchItems = async () => {
     setLoading(true);
@@ -100,13 +105,23 @@ const AdminNavigation = () => {
     setItems(prev => prev.map(item => item.id === id ? { ...item, label } : item));
   };
 
-  const removeItem = (id: string) => {
-    const item = items.find(i => i.id === id);
-    if (item && !item.is_custom) {
-      toggleVisibility(id);
+  const removeItem = (item: NavItem) => {
+    if (!item.is_custom) {
+      toggleVisibility(item.id);
       return;
     }
-    setItems(prev => prev.filter(i => i.id !== id));
+    setDeleteTarget(item);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    // Remove from nav list
+    setItems(prev => prev.filter(i => i.id !== deleteTarget.id));
+    // Also delete the page_content record
+    const slug = deleteTarget.href.replace('/page/', '');
+    await supabase.from('page_content').delete().eq('page_key', `custom_${slug}`).eq('section_key', 'main');
+    setDeleteTarget(null);
+    toast({ title: 'Deleted', description: `Custom page "${deleteTarget.label}" removed.` });
   };
 
   const addCustomPage = async () => {
@@ -390,7 +405,7 @@ const AdminNavigation = () => {
                     </button>
                     {item.is_custom && (
                       <button
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeItem(item)}
                         className="p-1.5 rounded-md text-destructive hover:bg-destructive/10 transition-colors"
                         title="Delete custom page"
                       >
@@ -407,6 +422,22 @@ const AdminNavigation = () => {
         <p className="text-xs text-muted-foreground mt-4">
           💡 Built-in pages can be hidden but not deleted. Custom pages can be edited with the pencil icon and fully removed. Changes take effect after saving.
         </p>
+        <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete "{deleteTarget?.label}"?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently remove the custom page and its content. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </AdminLayout>
     </AdminGuard>
   );
