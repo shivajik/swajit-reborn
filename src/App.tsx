@@ -19,6 +19,7 @@ import AdminProducts from "./pages/AdminProducts";
 import AdminHeroSlides from "./pages/AdminHeroSlides";
 import AdminClients from "./pages/AdminClients";
 import AdminPageContent from "./pages/AdminPageContent";
+import AdminSiteSettings from "./pages/AdminSiteSettings";
 
 const queryClient = new QueryClient();
 
