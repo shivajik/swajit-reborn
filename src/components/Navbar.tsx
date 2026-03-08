@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.png";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -17,18 +18,10 @@ const Navbar = () => {
   const location = useLocation();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 h-16 md:h-20">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
-            <span className="text-accent-foreground font-heading font-black text-lg">S</span>
-          </div>
-          <div className="hidden sm:block text-left">
-            <span className="text-primary-foreground font-heading font-bold text-sm md:text-base leading-tight block">
-              SWAJIT ENGINEERING
-            </span>
-            <span className="text-accent text-[10px] md:text-xs tracking-widest">PVT. LTD.</span>
-          </div>
+          <img src={logo} alt="Swajit Engineering Pvt. Ltd." className="h-12 md:h-16 w-auto" />
         </Link>
 
         <div className="hidden lg:flex items-center gap-1">
@@ -39,7 +32,7 @@ const Navbar = () => {
               className={`px-3 py-2 text-sm font-medium transition-colors font-heading uppercase tracking-wide ${
                 location.pathname === l.href
                   ? "text-accent"
-                  : "text-primary-foreground/80 hover:text-accent"
+                  : "text-primary/80 hover:text-accent"
               }`}
             >
               {l.label}
@@ -52,13 +45,13 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <button onClick={() => setOpen(!open)} className="lg:hidden text-primary-foreground p-2">
+        <button onClick={() => setOpen(!open)} className="lg:hidden text-primary p-2">
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
       {open && (
-        <div className="lg:hidden bg-primary border-t border-primary-foreground/10 pb-4">
+        <div className="lg:hidden bg-white border-t border-border pb-4">
           {navLinks.map((l) => (
             <Link
               key={l.href}
@@ -66,8 +59,8 @@ const Navbar = () => {
               onClick={() => setOpen(false)}
               className={`block w-full text-left px-6 py-3 font-heading uppercase text-sm tracking-wide ${
                 location.pathname === l.href
-                  ? "text-accent bg-primary-foreground/5"
-                  : "text-primary-foreground/80 hover:text-accent hover:bg-primary-foreground/5"
+                  ? "text-accent bg-muted"
+                  : "text-primary/80 hover:text-accent hover:bg-muted"
               }`}
             >
               {l.label}
