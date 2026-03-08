@@ -7,6 +7,7 @@ import {
   Image,
   Users,
   FileText,
+  Settings,
   LogOut,
   Menu,
   X,
@@ -20,6 +21,7 @@ const navItems = [
   { label: 'Hero Slides', href: '/admin/hero-slides', icon: Image },
   { label: 'Clients', href: '/admin/clients', icon: Users },
   { label: 'Page Content', href: '/admin/content', icon: FileText },
+  { label: 'Site Settings', href: '/admin/settings', icon: Settings },
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
