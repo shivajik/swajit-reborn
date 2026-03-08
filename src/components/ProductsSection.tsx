@@ -1,4 +1,4 @@
-import { Link2, Building2, HardHat, FlaskConical, Car, Flame, Droplets, Cog } from "lucide-react";
+import { Link2, Building2, HardHat, FlaskConical, Car, Flame, Droplets, Cog, FileText, Layers, Factory } from "lucide-react";
 import { Link } from "react-router-dom";
 import ScrollReveal from "@/components/ScrollReveal";
 
@@ -6,11 +6,13 @@ const products = [
   { icon: Link2, category: "Sugar Industry", href: null, items: ["Drop Forged Chain", "Fabricated Carrier Chain", "Cane Carrier Chain", "Bagasse Carrier Chain", "Elevator Chain"] },
   { icon: Building2, category: "Cement Industry", href: "/products/cement-sector", items: ["Apron Feeder Chain", "Bucket Elevator Chain", "Pan Conveyor Chain", "Drag Chain", "Reclaimer Chain"] },
   { icon: HardHat, category: "Steel Industry", href: null, items: ["Cooling Bed Conveyor", "Draw Bench Chain", "Slab Caster Chain", "Hot Rolling Mill Chain"] },
-  { icon: FlaskConical, category: "Chemical & Fertilizer", href: null, items: ["Redler Chain", "Scraper Chain", "Drag Conveyor Chain", "Bucket Elevator Chain"] },
-  { icon: Car, category: "Automobile Industry", href: "/products/automobile", items: ["Overhead Conveyor Chain", "Floor Conveyor Chain", "Slat Conveyor Chain"] },
-  { icon: Flame, category: "Boiler & Thermal Power", href: "/products/boiler-thermal-power", items: ["Coal Handling Chain", "Travelling Grate Chain", "Stoker Chain", "Ash Handling Chain"] },
-  { icon: Droplets, category: "Solvent Industries", href: null, items: ["Extractor Chain", "Drag Chain Conveyor", "Miscella Chain"] },
-  { icon: Cog, category: "Heavy Duty Equipment", href: null, items: ["Heavy Duty Conveyor Chain", "Mining Chain", "Industrial Sprockets"] },
+  { icon: FlaskConical, category: "Chemical & Fertilizer", href: "/products/chemical-fertilizer", items: ["Bucket Elevator Chain", "Bucket Elevator Chain – G2 Attachment"] },
+  { icon: Car, category: "Automobile Industry", href: "/products/automobile", items: ["Conveyor Chain Types 1–5", "Slat Conveyor Chain"] },
+  { icon: Flame, category: "Boiler & Thermal Power", href: "/products/boiler-thermal-power", items: ["Ash Handling Chain", "Drag/Redler Chain", "Gate Chain", "Traveling Grate Chain"] },
+  { icon: Droplets, category: "Solvent Plant", href: "/products/solvent-plant", items: ["Bucket Elevator Chain", "Drag / Enmass Conveyor Chain", "Extractor Chain"] },
+  { icon: FileText, category: "Paper Industry", href: "/products/paper-industry", items: ["Bucket Elevator Chain", "Coal Feeder Chain", "Drag Chain", "Enmass Conveyor Chain"] },
+  { icon: Layers, category: "Refractory Industry", href: "/products/refractory-industry", items: ["Bucket Elevator Chain", "Drag / Enmass Conveyor Chain", "Redler Chain"] },
+  { icon: Factory, category: "Other Industries", href: "/products/other-industry", items: ["Agriculture", "Asphalt Manufacturing", "Bakeries", "Escalator", "Food Processing"] },
 ];
 
 const ProductsSection = () => (
