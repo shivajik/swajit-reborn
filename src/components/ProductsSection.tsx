@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import ScrollReveal from "@/components/ScrollReveal";
 
 const products = [
-  { icon: Link2, category: "Sugar Industry", href: null, items: ["Drop Forged Chain", "Fabricated Carrier Chain", "Cane Carrier Chain", "Bagasse Carrier Chain", "Elevator Chain"] },
+  { icon: Link2, category: "Sugar Industry", href: "/products/sugar-industry", items: ["Drop Forged Chain", "Fabricated Carrier Chain", "Cane Carrier Chain", "Bagasse Carrier Chain", "Elevator Chain"] },
   { icon: Building2, category: "Cement Industry", href: "/products/cement-sector", items: ["Apron Feeder Chain", "Bucket Elevator Chain", "Pan Conveyor Chain", "Drag Chain", "Reclaimer Chain"] },
-  { icon: HardHat, category: "Steel Industry", href: null, items: ["Cooling Bed Conveyor", "Draw Bench Chain", "Slab Caster Chain", "Hot Rolling Mill Chain"] },
+  { icon: HardHat, category: "Steel Industry", href: "/products/steel-industry", items: ["Cooling Bed Conveyor", "Draw Bench Chain", "Slab Caster Chain", "Hot Rolling Mill Chain"] },
   { icon: FlaskConical, category: "Chemical & Fertilizer", href: "/products/chemical-fertilizer", items: ["Bucket Elevator Chain", "Bucket Elevator Chain – G2 Attachment"] },
   { icon: Car, category: "Automobile Industry", href: "/products/automobile", items: ["Conveyor Chain Types 1–5", "Slat Conveyor Chain"] },
   { icon: Flame, category: "Boiler & Thermal Power", href: "/products/boiler-thermal-power", items: ["Ash Handling Chain", "Drag/Redler Chain", "Gate Chain", "Traveling Grate Chain"] },
