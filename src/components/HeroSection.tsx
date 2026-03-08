@@ -1,25 +1,28 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import hero1 from "@/assets/hero-1.jpg";
+import hero2 from "@/assets/hero-2.jpg";
+import hero3 from "@/assets/hero-3.jpg";
 
 const slides = [
   {
     title: "India's No. 1 Conveyor Chain Manufacturer",
     subtitle: "Precision-engineered industrial chains trusted by 300+ factories nationwide",
     cta: "Explore Products",
-    bg: "from-primary via-primary/95 to-primary/80",
+    image: hero1,
   },
   {
     title: "32+ Years of Engineering Excellence",
     subtitle: "Founded in 1992, delivering world-class conveyor solutions across 18+ countries",
     cta: "Know More",
-    bg: "from-primary/90 via-primary to-primary/85",
+    image: hero2,
   },
   {
     title: "Customized Solutions for Every Industry",
     subtitle: "Sugar, Cement, Steel, Chemical, Automobile — tailored chain solutions for all",
     cta: "View Industries",
-    bg: "from-primary/85 via-primary/95 to-primary",
+    image: hero3,
   },
 ];
 
@@ -41,24 +44,33 @@ const HeroSection = () => {
 
   return (
     <section id="home" className="relative min-h-[80vh] md:min-h-screen flex items-center overflow-hidden">
-      {/* Background pattern */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${slides[current].bg} transition-all duration-700`} />
-      <div className="absolute inset-0 opacity-10">
+      {/* Background images with crossfade */}
+      {slides.map((slide, i) => (
+        <div
+          key={i}
+          className="absolute inset-0 transition-opacity duration-1000"
+          style={{ opacity: i === current ? 1 : 0 }}
+        >
+          <img
+            src={slide.image}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </div>
+      ))}
+
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 bg-primary/75" />
+
+      {/* Subtle decorative elements */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute top-20 right-20 w-96 h-96 border border-accent/30 rounded-full" />
         <div className="absolute bottom-20 left-10 w-64 h-64 border border-accent/20 rounded-full" />
-        <div className="absolute top-1/2 left-1/3 w-48 h-48 border border-primary-foreground/10 rounded-full" />
-      </div>
-
-      {/* Chain pattern overlay */}
-      <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-5">
-        <div className="h-full w-full" style={{
-          backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 40px, hsl(var(--accent)) 40px, hsl(var(--accent)) 42px)`,
-        }} />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 w-full">
         <div className="max-w-3xl">
-          <div className="inline-block bg-accent/20 border border-accent/30 rounded-full px-4 py-1.5 mb-6">
+          <div className="inline-block bg-accent/20 border border-accent/30 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm">
             <span className="text-accent text-sm font-heading font-semibold tracking-wider uppercase">
               Since 1992 — Aurangabad, India
             </span>
