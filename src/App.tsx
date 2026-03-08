@@ -16,6 +16,8 @@ import ProductOther from "./pages/ProductOther";
 import ProductPaper from "./pages/ProductPaper";
 import ProductRefractory from "./pages/ProductRefractory";
 import ProductSolvent from "./pages/ProductSolvent";
+import ProductSteel from "./pages/ProductSteel";
+import ProductSugar from "./pages/ProductSugar";
 import Infrastructure from "./pages/Infrastructure";
 import Clients from "./pages/Clients";
 import Contact from "./pages/Contact";
