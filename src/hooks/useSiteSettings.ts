@@ -8,6 +8,8 @@ const DEFAULTS: SiteSettings = {
   company_name: 'Swajit Engineering Pvt. Ltd.',
   company_phone: '+91 240 2484032 / 33',
   company_email: 'info@swajit.com',
+  company_email_sales: 'sales@swajit.com',
+  company_fax: '+91 240 2484034',
   company_address: 'Plot No. C-1 to C-5, MIDC Chikalthana, Aurangabad - 431006, Maharashtra, India',
   company_map_link: '',
   social_facebook: '',
