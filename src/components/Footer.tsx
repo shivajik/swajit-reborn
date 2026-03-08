@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MapPin, Phone, Mail, ArrowUp } from "lucide-react";
+import { MapPin, Phone, Mail, ArrowUp, Facebook, Linkedin, Twitter, Youtube, Instagram } from "lucide-react";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const quickLinks = [
@@ -11,9 +11,19 @@ const quickLinks = [
   { label: "Contact Us", href: "/contact" },
 ];
 
+const socialIcons = [
+  { key: "social_facebook", icon: Facebook, label: "Facebook" },
+  { key: "social_linkedin", icon: Linkedin, label: "LinkedIn" },
+  { key: "social_twitter", icon: Twitter, label: "Twitter" },
+  { key: "social_youtube", icon: Youtube, label: "YouTube" },
+  { key: "social_instagram", icon: Instagram, label: "Instagram" },
+];
+
 const Footer = () => {
   const { settings } = useSiteSettings();
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+  const activeSocials = socialIcons.filter((s) => settings[s.key]);
 
   return (
     <footer className="bg-primary text-primary-foreground">
@@ -29,9 +39,25 @@ const Footer = () => {
                 <span className="text-accent text-[10px] tracking-widest">PVT. LTD.</span>
               </div>
             </Link>
-            <p className="text-sm text-primary-foreground/60 leading-relaxed">
+            <p className="text-sm text-primary-foreground/60 leading-relaxed mb-4">
               India's No. 1 conveyor chain manufacturer. Delivering precision-engineered industrial chains since 1992.
             </p>
+            {activeSocials.length > 0 && (
+              <div className="flex gap-2">
+                {activeSocials.map((s) => (
+                  <a
+                    key={s.key}
+                    href={settings[s.key]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className="w-8 h-8 rounded-full bg-primary-foreground/10 hover:bg-accent/30 flex items-center justify-center transition-colors"
+                  >
+                    <s.icon className="w-4 h-4 text-accent" />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>
