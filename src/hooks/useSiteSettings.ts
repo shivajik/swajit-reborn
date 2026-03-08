@@ -34,7 +34,7 @@ export function useSiteSettings() {
     supabase
       .from('site_settings')
       .select('setting_key, setting_value')
-      .then(({ data }) => {
+      .then(({ data, error }) => {
         if (data && data.length > 0) {
           const map: SiteSettings = { ...DEFAULTS };
           data.forEach((row: any) => {
@@ -44,8 +44,7 @@ export function useSiteSettings() {
           setSettings(map);
         }
         setLoading(false);
-      })
-      .catch(() => setLoading(false));
+      });
   }, []);
 
   return { settings, loading };
