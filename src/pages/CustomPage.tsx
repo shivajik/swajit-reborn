@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import DOMPurify from 'dompurify';
 import PageLayout from '@/components/PageLayout';
 import PageBanner from '@/components/PageBanner';
 
@@ -54,6 +55,11 @@ const CustomPage = () => {
     );
   }
 
+  const sanitizedContent = DOMPurify.sanitize(page.content, {
+    ALLOWED_TAGS: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'b', 'strong', 'i', 'em', 'u', 'a', 'ul', 'ol', 'li', 'blockquote', 'div', 'span', 'img'],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'src', 'alt', 'style', 'class'],
+  });
+
   return (
     <PageLayout>
       <PageBanner title={page.title} subtitle="" breadcrumb={page.title} />
@@ -66,9 +72,10 @@ const CustomPage = () => {
               className="w-full max-h-96 object-cover rounded-xl mb-8"
             />
           )}
-          <div className="prose prose-lg max-w-none text-foreground/80 whitespace-pre-line">
-            {page.content}
-          </div>
+          <div
+            className="prose prose-lg max-w-none text-foreground/80"
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+          />
         </div>
       </section>
     </PageLayout>

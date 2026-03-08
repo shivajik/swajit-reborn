@@ -5,15 +5,22 @@ import AdminGuard from '@/components/admin/AdminGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 import {
-  Save, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Eye, EyeOff, Navigation, FilePlus,
+  Save, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Eye, EyeOff, Navigation, FilePlus, Pencil, X,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { NavItem, DEFAULT_NAV_ITEMS, clearNavCache } from '@/hooks/useNavItems';
 
 const generateId = () => Math.random().toString(36).substring(2, 10);
+
+interface EditingPage {
+  slug: string;
+  title: string;
+  content: string;
+  image_url: string;
+  pageContentId: string | null;
+}
 
 const AdminNavigation = () => {
   const { toast } = useToast();
@@ -21,11 +28,15 @@ const AdminNavigation = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Custom page form
+  // Custom page create form
   const [showNewPage, setShowNewPage] = useState(false);
   const [newPageLabel, setNewPageLabel] = useState('');
   const [newPageSlug, setNewPageSlug] = useState('');
   const [newPageContent, setNewPageContent] = useState('');
+
+  // Custom page edit
+  const [editingPage, setEditingPage] = useState<EditingPage | null>(null);
+  const [savingPage, setSavingPage] = useState(false);
 
   const fetchItems = async () => {
     setLoading(true);
@@ -55,7 +66,6 @@ const AdminNavigation = () => {
     setSaving(true);
     const toSave = (itemsToSave || items).map((item, i) => ({ ...item, sort_order: i }));
 
-    // Upsert nav_items in site_settings
     const { error } = await supabase.from('site_settings').upsert(
       { setting_key: 'nav_items', setting_value: JSON.stringify(toSave) },
       { onConflict: 'setting_key' }
@@ -93,7 +103,6 @@ const AdminNavigation = () => {
   const removeItem = (id: string) => {
     const item = items.find(i => i.id === id);
     if (item && !item.is_custom) {
-      // For built-in pages, just hide them
       toggleVisibility(id);
       return;
     }
@@ -108,12 +117,11 @@ const AdminNavigation = () => {
 
     const slug = newPageSlug.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/--+/g, '-');
 
-    // Save custom page content to page_content table
     const { error: contentError } = await supabase.from('page_content').insert({
       page_key: `custom_${slug}`,
       section_key: 'main',
       title: newPageLabel.trim(),
-      content: newPageContent.trim() || 'Page content goes here.',
+      content: newPageContent.trim() || '<p>Page content goes here.</p>',
       image_url: '',
       metadata: {},
     });
@@ -144,6 +152,52 @@ const AdminNavigation = () => {
     toast({ title: 'Created', description: `Custom page "${newPageLabel.trim()}" added.` });
   };
 
+  // Edit custom page
+  const openEditPage = async (item: NavItem) => {
+    const slug = item.href.replace('/page/', '');
+    const { data } = await supabase
+      .from('page_content')
+      .select('*')
+      .eq('page_key', `custom_${slug}`)
+      .eq('section_key', 'main')
+      .maybeSingle();
+
+    if (data) {
+      setEditingPage({
+        slug,
+        title: data.title,
+        content: data.content,
+        image_url: data.image_url || '',
+        pageContentId: data.id,
+      });
+    } else {
+      toast({ title: 'Not found', description: 'Page content not found in database.', variant: 'destructive' });
+    }
+  };
+
+  const saveEditPage = async () => {
+    if (!editingPage?.pageContentId) return;
+    setSavingPage(true);
+
+    const { error } = await supabase
+      .from('page_content')
+      .update({
+        title: editingPage.title,
+        content: editingPage.content,
+        image_url: editingPage.image_url,
+      })
+      .eq('id', editingPage.pageContentId);
+
+    setSavingPage(false);
+
+    if (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: 'Saved', description: `Page "${editingPage.title}" updated.` });
+      setEditingPage(null);
+    }
+  };
+
   return (
     <AdminGuard>
       <AdminLayout>
@@ -156,7 +210,7 @@ const AdminNavigation = () => {
             <p className="text-muted-foreground text-sm">Manage menu items, page visibility, and custom pages</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setShowNewPage(!showNewPage)}>
+            <Button variant="outline" onClick={() => { setShowNewPage(!showNewPage); setEditingPage(null); }}>
               <FilePlus className="w-4 h-4 mr-1" />
               New Custom Page
             </Button>
@@ -167,8 +221,55 @@ const AdminNavigation = () => {
           </div>
         </div>
 
+        {/* Edit Custom Page Panel */}
+        {editingPage && (
+          <div className="bg-card rounded-xl border-2 border-accent/30 p-5 mb-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-heading font-bold text-foreground flex items-center gap-2">
+                <Pencil className="w-4 h-4 text-accent" />
+                Edit Page: <span className="text-accent">{editingPage.title}</span>
+              </h3>
+              <button onClick={() => setEditingPage(null)} className="p-1 text-muted-foreground hover:text-foreground">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs">Page Title</Label>
+                <Input
+                  value={editingPage.title}
+                  onChange={(e) => setEditingPage({ ...editingPage, title: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Banner Image URL (optional)</Label>
+                <Input
+                  value={editingPage.image_url}
+                  onChange={(e) => setEditingPage({ ...editingPage, image_url: e.target.value })}
+                  placeholder="https://..."
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Page Content</Label>
+              <RichTextEditor
+                value={editingPage.content}
+                onChange={(html) => setEditingPage({ ...editingPage, content: html })}
+                minHeight="250px"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={saveEditPage} disabled={savingPage}>
+                <Save className="w-4 h-4 mr-1" />
+                {savingPage ? 'Saving...' : 'Save Page'}
+              </Button>
+              <Button variant="ghost" onClick={() => setEditingPage(null)}>Cancel</Button>
+            </div>
+          </div>
+        )}
+
         {/* New Custom Page Form */}
-        {showNewPage && (
+        {showNewPage && !editingPage && (
           <div className="bg-card rounded-xl border border-border p-5 mb-6 space-y-4">
             <h3 className="font-heading font-bold text-foreground">Create Custom Page</h3>
             <div className="grid sm:grid-cols-2 gap-4">
@@ -199,11 +300,10 @@ const AdminNavigation = () => {
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">Page Content</Label>
-              <Textarea
-                placeholder="Enter the page content here..."
+              <RichTextEditor
                 value={newPageContent}
-                onChange={(e) => setNewPageContent(e.target.value)}
-                rows={4}
+                onChange={setNewPageContent}
+                placeholder="Start writing your page content..."
               />
             </div>
             <div className="flex gap-2">
@@ -224,7 +324,7 @@ const AdminNavigation = () => {
               <span className="text-xs font-heading font-semibold text-muted-foreground w-8"></span>
               <span className="text-xs font-heading font-semibold text-muted-foreground uppercase tracking-wider">Label</span>
               <span className="text-xs font-heading font-semibold text-muted-foreground uppercase tracking-wider">Path</span>
-              <span className="text-xs font-heading font-semibold text-muted-foreground uppercase tracking-wider w-32 text-right">Actions</span>
+              <span className="text-xs font-heading font-semibold text-muted-foreground uppercase tracking-wider w-36 text-right">Actions</span>
             </div>
             <div className="divide-y divide-border">
               {items.map((item, index) => (
@@ -267,7 +367,16 @@ const AdminNavigation = () => {
 
                   <span className="text-sm text-muted-foreground font-mono">{item.href}</span>
 
-                  <div className="flex items-center gap-2 w-32 justify-end">
+                  <div className="flex items-center gap-1.5 w-36 justify-end">
+                    {item.is_custom && (
+                      <button
+                        onClick={() => openEditPage(item)}
+                        className="p-1.5 rounded-md text-accent hover:bg-accent/10 transition-colors"
+                        title="Edit page content"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                    )}
                     <button
                       onClick={() => toggleVisibility(item.id)}
                       className={`p-1.5 rounded-md transition-colors ${
@@ -296,7 +405,7 @@ const AdminNavigation = () => {
         )}
 
         <p className="text-xs text-muted-foreground mt-4">
-          💡 Built-in pages can be hidden but not deleted. Custom pages can be fully removed. Changes take effect after saving.
+          💡 Built-in pages can be hidden but not deleted. Custom pages can be edited with the pencil icon and fully removed. Changes take effect after saving.
         </p>
       </AdminLayout>
     </AdminGuard>
