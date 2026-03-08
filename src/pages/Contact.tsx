@@ -24,7 +24,7 @@ const Contact = () => {
     {
       icon: Phone,
       title: "Phone",
-      lines: [settings.company_phone, "+91 240 2484034 (Fax)"],
+      lines: [settings.company_phone, `${settings.company_fax} (Fax)`],
     },
     {
       icon: Mail,
