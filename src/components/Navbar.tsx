@@ -3,20 +3,15 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
-
-const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
-  { label: "Infrastructure", href: "/infrastructure" },
-  { label: "Products", href: "/products" },
-  { label: "Clients", href: "/clients" },
-  { label: "Contact", href: "/contact" },
-];
+import { useNavItems } from "@/hooks/useNavItems";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { navItems } = useNavItems();
+
+  const visibleLinks = navItems.filter((item) => item.visible);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -32,9 +27,9 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden lg:flex items-center gap-1">
-          {navLinks.map((l) => (
+          {visibleLinks.map((l) => (
             <Link
-              key={l.href}
+              key={l.id}
               to={l.href}
               className={`px-3 py-2 text-sm font-medium transition-colors font-heading uppercase tracking-wide ${
                 location.pathname === l.href
@@ -59,9 +54,9 @@ const Navbar = () => {
 
       {open && (
         <div className="lg:hidden bg-white border-t border-border pb-4">
-          {navLinks.map((l) => (
+          {visibleLinks.map((l) => (
             <Link
-              key={l.href}
+              key={l.id}
               to={l.href}
               onClick={() => setOpen(false)}
               className={`block w-full text-left px-6 py-3 font-heading uppercase text-sm tracking-wide ${

@@ -13,12 +13,14 @@ import Infrastructure from "./pages/Infrastructure";
 import Clients from "./pages/Clients";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import CustomPage from "./pages/CustomPage";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
 import AdminHeroSlides from "./pages/AdminHeroSlides";
 import AdminClients from "./pages/AdminClients";
 import AdminPageContent from "./pages/AdminPageContent";
+import AdminNavigation from "./pages/AdminNavigation";
 import AdminSiteSettings from "./pages/AdminSiteSettings";
 
 const queryClient = new QueryClient();
@@ -46,12 +48,14 @@ const App = () => (
           <Route path="/infrastructure" element={<Infrastructure />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/page/:slug" element={<CustomPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<AdminProducts />} />
           <Route path="/admin/hero-slides" element={<AdminHeroSlides />} />
           <Route path="/admin/clients" element={<AdminClients />} />
           <Route path="/admin/content" element={<AdminPageContent />} />
+          <Route path="/admin/navigation" element={<AdminNavigation />} />
           <Route path="/admin/settings" element={<AdminSiteSettings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
