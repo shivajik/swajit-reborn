@@ -56,7 +56,7 @@ const CustomPage = () => {
 
   return (
     <PageLayout>
-      <PageBanner title={page.title} subtitle="" />
+      <PageBanner title={page.title} subtitle="" breadcrumb={page.title} />
       <section className="py-16 md:py-20">
         <div className="max-w-4xl mx-auto px-4 md:px-8">
           {page.image_url && (

@@ -7,6 +7,7 @@ import {
   Image,
   Users,
   FileText,
+  Navigation,
   Settings,
   LogOut,
   Menu,
@@ -21,6 +22,7 @@ const navItems = [
   { label: 'Hero Slides', href: '/admin/hero-slides', icon: Image },
   { label: 'Clients', href: '/admin/clients', icon: Users },
   { label: 'Page Content', href: '/admin/content', icon: FileText },
+  { label: 'Navigation', href: '/admin/navigation', icon: Navigation },
   { label: 'Site Settings', href: '/admin/settings', icon: Settings },
 ];
 
