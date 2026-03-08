@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminGuard from '@/components/admin/AdminGuard';
@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Pencil, Trash2, Save, X, Upload, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, X, Upload, Loader2, GripVertical } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Client {
@@ -28,6 +28,10 @@ const AdminClients = () => {
   const [uploading, setUploading] = useState(false);
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Drag state
+  const [dragId, setDragId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   const fetchClients = async () => {
     setLoading(true);
@@ -92,11 +96,70 @@ const AdminClients = () => {
     toast({ title: 'Deleted' });
   };
 
+  // --- Drag & Drop ---
+  const handleDragStart = useCallback((id: string) => {
+    setDragId(id);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent, id: string) => {
+    e.preventDefault();
+    if (id !== dragId) setDragOverId(id);
+  }, [dragId]);
+
+  const handleDragLeave = useCallback(() => {
+    setDragOverId(null);
+  }, []);
+
+  const handleDrop = useCallback(async (targetId: string) => {
+    setDragOverId(null);
+    if (!dragId || dragId === targetId) { setDragId(null); return; }
+
+    const list = filterCategory === 'all' ? [...clients] : [...clients];
+    const filtered = filterCategory === 'all' ? list : list.filter(c => c.category === filterCategory);
+
+    const fromIndex = filtered.findIndex(c => c.id === dragId);
+    const toIndex = filtered.findIndex(c => c.id === targetId);
+    if (fromIndex === -1 || toIndex === -1) { setDragId(null); return; }
+
+    // Reorder filtered list
+    const [moved] = filtered.splice(fromIndex, 1);
+    filtered.splice(toIndex, 0, moved);
+
+    // Assign new sort_order values
+    const updates = filtered.map((c, i) => ({ id: c.id, sort_order: i + 1 }));
+
+    // Optimistic update
+    setClients(prev => {
+      const map = new Map(updates.map(u => [u.id, u.sort_order]));
+      return prev.map(c => map.has(c.id) ? { ...c, sort_order: map.get(c.id)! } : c)
+        .sort((a, b) => a.sort_order - b.sort_order);
+    });
+
+    setDragId(null);
+
+    // Persist to DB
+    const promises = updates.map(u =>
+      supabase.from('clients').update({ sort_order: u.sort_order }).eq('id', u.id)
+    );
+    const results = await Promise.all(promises);
+    const hasError = results.some(r => r.error);
+    if (hasError) {
+      toast({ title: 'Reorder failed', description: 'Could not save new order', variant: 'destructive' });
+      fetchClients();
+    } else {
+      toast({ title: 'Order updated' });
+    }
+  }, [dragId, clients, filterCategory, toast]);
+
+  const handleDragEnd = useCallback(() => {
+    setDragId(null);
+    setDragOverId(null);
+  }, []);
+
   const filteredClients = filterCategory === 'all'
     ? clients
     : clients.filter((c) => c.category === filterCategory);
 
-  // Get unique categories from data
   const dataCategories = [...new Set(clients.map((c) => c.category).filter(Boolean))];
   const allCategories = [...new Set([...CATEGORIES, ...dataCategories])];
 
@@ -106,7 +169,7 @@ const AdminClients = () => {
         <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-heading font-bold text-foreground">Clients</h1>
-            <p className="text-muted-foreground text-sm">Manage client logos displayed on the website</p>
+            <p className="text-muted-foreground text-sm">Drag cards to reorder. Changes save automatically.</p>
           </div>
           <div className="flex items-center gap-3">
             <Select value={filterCategory} onValueChange={setFilterCategory}>
@@ -136,9 +199,7 @@ const AdminClients = () => {
               <div className="space-y-1">
                 <Label>Category</Label>
                 <Select value={editing.category || 'Other'} onValueChange={(v) => setEditing({ ...editing, category: v })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {allCategories.map((cat) => (
                       <SelectItem key={cat} value={cat}>{cat}</SelectItem>
@@ -155,20 +216,8 @@ const AdminClients = () => {
                     placeholder="URL or upload →"
                     className="flex-1"
                   />
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                  <Button
-                    type="button"
-                    size="icon"
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                  >
+                  <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+                  <Button type="button" size="icon" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
                     {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                   </Button>
                 </div>
@@ -193,8 +242,20 @@ const AdminClients = () => {
             <div className="col-span-full text-center py-12 text-muted-foreground">No clients found.</div>
           ) : (
             filteredClients.map((client) => (
-              <div key={client.id} className="bg-card rounded-xl border border-border p-4 group">
-                <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-3 flex items-center justify-center p-2">
+              <div
+                key={client.id}
+                draggable
+                onDragStart={() => handleDragStart(client.id)}
+                onDragOver={(e) => handleDragOver(e, client.id)}
+                onDragLeave={handleDragLeave}
+                onDrop={() => handleDrop(client.id)}
+                onDragEnd={handleDragEnd}
+                className={`bg-card rounded-xl border p-4 group cursor-grab active:cursor-grabbing transition-all ${
+                  dragId === client.id ? 'opacity-40 scale-95' : ''
+                } ${dragOverId === client.id ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`}
+              >
+                <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-3 flex items-center justify-center p-2 relative">
+                  <GripVertical className="w-4 h-4 text-muted-foreground/50 absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                   {client.logo_url ? (
                     <img src={client.logo_url} alt={client.name} className="max-h-full max-w-full object-contain" />
                   ) : (
