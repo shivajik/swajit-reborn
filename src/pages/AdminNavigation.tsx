@@ -51,18 +51,40 @@ const AdminNavigation = () => {
       .eq('setting_key', 'nav_items')
       .maybeSingle();
 
+    let navItems: NavItem[] = [...DEFAULT_NAV_ITEMS];
     if (data?.setting_value) {
       try {
         const parsed = JSON.parse(data.setting_value);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setItems(parsed.sort((a: NavItem, b: NavItem) => a.sort_order - b.sort_order));
-          setLoading(false);
-          return;
+          navItems = parsed.sort((a: NavItem, b: NavItem) => a.sort_order - b.sort_order);
         }
       } catch { /* use defaults */ }
     }
-    setItems([...DEFAULT_NAV_ITEMS]);
+    setItems(navItems);
     setLoading(false);
+
+    // Clean up orphaned page_content records (custom pages with no nav entry)
+    const customSlugs = new Set(
+      navItems.filter(i => i.is_custom).map(i => i.href.replace('/page/', ''))
+    );
+    const { data: allCustomPages } = await supabase
+      .from('page_content')
+      .select('id, page_key')
+      .like('page_key', 'custom_%')
+      .eq('section_key', 'main');
+
+    if (allCustomPages) {
+      const orphans = allCustomPages.filter(p => {
+        const slug = p.page_key.replace('custom_', '');
+        return !customSlugs.has(slug);
+      });
+      if (orphans.length > 0) {
+        const ids = orphans.map(o => o.id);
+        await supabase.from('page_content').delete().in('id', ids);
+        console.log(`Cleaned up ${orphans.length} orphaned page_content record(s)`);
+        toast({ title: 'Cleanup', description: `Removed ${orphans.length} orphaned page record(s).` });
+      }
+    }
   };
 
   useEffect(() => { fetchItems(); }, []);
