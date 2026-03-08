@@ -22,6 +22,12 @@ import Infrastructure from "./pages/Infrastructure";
 import Clients from "./pages/Clients";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminProducts from "./pages/AdminProducts";
+import AdminHeroSlides from "./pages/AdminHeroSlides";
+import AdminClients from "./pages/AdminClients";
+import AdminPageContent from "./pages/AdminPageContent";
 
 const queryClient = new QueryClient();
 
