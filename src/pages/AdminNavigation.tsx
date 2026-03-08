@@ -422,6 +422,22 @@ const AdminNavigation = () => {
         <p className="text-xs text-muted-foreground mt-4">
           💡 Built-in pages can be hidden but not deleted. Custom pages can be edited with the pencil icon and fully removed. Changes take effect after saving.
         </p>
+        <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete "{deleteTarget?.label}"?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently remove the custom page and its content. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </AdminLayout>
     </AdminGuard>
   );
