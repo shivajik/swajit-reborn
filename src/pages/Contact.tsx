@@ -29,7 +29,7 @@ const Contact = () => {
     {
       icon: Mail,
       title: "Email",
-      lines: [settings.company_email, "sales@swajit.com"],
+      lines: [settings.company_email, settings.company_email_sales],
     },
     {
       icon: Clock,
