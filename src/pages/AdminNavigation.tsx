@@ -105,13 +105,23 @@ const AdminNavigation = () => {
     setItems(prev => prev.map(item => item.id === id ? { ...item, label } : item));
   };
 
-  const removeItem = (id: string) => {
-    const item = items.find(i => i.id === id);
-    if (item && !item.is_custom) {
-      toggleVisibility(id);
+  const removeItem = (item: NavItem) => {
+    if (!item.is_custom) {
+      toggleVisibility(item.id);
       return;
     }
-    setItems(prev => prev.filter(i => i.id !== id));
+    setDeleteTarget(item);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    // Remove from nav list
+    setItems(prev => prev.filter(i => i.id !== deleteTarget.id));
+    // Also delete the page_content record
+    const slug = deleteTarget.href.replace('/page/', '');
+    await supabase.from('page_content').delete().eq('page_key', `custom_${slug}`).eq('section_key', 'main');
+    setDeleteTarget(null);
+    toast({ title: 'Deleted', description: `Custom page "${deleteTarget.label}" removed.` });
   };
 
   const addCustomPage = async () => {
