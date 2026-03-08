@@ -405,7 +405,7 @@ const AdminNavigation = () => {
                     </button>
                     {item.is_custom && (
                       <button
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeItem(item)}
                         className="p-1.5 rounded-md text-destructive hover:bg-destructive/10 transition-colors"
                         title="Delete custom page"
                       >
