@@ -22,6 +22,8 @@ const SETTING_GROUPS = {
       { key: 'company_name', label: 'Company Name', type: 'text' },
       { key: 'company_phone', label: 'Phone Number', type: 'text' },
       { key: 'company_email', label: 'Email Address', type: 'text' },
+      { key: 'company_email_sales', label: 'Sales Email', type: 'text' },
+      { key: 'company_fax', label: 'Fax Number', type: 'text' },
       { key: 'company_address', label: 'Address', type: 'textarea' },
       { key: 'company_map_link', label: 'Google Maps Link', type: 'text' },
     ],
