@@ -20,9 +20,7 @@ const reasons = [
 ];
 
 const Index = () => (
-  <div className="min-h-screen bg-background">
-    {/* Navbar is inside PageLayout but hero needs full-width without pt, so we handle manually */}
-    <PageLayout>
+  <PageLayout>
       {/* Remove pt from hero since PageLayout adds it */}
       <div className="-mt-16 md:-mt-20">
         <HeroSection />
