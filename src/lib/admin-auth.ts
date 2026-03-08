@@ -73,11 +73,12 @@ export function getSession(): AdminSession | null {
   }
 }
 
-export function adminLogout() {
+export async function adminLogout() {
   const session = getSession();
   if (session) {
-    // Clean up server session
-    supabase.rpc('admin_logout', { p_token: session.token }).catch(() => {});
+    try {
+      await supabase.rpc('admin_logout', { p_token: session.token });
+    } catch {}
   }
   localStorage.removeItem(SESSION_KEY);
 }
