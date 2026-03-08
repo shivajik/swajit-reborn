@@ -7,6 +7,7 @@ import {
   Image,
   Users,
   FileText,
+  Settings,
   LogOut,
   Menu,
   X,
