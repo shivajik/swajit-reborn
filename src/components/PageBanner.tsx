@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import bannerBg from "@/assets/banner-bg.jpg";
 
 interface PageBannerProps {
   title: string;
@@ -9,11 +9,18 @@ interface PageBannerProps {
 }
 
 const PageBanner = ({ title, subtitle, breadcrumb }: PageBannerProps) => (
-  <section className="bg-primary py-16 md:py-24 relative overflow-hidden">
-    <div className="absolute inset-0 opacity-5 pointer-events-none">
-      <div className="absolute top-10 right-20 w-72 h-72 border border-accent/30 rounded-full" />
-      <div className="absolute bottom-5 left-10 w-48 h-48 border border-accent/20 rounded-full" />
-    </div>
+  <section className="relative py-20 md:py-28 overflow-hidden">
+    {/* Background image */}
+    <img
+      src={bannerBg}
+      alt=""
+      className="absolute inset-0 w-full h-full object-cover"
+    />
+    {/* Dark overlay */}
+    <div className="absolute inset-0 bg-primary/80" />
+    {/* Bottom accent line */}
+    <div className="absolute bottom-0 left-0 right-0 h-1 bg-accent" />
+
     <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8">
       <div className="flex items-center gap-2 text-sm text-primary-foreground/50 mb-4 font-heading">
         <Link to="/" className="hover:text-accent transition-colors">Home</Link>
