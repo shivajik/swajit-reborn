@@ -52,6 +52,7 @@ const App = () => (
           <Route path="/admin/hero-slides" element={<AdminHeroSlides />} />
           <Route path="/admin/clients" element={<AdminClients />} />
           <Route path="/admin/content" element={<AdminPageContent />} />
+          <Route path="/admin/settings" element={<AdminSiteSettings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
