@@ -2,39 +2,51 @@ import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useHeroSlides } from "@/hooks/useSupabaseData";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
 
-const slides = [
+const fallbackSlides = [
   {
     title: "India's No. 1 Conveyor Chain Manufacturer",
     subtitle: "Precision-engineered industrial chains trusted by 300+ factories nationwide",
-    cta: "Explore Products",
-    ctaLink: "/products",
-    image: hero1,
+    cta_text: "Explore Products",
+    cta_link: "/products",
+    image_url: hero1,
   },
   {
     title: "32+ Years of Engineering Excellence",
     subtitle: "Founded in 1992, delivering world-class conveyor solutions across 18+ countries",
-    cta: "Know More",
-    ctaLink: "/about",
-    image: hero2,
+    cta_text: "Know More",
+    cta_link: "/about",
+    image_url: hero2,
   },
   {
     title: "Customized Solutions for Every Industry",
     subtitle: "Sugar, Cement, Steel, Chemical, Automobile — tailored chain solutions for all",
-    cta: "View Industries",
-    ctaLink: "/products",
-    image: hero3,
+    cta_text: "View Industries",
+    cta_link: "/products",
+    image_url: hero3,
   },
 ];
 
 const HeroSection = () => {
   const [current, setCurrent] = useState(0);
+  const { slides: dbSlides, loading } = useHeroSlides();
 
-  const next = useCallback(() => setCurrent((c) => (c + 1) % slides.length), []);
-  const prev = useCallback(() => setCurrent((c) => (c - 1 + slides.length) % slides.length), []);
+  const slides = dbSlides.length > 0
+    ? dbSlides.map((s) => ({
+        title: s.title,
+        subtitle: s.subtitle,
+        cta_text: s.cta_text,
+        cta_link: s.cta_link,
+        image_url: s.image_url,
+      }))
+    : fallbackSlides;
+
+  const next = useCallback(() => setCurrent((c) => (c + 1) % slides.length), [slides.length]);
+  const prev = useCallback(() => setCurrent((c) => (c - 1 + slides.length) % slides.length), [slides.length]);
 
   useEffect(() => {
     const timer = setInterval(next, 5000);
@@ -49,7 +61,7 @@ const HeroSection = () => {
           className="absolute inset-0 transition-opacity duration-1000"
           style={{ opacity: i === current ? 1 : 0 }}
         >
-          <img src={slide.image} alt="" className="absolute inset-0 w-full h-full object-cover" />
+          <img src={slide.image_url} alt="" className="absolute inset-0 w-full h-full object-cover" />
         </div>
       ))}
 
@@ -77,9 +89,9 @@ const HeroSection = () => {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Link to={slides[current].ctaLink}>
+            <Link to={slides[current].cta_link}>
               <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase tracking-wider px-8 py-6 text-sm">
-                {slides[current].cta}
+                {slides[current].cta_text}
               </Button>
             </Link>
             <Link to="/about">
