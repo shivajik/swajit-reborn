@@ -6,33 +6,37 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-const contactInfo = [
-  {
-    icon: MapPin,
-    title: "Our Address",
-    lines: ["Plot No. C-1 to C-5, MIDC Chikalthana,", "Aurangabad - 431006, Maharashtra, India"],
-  },
-  {
-    icon: Phone,
-    title: "Phone",
-    lines: ["+91 240 2484032 / 33", "+91 240 2484034 (Fax)"],
-  },
-  {
-    icon: Mail,
-    title: "Email",
-    lines: ["info@swajit.com", "sales@swajit.com"],
-  },
-  {
-    icon: Clock,
-    title: "Working Hours",
-    lines: ["Mon - Sat: 9:00 AM - 6:00 PM", "Sunday: Closed"],
-  },
-];
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const Contact = () => {
   const { toast } = useToast();
+  const { settings } = useSiteSettings();
   const [form, setForm] = useState({ name: "", email: "", phone: "", company: "", message: "" });
+
+  const contactInfo = [
+    {
+      icon: MapPin,
+      title: "Our Address",
+      lines: settings.company_address.split(",").length > 2
+        ? [settings.company_address.split(",").slice(0, 2).join(",") + ",", settings.company_address.split(",").slice(2).join(",").trim()]
+        : [settings.company_address],
+    },
+    {
+      icon: Phone,
+      title: "Phone",
+      lines: [settings.company_phone, "+91 240 2484034 (Fax)"],
+    },
+    {
+      icon: Mail,
+      title: "Email",
+      lines: [settings.company_email, "sales@swajit.com"],
+    },
+    {
+      icon: Clock,
+      title: "Working Hours",
+      lines: ["Mon - Sat: 9:00 AM - 6:00 PM", "Sunday: Closed"],
+    },
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,14 +155,14 @@ const Contact = () => {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
           <div className="rounded-xl overflow-hidden border border-border h-[400px]">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3752.228!2d75.3834!3d19.8762!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdb98fd7a0e9b97%3A0x6c6c14d2e32c1e0!2sMIDC%20Chikalthana%2C%20Aurangabad%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+              src={settings.company_map_link || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3752.228!2d75.3834!3d19.8762!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdb98fd7a0e9b97%3A0x6c6c14d2e32c1e0!2sMIDC%20Chikalthana%2C%20Aurangabad%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"}
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Swajit Engineering Location - MIDC Chikalthana, Aurangabad"
+              title={`${settings.company_name} Location`}
             />
           </div>
         </div>

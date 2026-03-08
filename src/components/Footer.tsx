@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, ArrowUp } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const quickLinks = [
   { label: "Home", href: "/" },
@@ -11,6 +12,7 @@ const quickLinks = [
 ];
 
 const Footer = () => {
+  const { settings } = useSiteSettings();
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
@@ -59,15 +61,15 @@ const Footer = () => {
             <ul className="space-y-3 text-sm text-primary-foreground/60">
               <li className="flex gap-3">
                 <MapPin className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                <span>Plot No. C-1 to C-5, MIDC Chikalthana, Aurangabad - 431006, Maharashtra, India</span>
+                <span>{settings.company_address}</span>
               </li>
               <li className="flex gap-3 items-center">
                 <Phone className="w-4 h-4 text-accent shrink-0" />
-                <span>+91 240 2484032 / 33</span>
+                <span>{settings.company_phone}</span>
               </li>
               <li className="flex gap-3 items-center">
                 <Mail className="w-4 h-4 text-accent shrink-0" />
-                <span>info@swajit.com</span>
+                <span>{settings.company_email}</span>
               </li>
             </ul>
           </div>
@@ -75,7 +77,7 @@ const Footer = () => {
 
         <div className="border-t border-primary-foreground/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-primary-foreground/40">
-            © {new Date().getFullYear()} Swajit Engineering Pvt. Ltd. All rights reserved.
+            © {new Date().getFullYear()} {settings.company_name}. All rights reserved.
           </p>
           <button
             onClick={scrollTop}
