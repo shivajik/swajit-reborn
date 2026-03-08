@@ -80,7 +80,7 @@ const HeroSection = () => {
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-heading font-black text-primary-foreground leading-tight mb-6 transition-all duration-500">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-primary-foreground leading-tight mb-6 transition-all duration-500 break-words">
             {slides[current].title}
           </h1>
 
