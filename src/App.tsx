@@ -13,12 +13,14 @@ import Infrastructure from "./pages/Infrastructure";
 import Clients from "./pages/Clients";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import CustomPage from "./pages/CustomPage";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
 import AdminHeroSlides from "./pages/AdminHeroSlides";
 import AdminClients from "./pages/AdminClients";
 import AdminPageContent from "./pages/AdminPageContent";
+import AdminNavigation from "./pages/AdminNavigation";
 import AdminSiteSettings from "./pages/AdminSiteSettings";
 
 const queryClient = new QueryClient();
