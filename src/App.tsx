@@ -8,16 +8,7 @@ import { useLocation } from "react-router-dom";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Products from "./pages/Products";
-import ProductAutomobile from "./pages/ProductAutomobile";
-import ProductBoiler from "./pages/ProductBoiler";
-import ProductCement from "./pages/ProductCement";
-import ProductChemical from "./pages/ProductChemical";
-import ProductOther from "./pages/ProductOther";
-import ProductPaper from "./pages/ProductPaper";
-import ProductRefractory from "./pages/ProductRefractory";
-import ProductSolvent from "./pages/ProductSolvent";
-import ProductSteel from "./pages/ProductSteel";
-import ProductSugar from "./pages/ProductSugar";
+import ProductCategory from "./pages/ProductCategory";
 import Infrastructure from "./pages/Infrastructure";
 import Clients from "./pages/Clients";
 import Contact from "./pages/Contact";
@@ -50,16 +41,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
           <Route path="/products" element={<Products />} />
-          <Route path="/products/automobile" element={<ProductAutomobile />} />
-          <Route path="/products/boiler-thermal-power" element={<ProductBoiler />} />
-          <Route path="/products/cement-sector" element={<ProductCement />} />
-          <Route path="/products/chemical-fertilizer" element={<ProductChemical />} />
-          <Route path="/products/other-industry" element={<ProductOther />} />
-          <Route path="/products/paper-industry" element={<ProductPaper />} />
-          <Route path="/products/refractory-industry" element={<ProductRefractory />} />
-          <Route path="/products/solvent-plant" element={<ProductSolvent />} />
-          <Route path="/products/steel-industry" element={<ProductSteel />} />
-          <Route path="/products/sugar-industry" element={<ProductSugar />} />
+          <Route path="/products/:slug" element={<ProductCategory />} />
           <Route path="/infrastructure" element={<Infrastructure />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/contact" element={<Contact />} />

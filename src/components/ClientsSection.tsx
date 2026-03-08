@@ -1,7 +1,8 @@
 import { useState } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
+import { useClients, DBClient } from "@/hooks/useSupabaseData";
 
-const categories: Record<string, string[]> = {
+const fallbackCategories: Record<string, string[]> = {
   Sugar: ["Balrampur Chini Mills", "Dalmia Bharat Sugar", "EID Parry", "Bajaj Hindusthan", "Triveni Engineering", "Dwarikesh Sugar", "Simbhaoli Sugars", "Mawana Sugars"],
   OEM: ["ThyssenKrupp", "ISGEC Heavy Engineering", "Walchandnagar Industries", "Thermax", "McNally Bharat", "TRF Limited"],
   "Chemical & Fertilizer": ["IFFCO", "NFL", "RCF", "Coromandel International", "Chambal Fertilisers"],
@@ -11,7 +12,25 @@ const categories: Record<string, string[]> = {
 };
 
 const ClientsSection = () => {
+  const { clients: dbClients } = useClients();
   const [active, setActive] = useState("Sugar");
+
+  // If we have DB clients with categories, group them; otherwise fallback
+  const hasDBClients = dbClients.length > 0;
+
+  const dbCategories = hasDBClients
+    ? dbClients.reduce<Record<string, string[]>>((acc, c) => {
+        const cat = c.category || 'Other';
+        (acc[cat] = acc[cat] || []).push(c.name);
+        return acc;
+      }, {})
+    : fallbackCategories;
+
+  const categories = dbCategories;
+  const categoryKeys = Object.keys(categories);
+
+  // Reset active if it's not in the list
+  const currentActive = categoryKeys.includes(active) ? active : categoryKeys[0] || 'Sugar';
 
   return (
     <section id="clients" className="section-padding bg-secondary">
@@ -24,12 +43,12 @@ const ClientsSection = () => {
 
         <ScrollReveal delay={100}>
           <div className="flex flex-wrap justify-center gap-2 mb-10">
-            {Object.keys(categories).map((cat) => (
+            {categoryKeys.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActive(cat)}
                 className={`px-4 py-2 rounded-full text-sm font-heading font-semibold transition-all ${
-                  active === cat
+                  currentActive === cat
                     ? "bg-accent text-accent-foreground shadow-md"
                     : "bg-card text-muted-foreground hover:text-foreground border border-border"
                 }`}
@@ -40,7 +59,7 @@ const ClientsSection = () => {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {categories[active].map((client) => (
+            {(categories[currentActive] || []).map((client) => (
               <div key={client} className="bg-card border border-border rounded-lg p-5 flex items-center justify-center text-center hover:border-accent/40 hover:shadow-md transition-all">
                 <span className="font-heading font-semibold text-sm text-foreground">{client}</span>
               </div>

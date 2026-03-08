@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useClients } from "@/hooks/useSupabaseData";
 import ambuja from "@/assets/clients/ambuja-cement.jpg";
 import arm from "@/assets/clients/arm-cement.jpg";
 import bhel from "@/assets/clients/bhel.png";
@@ -12,7 +13,7 @@ import addax from "@/assets/clients/addax-bioenergy.jpg";
 import omifco from "@/assets/clients/omifco.jpg";
 import kjs from "@/assets/clients/kjs-cement.jpg";
 
-const logos = [
+const fallbackLogos = [
   { src: ambuja, alt: "Ambuja Cement" },
   { src: bhel, alt: "BHEL" },
   { src: arm, alt: "ARM Cement" },
@@ -26,6 +27,12 @@ const logos = [
 ];
 
 const ClientLogoCarousel = () => {
+  const { clients: dbClients } = useClients();
+
+  const logos = dbClients.length > 0
+    ? dbClients.filter((c) => c.logo_url).map((c) => ({ src: c.logo_url, alt: c.name }))
+    : fallbackLogos;
+
   // Duplicate logos for seamless infinite scroll
   const allLogos = [...logos, ...logos];
 
