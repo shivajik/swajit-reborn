@@ -146,15 +146,20 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Map placeholder */}
+      {/* Google Maps */}
       <section className="bg-secondary border-t border-border">
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
-          <div className="rounded-xl overflow-hidden border border-border h-[350px] bg-muted flex items-center justify-center">
-            <div className="text-center">
-              <MapPin className="w-12 h-12 text-accent mx-auto mb-3" />
-              <p className="font-heading font-bold text-foreground">MIDC Chikalthana, Aurangabad</p>
-              <p className="text-sm text-muted-foreground">Maharashtra, India - 431006</p>
-            </div>
+          <div className="rounded-xl overflow-hidden border border-border h-[400px]">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3752.228!2d75.3834!3d19.8762!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdb98fd7a0e9b97%3A0x6c6c14d2e32c1e0!2sMIDC%20Chikalthana%2C%20Aurangabad%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Swajit Engineering Location - MIDC Chikalthana, Aurangabad"
+            />
           </div>
         </div>
       </section>

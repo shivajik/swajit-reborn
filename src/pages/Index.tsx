@@ -4,6 +4,8 @@ import { ArrowRight, CheckCircle2, Award, Clock, Shield, Link2, Building2, HardH
 import PageLayout from "@/components/PageLayout";
 import HeroSection from "@/components/HeroSection";
 import StatsSection from "@/components/StatsSection";
+import ClientLogoCarousel from "@/components/ClientLogoCarousel";
+import ScrollReveal from "@/components/ScrollReveal";
 
 const previewProducts = [
   { icon: Link2, category: "Sugar Industry" },
@@ -21,17 +23,19 @@ const reasons = [
 
 const Index = () => (
   <PageLayout>
-      {/* Remove pt from hero since PageLayout adds it */}
-      <div className="-mt-16 md:-mt-20">
-        <HeroSection />
-      </div>
+    <div className="-mt-16 md:-mt-20">
+      <HeroSection />
+    </div>
 
-      {/* About Preview */}
-      <section className="section-padding bg-background">
-        <div className="max-w-7xl mx-auto">
+    {/* About Preview */}
+    <section className="section-padding bg-background">
+      <div className="max-w-7xl mx-auto">
+        <ScrollReveal>
           <h2 className="section-title text-foreground">About Our Company</h2>
           <div className="gold-underline" />
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        </ScrollReveal>
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <ScrollReveal delay={100}>
             <div>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 Founded in 1992 in Aurangabad, Maharashtra, <strong className="text-foreground">Swajit Engineering Pvt. Ltd.</strong> has grown to become India's No. 1 conveyor chain manufacturer with over three decades of expertise serving diverse industries.
@@ -45,6 +49,8 @@ const Index = () => (
                 </Button>
               </Link>
             </div>
+          </ScrollReveal>
+          <ScrollReveal delay={200}>
             <div className="grid grid-cols-2 gap-4">
               {reasons.map((r) => (
                 <div key={r.text} className="bg-secondary rounded-lg p-5 border border-border group hover:border-accent/40 transition-colors">
@@ -53,16 +59,20 @@ const Index = () => (
                 </div>
               ))}
             </div>
-          </div>
+          </ScrollReveal>
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* Products Preview */}
-      <section className="section-padding bg-secondary">
-        <div className="max-w-7xl mx-auto text-center">
+    {/* Products Preview */}
+    <section className="section-padding bg-secondary">
+      <div className="max-w-7xl mx-auto text-center">
+        <ScrollReveal>
           <h2 className="section-title text-foreground">Our Products</h2>
           <div className="gold-underline" />
           <p className="section-subtitle">Comprehensive range of conveyor chains for 8+ industries</p>
+        </ScrollReveal>
+        <ScrollReveal delay={150}>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             {previewProducts.map((p) => (
               <div key={p.category} className="bg-card rounded-xl border border-border p-6 hover:shadow-xl hover:border-accent/40 transition-all group">
@@ -73,19 +83,24 @@ const Index = () => (
               </div>
             ))}
           </div>
-          <Link to="/products">
-            <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase tracking-wider text-xs">
-              View All Products <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
-          </Link>
-        </div>
-      </section>
+        </ScrollReveal>
+        <Link to="/products">
+          <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase tracking-wider text-xs">
+            View All Products <ArrowRight className="w-4 h-4 ml-1" />
+          </Button>
+        </Link>
+      </div>
+    </section>
 
-      <StatsSection />
+    <StatsSection />
 
-      {/* CTA Section */}
-      <section className="section-padding bg-background">
-        <div className="max-w-4xl mx-auto text-center">
+    {/* Client Logo Carousel */}
+    <ClientLogoCarousel />
+
+    {/* CTA Section */}
+    <section className="section-padding bg-background">
+      <div className="max-w-4xl mx-auto text-center">
+        <ScrollReveal>
           <h2 className="section-title text-foreground">Ready to Get Started?</h2>
           <div className="gold-underline" />
           <p className="text-muted-foreground mb-8 text-lg">
@@ -103,9 +118,10 @@ const Index = () => (
               </Button>
             </Link>
           </div>
-        </div>
-      </section>
-    </PageLayout>
+        </ScrollReveal>
+      </div>
+    </section>
+  </PageLayout>
 );
 
 export default Index;
