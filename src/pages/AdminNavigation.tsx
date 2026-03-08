@@ -41,6 +41,7 @@ const AdminNavigation = () => {
   // Custom page edit
   const [editingPage, setEditingPage] = useState<EditingPage | null>(null);
   const [savingPage, setSavingPage] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<NavItem | null>(null);
 
   const fetchItems = async () => {
     setLoading(true);
