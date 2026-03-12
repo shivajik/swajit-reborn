@@ -6,6 +6,7 @@ import { useHeroSlides } from "@/hooks/useSupabaseData";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
+import hero4 from "@/assets/hero-4.jpg";
 
 const fallbackSlides = [
   {
@@ -23,11 +24,18 @@ const fallbackSlides = [
     image_url: hero2,
   },
   {
+    title: "Precision CNC & Laser Manufacturing",
+    subtitle: "State-of-the-art CNC machining and laser cutting for unmatched accuracy",
+    cta_text: "Our Infrastructure",
+    cta_link: "/infrastructure",
+    image_url: hero3,
+  },
+  {
     title: "Customized Solutions for Every Industry",
     subtitle: "Sugar, Cement, Steel, Chemical, Automobile — tailored chain solutions for all",
     cta_text: "View Industries",
     cta_link: "/products",
-    image_url: hero3,
+    image_url: hero4,
   },
 ];
 

@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import AdminLayout from '@/components/admin/AdminLayout';
 import AdminGuard from '@/components/admin/AdminGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, Pencil, Trash2, Save, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, X, Upload, ImageIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface HeroSlide {
@@ -19,11 +19,16 @@ interface HeroSlide {
   is_active: boolean;
 }
 
+const BUCKET = 'client-logos';
+const HERO_FOLDER = 'hero-slides';
+
 const AdminHeroSlides = () => {
   const { toast } = useToast();
   const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [editing, setEditing] = useState<Partial<HeroSlide> | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchSlides = async () => {
     setLoading(true);
@@ -33,6 +38,40 @@ const AdminHeroSlides = () => {
   };
 
   useEffect(() => { fetchSlides(); }, []);
+
+  const uploadImage = async (file: File): Promise<string | null> => {
+    setUploading(true);
+    const ext = file.name.split('.').pop();
+    const fileName = `${HERO_FOLDER}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+    const { error } = await supabase.storage.from(BUCKET).upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false,
+    });
+
+    if (error) {
+      toast({ title: 'Upload failed', description: error.message, variant: 'destructive' });
+      setUploading(false);
+      return null;
+    }
+
+    const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(fileName);
+    setUploading(false);
+    return urlData.publicUrl;
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const url = await uploadImage(file);
+    if (url) {
+      setEditing(prev => ({ ...prev, image_url: url }));
+      toast({ title: 'Image uploaded' });
+    }
+    // Reset input so same file can be selected again
+    e.target.value = '';
+  };
 
   const saveSlide = async () => {
     if (!editing?.title) return;
@@ -100,10 +139,47 @@ const AdminHeroSlides = () => {
                 <Input value={editing.subtitle || ''} onChange={(e) => setEditing({ ...editing, subtitle: e.target.value })} />
               </div>
             </div>
-            <div className="space-y-1">
-              <Label>Image URL</Label>
-              <Input value={editing.image_url || ''} onChange={(e) => setEditing({ ...editing, image_url: e.target.value })} />
+
+            {/* Image upload section */}
+            <div className="space-y-2">
+              <Label>Slide Image</Label>
+              <div className="flex gap-3 items-start">
+                {/* Preview */}
+                <div className="w-40 h-24 bg-muted rounded-lg overflow-hidden shrink-0 border border-border flex items-center justify-center">
+                  {editing.image_url ? (
+                    <img src={editing.image_url} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                  )}
+                </div>
+                <div className="flex-1 space-y-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                  >
+                    <Upload className="w-3 h-3 mr-1" />
+                    {uploading ? 'Uploading...' : 'Upload Image'}
+                  </Button>
+                  <p className="text-xs text-muted-foreground">Or paste a URL below:</p>
+                  <Input
+                    value={editing.image_url || ''}
+                    onChange={(e) => setEditing({ ...editing, image_url: e.target.value })}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+              </div>
             </div>
+
             <div className="grid sm:grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label>CTA Text</Label>
@@ -115,7 +191,7 @@ const AdminHeroSlides = () => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button size="sm" onClick={saveSlide}><Save className="w-3 h-3 mr-1" /> Save</Button>
+              <Button size="sm" onClick={saveSlide} disabled={uploading}><Save className="w-3 h-3 mr-1" /> Save</Button>
               <Button size="sm" variant="ghost" onClick={() => setEditing(null)}><X className="w-3 h-3" /></Button>
             </div>
           </div>
