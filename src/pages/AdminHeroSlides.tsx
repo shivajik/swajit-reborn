@@ -5,7 +5,7 @@ import AdminGuard from '@/components/admin/AdminGuard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, Pencil, Trash2, Save, X, Upload, ImageIcon } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, X, Upload, ImageIcon, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface HeroSlide {
@@ -21,6 +21,49 @@ interface HeroSlide {
 
 const BUCKET = 'client-logos';
 const HERO_FOLDER = 'hero-slides';
+
+const DEFAULT_SLIDES = [
+  {
+    title: "India's Leading Conveyor Chain Manufacturer",
+    subtitle: "Precision-engineered chains powering cement plants across the nation — built to endure the toughest industrial environments",
+    cta_text: "Explore Products",
+    cta_link: "/products",
+    image_url: "/images/hero/hero-1.jpg",
+    sort_order: 0,
+  },
+  {
+    title: "Trusted by Chemical & Fertilizer Giants",
+    subtitle: "Corrosion-resistant conveyor solutions designed for chemical processing and fertilizer production lines worldwide",
+    cta_text: "View Industries",
+    cta_link: "/products",
+    image_url: "/images/hero/hero-2.jpg",
+    sort_order: 1,
+  },
+  {
+    title: "Powering 300+ Sugar Factories Nationwide",
+    subtitle: "From cane handling to bagasse conveyors — our chains keep India's sugar industry moving with zero downtime",
+    cta_text: "Our Clients",
+    cta_link: "/clients",
+    image_url: "/images/hero/hero-3.jpg",
+    sort_order: 2,
+  },
+  {
+    title: "Palm Oil & Edible Oil Industry Experts",
+    subtitle: "Heavy-duty chain systems engineered for palm oil mills, extraction plants, and refinery operations across 18+ countries",
+    cta_text: "Export Reach",
+    cta_link: "/about",
+    image_url: "/images/hero/hero-4.jpg",
+    sort_order: 3,
+  },
+  {
+    title: "32+ Years of Engineering Excellence",
+    subtitle: "State-of-the-art CNC machining, precision heat treatment, and world-class assembly — delivering unmatched quality since 1992",
+    cta_text: "Our Infrastructure",
+    cta_link: "/infrastructure",
+    image_url: "/images/hero/hero-5.jpg",
+    sort_order: 4,
+  },
+];
 
 const AdminHeroSlides = () => {
   const { toast } = useToast();
@@ -63,13 +106,11 @@ const AdminHeroSlides = () => {
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const url = await uploadImage(file);
     if (url) {
       setEditing(prev => ({ ...prev, image_url: url }));
       toast({ title: 'Image uploaded' });
     }
-    // Reset input so same file can be selected again
     e.target.value = '';
   };
 
@@ -114,17 +155,45 @@ const AdminHeroSlides = () => {
     fetchSlides();
   };
 
+  const resetToDefaults = async () => {
+    if (!confirm('This will delete all existing slides and replace them with 5 default slides. Continue?')) return;
+    
+    // Delete all existing slides
+    const { error: delError } = await supabase.from('hero_slides').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    if (delError) {
+      toast({ title: 'Error clearing slides', description: delError.message, variant: 'destructive' });
+      return;
+    }
+
+    // Insert defaults
+    const { error: insError } = await supabase.from('hero_slides').insert(
+      DEFAULT_SLIDES.map(s => ({ ...s, is_active: true }))
+    );
+    if (insError) {
+      toast({ title: 'Error inserting defaults', description: insError.message, variant: 'destructive' });
+      return;
+    }
+
+    fetchSlides();
+    toast({ title: 'Reset complete', description: '5 default slides have been added' });
+  };
+
   return (
     <AdminGuard>
       <AdminLayout>
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-6 flex items-center justify-between flex-wrap gap-3">
           <div>
             <h1 className="text-2xl font-heading font-bold text-foreground">Hero Slides</h1>
             <p className="text-muted-foreground text-sm">Manage homepage hero carousel</p>
           </div>
-          <Button onClick={() => setEditing({ title: '', subtitle: '', image_url: '', cta_text: '', cta_link: '' })}>
-            <Plus className="w-4 h-4 mr-1" /> Add Slide
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={resetToDefaults}>
+              <RotateCcw className="w-4 h-4 mr-1" /> Reset to Defaults
+            </Button>
+            <Button onClick={() => setEditing({ title: '', subtitle: '', image_url: '', cta_text: '', cta_link: '' })}>
+              <Plus className="w-4 h-4 mr-1" /> Add Slide
+            </Button>
+          </div>
         </div>
 
         {editing && (
@@ -140,11 +209,9 @@ const AdminHeroSlides = () => {
               </div>
             </div>
 
-            {/* Image upload section */}
             <div className="space-y-2">
               <Label>Slide Image</Label>
               <div className="flex gap-3 items-start">
-                {/* Preview */}
                 <div className="w-40 h-24 bg-muted rounded-lg overflow-hidden shrink-0 border border-border flex items-center justify-center">
                   {editing.image_url ? (
                     <img src={editing.image_url} alt="Preview" className="w-full h-full object-cover" />
@@ -153,29 +220,13 @@ const AdminHeroSlides = () => {
                   )}
                 </div>
                 <div className="flex-1 space-y-2">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileSelect}
-                    className="hidden"
-                  />
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                  >
+                  <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
+                  <Button type="button" size="sm" variant="outline" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
                     <Upload className="w-3 h-3 mr-1" />
                     {uploading ? 'Uploading...' : 'Upload Image'}
                   </Button>
                   <p className="text-xs text-muted-foreground">Or paste a URL below:</p>
-                  <Input
-                    value={editing.image_url || ''}
-                    onChange={(e) => setEditing({ ...editing, image_url: e.target.value })}
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  <Input value={editing.image_url || ''} onChange={(e) => setEditing({ ...editing, image_url: e.target.value })} placeholder="https://example.com/image.jpg" />
                 </div>
               </div>
             </div>
@@ -201,7 +252,12 @@ const AdminHeroSlides = () => {
           {loading ? (
             <div className="text-center py-12 text-muted-foreground">Loading...</div>
           ) : slides.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">No slides yet.</div>
+            <div className="text-center py-12 text-muted-foreground">
+              <p>No slides yet.</p>
+              <Button variant="outline" className="mt-3" onClick={resetToDefaults}>
+                <RotateCcw className="w-4 h-4 mr-1" /> Load Default Slides
+              </Button>
+            </div>
           ) : (
             slides.map((slide) => (
               <div key={slide.id} className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
