@@ -209,9 +209,12 @@ const AdminHeroSlides = () => {
             <h1 className="text-2xl font-heading font-bold text-foreground">Hero Slides</h1>
             <p className="text-muted-foreground text-sm">Manage homepage hero carousel</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={resetToDefaults}>
-              <RotateCcw className="w-4 h-4 mr-1" /> Reset to Defaults
+          <div className="flex gap-2 flex-wrap">
+            <Button variant="outline" size="sm" onClick={addMissingSlides}>
+              <Plus className="w-4 h-4 mr-1" /> Add Missing Default Slides
+            </Button>
+            <Button variant="outline" size="sm" onClick={resetToDefaults}>
+              <RotateCcw className="w-4 h-4 mr-1" /> Replace All with Defaults
             </Button>
             <Button onClick={() => setEditing({ title: '', subtitle: '', image_url: '', cta_text: '', cta_link: '' })}>
               <Plus className="w-4 h-4 mr-1" /> Add Slide
