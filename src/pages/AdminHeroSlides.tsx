@@ -158,14 +158,12 @@ const AdminHeroSlides = () => {
   const resetToDefaults = async () => {
     if (!confirm('This will delete all existing slides and replace them with 5 default slides. Continue?')) return;
     
-    // Delete all existing slides
     const { error: delError } = await supabase.from('hero_slides').delete().neq('id', '00000000-0000-0000-0000-000000000000');
     if (delError) {
       toast({ title: 'Error clearing slides', description: delError.message, variant: 'destructive' });
       return;
     }
 
-    // Insert defaults
     const { error: insError } = await supabase.from('hero_slides').insert(
       DEFAULT_SLIDES.map(s => ({ ...s, is_active: true }))
     );
@@ -178,6 +176,31 @@ const AdminHeroSlides = () => {
     toast({ title: 'Reset complete', description: '5 default slides have been added' });
   };
 
+  const addMissingSlides = async () => {
+    // Find which default slides are missing by title
+    const existingTitles = slides.map(s => s.title.toLowerCase().trim());
+    const missing = DEFAULT_SLIDES.filter(
+      ds => !existingTitles.some(t => t.includes(ds.title.toLowerCase().substring(0, 20)))
+    );
+
+    if (missing.length === 0) {
+      toast({ title: 'All default slides already exist' });
+      return;
+    }
+
+    const nextOrder = slides.length > 0 ? Math.max(...slides.map(s => s.sort_order)) + 1 : 0;
+    const toInsert = missing.map((s, i) => ({ ...s, sort_order: nextOrder + i, is_active: true }));
+
+    const { error } = await supabase.from('hero_slides').insert(toInsert);
+    if (error) {
+      toast({ title: 'Error adding slides', description: error.message, variant: 'destructive' });
+      return;
+    }
+
+    fetchSlides();
+    toast({ title: `Added ${missing.length} new slide(s)` });
+  };
+
   return (
     <AdminGuard>
       <AdminLayout>
@@ -186,9 +209,12 @@ const AdminHeroSlides = () => {
             <h1 className="text-2xl font-heading font-bold text-foreground">Hero Slides</h1>
             <p className="text-muted-foreground text-sm">Manage homepage hero carousel</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={resetToDefaults}>
-              <RotateCcw className="w-4 h-4 mr-1" /> Reset to Defaults
+          <div className="flex gap-2 flex-wrap">
+            <Button variant="outline" size="sm" onClick={addMissingSlides}>
+              <Plus className="w-4 h-4 mr-1" /> Add Missing Default Slides
+            </Button>
+            <Button variant="outline" size="sm" onClick={resetToDefaults}>
+              <RotateCcw className="w-4 h-4 mr-1" /> Replace All with Defaults
             </Button>
             <Button onClick={() => setEditing({ title: '', subtitle: '', image_url: '', cta_text: '', cta_link: '' })}>
               <Plus className="w-4 h-4 mr-1" /> Add Slide
