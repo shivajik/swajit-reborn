@@ -13,10 +13,14 @@ export interface NavItem {
 const DEFAULT_NAV_ITEMS: NavItem[] = [
   { id: 'home', label: 'Home', href: '/', visible: true, is_custom: false, sort_order: 0 },
   { id: 'about', label: 'About', href: '/about', visible: true, is_custom: false, sort_order: 1 },
-  { id: 'infrastructure', label: 'Infrastructure', href: '/infrastructure', visible: true, is_custom: false, sort_order: 2 },
-  { id: 'products', label: 'Products', href: '/products', visible: true, is_custom: false, sort_order: 3 },
-  { id: 'clients', label: 'Clients', href: '/clients', visible: true, is_custom: false, sort_order: 4 },
-  { id: 'contact', label: 'Contact', href: '/contact', visible: true, is_custom: false, sort_order: 5 },
+  { id: 'products', label: 'Products', href: '/products', visible: true, is_custom: false, sort_order: 2 },
+  { id: 'infrastructure', label: 'Infrastructure', href: '/infrastructure', visible: true, is_custom: false, sort_order: 3 },
+  { id: 'photo-gallery', label: 'Photo Gallery', href: '/photo-gallery', visible: true, is_custom: false, sort_order: 4 },
+  { id: 'application-videos', label: 'Application Videos', href: '/application-videos', visible: true, is_custom: false, sort_order: 5 },
+  { id: 'careers', label: 'Careers', href: '/careers', visible: true, is_custom: false, sort_order: 6 },
+  { id: 'csr', label: 'CSR', href: '/csr', visible: true, is_custom: false, sort_order: 7 },
+  { id: 'clients', label: 'Clients', href: '/clients', visible: true, is_custom: false, sort_order: 8 },
+  { id: 'contact', label: 'Contact', href: '/contact', visible: true, is_custom: false, sort_order: 9 },
 ];
 
 let cachedNavItems: NavItem[] | null = null;

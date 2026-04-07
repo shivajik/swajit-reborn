@@ -7,8 +7,19 @@ const quickLinks = [
   { label: "About Us", href: "/about" },
   { label: "Products", href: "/products" },
   { label: "Infrastructure", href: "/infrastructure" },
+  { label: "Photo Gallery", href: "/photo-gallery" },
   { label: "Clients", href: "/clients" },
   { label: "Contact Us", href: "/contact" },
+];
+
+const resourceLinks = [
+  { label: "ISO Certification", href: "/iso-certification" },
+  { label: "Quality Policy", href: "/quality-policy" },
+  { label: "Safety Policy", href: "/safety-policy" },
+  { label: "Overseas Market", href: "/overseas-market" },
+  { label: "Application Videos", href: "/application-videos" },
+  { label: "Careers", href: "/careers" },
+  { label: "CSR", href: "/csr" },
 ];
 
 const socialIcons = [
@@ -28,7 +39,7 @@ const Footer = () => {
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="max-w-7xl mx-auto section-padding pb-8">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           <div>
             <Link to="/" className="flex items-center gap-2 mb-4">
               <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
@@ -64,6 +75,17 @@ const Footer = () => {
             <h4 className="font-heading font-bold text-accent mb-4 uppercase text-sm tracking-wider">Quick Links</h4>
             <ul className="space-y-2 text-sm text-primary-foreground/60">
               {quickLinks.map((l) => (
+                <li key={l.label}>
+                  <Link to={l.href} className="hover:text-accent transition-colors">{l.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-heading font-bold text-accent mb-4 uppercase text-sm tracking-wider">Resources</h4>
+            <ul className="space-y-2 text-sm text-primary-foreground/60">
+              {resourceLinks.map((l) => (
                 <li key={l.label}>
                   <Link to={l.href} className="hover:text-accent transition-colors">{l.label}</Link>
                 </li>

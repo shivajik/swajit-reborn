@@ -22,6 +22,14 @@ import AdminClients from "./pages/AdminClients";
 import AdminPageContent from "./pages/AdminPageContent";
 import AdminNavigation from "./pages/AdminNavigation";
 import AdminSiteSettings from "./pages/AdminSiteSettings";
+import PhotoGallery from "./pages/PhotoGallery";
+import CSR from "./pages/CSR";
+import QualityPolicy from "./pages/QualityPolicy";
+import SafetyPolicy from "./pages/SafetyPolicy";
+import OverseasMarket from "./pages/OverseasMarket";
+import ISOCertification from "./pages/ISOCertification";
+import Careers from "./pages/Careers";
+import ApplicationVideos from "./pages/ApplicationVideos";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +56,14 @@ const App = () => (
           <Route path="/infrastructure" element={<Infrastructure />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/photo-gallery" element={<PhotoGallery />} />
+          <Route path="/csr" element={<CSR />} />
+          <Route path="/quality-policy" element={<QualityPolicy />} />
+          <Route path="/safety-policy" element={<SafetyPolicy />} />
+          <Route path="/overseas-market" element={<OverseasMarket />} />
+          <Route path="/iso-certification" element={<ISOCertification />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/application-videos" element={<ApplicationVideos />} />
           <Route path="/page/:slug" element={<CustomPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
