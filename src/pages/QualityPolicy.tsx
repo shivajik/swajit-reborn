@@ -14,11 +14,12 @@ const QualityPolicy = () => (
       <div className="max-w-4xl mx-auto px-4 md:px-8">
         <ScrollReveal>
           <div className="flex justify-center">
-            <div className="rounded-xl overflow-hidden shadow-lg border border-border">
+            <div className="rounded-xl shadow-lg border border-border" style={{ aspectRatio: '980/1024', maxWidth: '500px', width: '100%', overflow: 'hidden' }}>
               <img
                 src="http://swajit.com/wp-content/uploads/2016/01/QualityPolicy-680x1024.jpg"
                 alt="Swajit Engineering Quality Policy Certificate"
-                className="w-full max-w-xl object-contain"
+                className="w-full h-full object-contain"
+                style={{ transform: 'rotate(-90deg)' }}
                 loading="lazy"
               />
             </div>

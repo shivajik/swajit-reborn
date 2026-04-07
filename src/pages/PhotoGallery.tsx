@@ -78,7 +78,7 @@ const PhotoGallery = () => {
                 {/* Section Title */}
                 <div className="flex items-center gap-4 mb-8">
                   <div className="w-1 h-8 bg-accent rounded-full" />
-                  <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground">
+                  <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground pt-4">
                     {section.title}
                   </h2>
                 </div>
