@@ -200,21 +200,22 @@ const HeroSection = () => {
           })()}
         </div>
 
-        {/* Slide indicators */}
-        <div className="flex items-center gap-2 sm:gap-3 mt-8 md:mt-12">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => goTo(i)}
-              className={`h-1 sm:h-1.5 rounded-full transition-all duration-500 ${
-                i === current ? "w-8 sm:w-12 bg-accent" : "w-3 sm:w-4 bg-primary-foreground/25 hover:bg-primary-foreground/40"
-              }`}
-            />
-          ))}
-          <span className="ml-3 text-primary-foreground/40 text-xs font-heading hidden sm:inline">
-            {String(current + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
-          </span>
-        </div>
+      </div>
+
+      {/* Slide indicators - bottom center */}
+      <div className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 sm:gap-3">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            className={`h-1.5 sm:h-2 rounded-full transition-all duration-500 ${
+              i === current ? "w-8 sm:w-12 bg-accent" : "w-3 sm:w-4 bg-primary-foreground/25 hover:bg-primary-foreground/40"
+            }`}
+          />
+        ))}
+        <span className="ml-3 text-primary-foreground/60 text-sm font-heading font-semibold">
+          {String(current + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+        </span>
       </div>
 
       {/* Navigation arrows */}
