@@ -5,14 +5,18 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 const quickLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
+  { label: "Mission & Vision", href: "/mission-vision" },
+  { label: "Milestone", href: "/milestone" },
   { label: "Products", href: "/products" },
-  { label: "Infrastructure", href: "/infrastructure" },
   { label: "Photo Gallery", href: "/photo-gallery" },
   { label: "Clients", href: "/clients" },
+  { label: "Feedback", href: "/feedback" },
+  { label: "Download", href: "/download" },
   { label: "Contact Us", href: "/contact" },
 ];
 
 const resourceLinks = [
+  { label: "Infrastructure", href: "/infrastructure" },
   { label: "ISO Certification", href: "/iso-certification" },
   { label: "Quality Policy", href: "/quality-policy" },
   { label: "Safety Policy", href: "/safety-policy" },

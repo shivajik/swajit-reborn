@@ -1,17 +1,115 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Phone } from "lucide-react";
+import { Menu, X, Phone, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
-import { useNavItems } from "@/hooks/useNavItems";
+
+interface NavLinkItem {
+  label: string;
+  href: string;
+}
+
+interface NavDropdown {
+  label: string;
+  children: NavLinkItem[];
+}
+
+type NavEntry = NavLinkItem | NavDropdown;
+
+function isDropdown(entry: NavEntry): entry is NavDropdown {
+  return "children" in entry;
+}
+
+const navLinks: NavEntry[] = [
+  { label: "Home", href: "/" },
+  {
+    label: "Corporate",
+    children: [
+      { label: "About Us", href: "/about" },
+      { label: "Mission And Vision", href: "/mission-vision" },
+      { label: "Milestone", href: "/milestone" },
+    ],
+  },
+  { label: "Products", href: "/products" },
+  { label: "Photo Gallery", href: "/photo-gallery" },
+  {
+    label: "Resources",
+    children: [
+      { label: "Infrastructure", href: "/infrastructure" },
+      { label: "ISO Certification", href: "/iso-certification" },
+      { label: "Quality Policy", href: "/quality-policy" },
+      { label: "Safety Policy", href: "/safety-policy" },
+      { label: "Overseas Market", href: "/overseas-market" },
+    ],
+  },
+  { label: "Careers", href: "/careers" },
+  { label: "CSR", href: "/csr" },
+  {
+    label: "Application Videos",
+    children: [
+      { label: "Sugar Industry Application", href: "/application-videos?tab=sugar" },
+      { label: "Steel Industry Chain Applications", href: "/application-videos?tab=steel" },
+      { label: "Cement Chain Application", href: "/application-videos?tab=cement" },
+      { label: "Chemical & Fertilizer Application", href: "/application-videos?tab=chemical" },
+    ],
+  },
+  { label: "Feedback", href: "/feedback" },
+  { label: "Download", href: "/download" },
+  { label: "Contact Us", href: "/contact" },
+];
+
+const DropdownMenu = ({ item, pathname }: { item: NavDropdown; pathname: string }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const timeout = useRef<ReturnType<typeof setTimeout>>();
+
+  const isActive = item.children.some((c) => pathname === c.href || pathname.startsWith(c.href.split("?")[0]));
+
+  const enter = () => {
+    clearTimeout(timeout.current);
+    setOpen(true);
+  };
+  const leave = () => {
+    timeout.current = setTimeout(() => setOpen(false), 150);
+  };
+
+  return (
+    <div ref={ref} className="relative" onMouseEnter={enter} onMouseLeave={leave}>
+      <button
+        className={`px-3 py-2 text-sm font-medium transition-colors font-heading uppercase tracking-wide flex items-center gap-1 ${
+          isActive ? "text-accent" : "text-primary/80 hover:text-accent"
+        }`}
+      >
+        {item.label}
+        <ChevronDown className="w-3.5 h-3.5" />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 mt-1 bg-white border border-border rounded-lg shadow-xl min-w-[220px] py-2 z-50">
+          {item.children.map((child) => (
+            <Link
+              key={child.href}
+              to={child.href}
+              onClick={() => setOpen(false)}
+              className={`block px-4 py-2.5 text-sm font-heading transition-colors ${
+                pathname === child.href || pathname.startsWith(child.href.split("?")[0])
+                  ? "text-accent bg-accent/5"
+                  : "text-primary/80 hover:text-accent hover:bg-muted"
+              }`}
+            >
+              {child.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [expandedMobile, setExpandedMobile] = useState<string | null>(null);
   const location = useLocation();
-  const { navItems } = useNavItems();
-
-  const visibleLinks = navItems.filter((item) => item.visible);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -26,22 +124,26 @@ const Navbar = () => {
           <img src={logo} alt="Swajit Engineering Pvt. Ltd." className="h-12 md:h-16 w-auto" />
         </Link>
 
-        <div className="hidden lg:flex items-center gap-1">
-          {visibleLinks.map((l) => (
-            <Link
-              key={l.id}
-              to={l.href}
-              className={`px-3 py-2 text-sm font-medium transition-colors font-heading uppercase tracking-wide ${
-                location.pathname === l.href
-                  ? "text-accent"
-                  : "text-primary/80 hover:text-accent"
-              }`}
-            >
-              {l.label}
-            </Link>
-          ))}
+        <div className="hidden lg:flex items-center gap-0.5">
+          {navLinks.map((entry) =>
+            isDropdown(entry) ? (
+              <DropdownMenu key={entry.label} item={entry} pathname={location.pathname} />
+            ) : (
+              <Link
+                key={entry.href}
+                to={entry.href}
+                className={`px-3 py-2 text-sm font-medium transition-colors font-heading uppercase tracking-wide ${
+                  location.pathname === entry.href
+                    ? "text-accent"
+                    : "text-primary/80 hover:text-accent"
+                }`}
+              >
+                {entry.label}
+              </Link>
+            )
+          )}
           <Link to="/contact">
-            <Button className="ml-4 bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase text-xs tracking-wider">
+            <Button className="ml-2 bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase text-xs tracking-wider">
               <Phone className="w-3.5 h-3.5 mr-1" /> Request Quote
             </Button>
           </Link>
@@ -53,21 +155,51 @@ const Navbar = () => {
       </div>
 
       {open && (
-        <div className="lg:hidden bg-white border-t border-border pb-4">
-          {visibleLinks.map((l) => (
-            <Link
-              key={l.id}
-              to={l.href}
-              onClick={() => setOpen(false)}
-              className={`block w-full text-left px-6 py-3 font-heading uppercase text-sm tracking-wide ${
-                location.pathname === l.href
-                  ? "text-accent bg-muted"
-                  : "text-primary/80 hover:text-accent hover:bg-muted"
-              }`}
-            >
-              {l.label}
-            </Link>
-          ))}
+        <div className="lg:hidden bg-white border-t border-border pb-4 max-h-[80vh] overflow-y-auto">
+          {navLinks.map((entry) =>
+            isDropdown(entry) ? (
+              <div key={entry.label}>
+                <button
+                  onClick={() => setExpandedMobile(expandedMobile === entry.label ? null : entry.label)}
+                  className="flex items-center justify-between w-full text-left px-6 py-3 font-heading uppercase text-sm tracking-wide text-primary/80 hover:text-accent hover:bg-muted"
+                >
+                  {entry.label}
+                  <ChevronDown className={`w-4 h-4 transition-transform ${expandedMobile === entry.label ? "rotate-180" : ""}`} />
+                </button>
+                {expandedMobile === entry.label && (
+                  <div className="bg-muted/50">
+                    {entry.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        to={child.href}
+                        onClick={() => setOpen(false)}
+                        className={`block px-10 py-2.5 text-sm font-heading ${
+                          location.pathname === child.href
+                            ? "text-accent bg-muted"
+                            : "text-primary/70 hover:text-accent"
+                        }`}
+                      >
+                        {child.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                key={entry.href}
+                to={entry.href}
+                onClick={() => setOpen(false)}
+                className={`block w-full text-left px-6 py-3 font-heading uppercase text-sm tracking-wide ${
+                  location.pathname === entry.href
+                    ? "text-accent bg-muted"
+                    : "text-primary/80 hover:text-accent hover:bg-muted"
+                }`}
+              >
+                {entry.label}
+              </Link>
+            )
+          )}
           <div className="px-6 pt-2">
             <Link to="/contact" onClick={() => setOpen(false)}>
               <Button className="w-full bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase text-xs">

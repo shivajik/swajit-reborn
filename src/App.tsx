@@ -30,6 +30,10 @@ import OverseasMarket from "./pages/OverseasMarket";
 import ISOCertification from "./pages/ISOCertification";
 import Careers from "./pages/Careers";
 import ApplicationVideos from "./pages/ApplicationVideos";
+import Feedback from "./pages/Feedback";
+import Download from "./pages/Download";
+import MissionVision from "./pages/MissionVision";
+import Milestone from "./pages/Milestone";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +68,10 @@ const App = () => (
           <Route path="/iso-certification" element={<ISOCertification />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/application-videos" element={<ApplicationVideos />} />
+          <Route path="/feedback" element={<Feedback />} />
+          <Route path="/download" element={<Download />} />
+          <Route path="/mission-vision" element={<MissionVision />} />
+          <Route path="/milestone" element={<Milestone />} />
           <Route path="/page/:slug" element={<CustomPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />

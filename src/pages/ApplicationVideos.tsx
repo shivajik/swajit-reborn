@@ -48,6 +48,14 @@ const videoCategories: VideoCategory[] = [
       { title: "Slat Conveyor for Captive Power Plant", videoId: "qC6mlcKBKpo" },
     ],
   },
+  {
+    category: "Chemical & Fertilizer Application",
+    slug: "chemical",
+    videos: [
+      { title: "Chemical Plant Conveyor Chain", videoId: "bunnIV4_23w" },
+      { title: "Fertilizer Industry Application", videoId: "BfMmGwNtAdI" },
+    ],
+  },
 ];
 
 const ApplicationVideos = () => {
