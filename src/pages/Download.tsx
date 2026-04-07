@@ -2,7 +2,7 @@ import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ScrollReveal from "@/components/ScrollReveal";
 import { FileDown, Building2 } from "lucide-react";
-import officeImage from "@/assets/PLANT1- PLOT NO K9, CORPORTAE OFFICE & MACHINE SHOP.jpg";
+import officeImage from "@/assets/PLANT1.jpg";
 
 const brochures = [
   {
