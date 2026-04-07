@@ -59,7 +59,10 @@ const videoCategories: VideoCategory[] = [
 ];
 
 const ApplicationVideos = () => {
-  const [activeCategory, setActiveCategory] = useState(videoCategories[0].slug);
+  // Read tab from URL search params
+  const searchParams = new URLSearchParams(window.location.search);
+  const initialTab = searchParams.get("tab") || videoCategories[0].slug;
+  const [activeCategory, setActiveCategory] = useState(initialTab);
   const current = videoCategories.find((c) => c.slug === activeCategory) || videoCategories[0];
 
   return (

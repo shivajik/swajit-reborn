@@ -2,6 +2,7 @@ import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ScrollReveal from "@/components/ScrollReveal";
 import { FileDown, Building2 } from "lucide-react";
+import officeImage from "@/assets/PLANT1- PLOT NO K9, CORPORTAE OFFICE & MACHINE SHOP.jpg";
 
 const brochures = [
   {
@@ -45,7 +46,7 @@ const Download = () => (
               </h2>
               <div className="rounded-xl overflow-hidden shadow-lg border border-border">
                 <img
-                  src="http://swajit.com/wp-content/uploads/2015/11/Swajit-Corporate-Office-copy.jpg"
+                  src={officeImage}
                   alt="Swajit Corporate Office"
                   className="w-full object-cover"
                   loading="lazy"

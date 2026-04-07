@@ -40,21 +40,12 @@ const navLinks: NavEntry[] = [
       { label: "Quality Policy", href: "/quality-policy" },
       { label: "Safety Policy", href: "/safety-policy" },
       { label: "Overseas Market", href: "/overseas-market" },
+      { label: "Download", href: "/download" },
+      { label: "Application Videos", href: "/application-videos" },
     ],
   },
   { label: "Careers", href: "/careers" },
   { label: "CSR", href: "/csr" },
-  {
-    label: "Application Videos",
-    children: [
-      { label: "Sugar Industry Application", href: "/application-videos?tab=sugar" },
-      { label: "Steel Industry Chain Applications", href: "/application-videos?tab=steel" },
-      { label: "Cement Chain Application", href: "/application-videos?tab=cement" },
-      { label: "Chemical & Fertilizer Application", href: "/application-videos?tab=chemical" },
-    ],
-  },
-  { label: "Feedback", href: "/feedback" },
-  { label: "Download", href: "/download" },
   { label: "Contact Us", href: "/contact" },
 ];
 

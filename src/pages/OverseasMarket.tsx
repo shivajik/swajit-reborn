@@ -4,9 +4,24 @@ import ScrollReveal from "@/components/ScrollReveal";
 import { Globe, MapPin } from "lucide-react";
 
 const countries = [
-  "Philippines", "Mauritius", "Malaysia", "Uganda", "Kenya", "Tanzania",
-  "Zambia", "Indonesia", "Rwanda", "Ethiopia", "Spain", "Jamaica",
-  "Sudan", "Nepal", "Vietnam", "Oman", "Thailand", "United Kingdom",
+  { name: "Philippines", flag: "🇵🇭" },
+  { name: "Mauritius", flag: "🇲🇺" },
+  { name: "Malaysia", flag: "🇲🇾" },
+  { name: "Uganda", flag: "🇺🇬" },
+  { name: "Kenya", flag: "🇰🇪" },
+  { name: "Tanzania", flag: "🇹🇿" },
+  { name: "Zambia", flag: "🇿🇲" },
+  { name: "Indonesia", flag: "🇮🇩" },
+  { name: "Rwanda", flag: "🇷🇼" },
+  { name: "Ethiopia", flag: "🇪🇹" },
+  { name: "Spain", flag: "🇪🇸" },
+  { name: "Jamaica", flag: "🇯🇲" },
+  { name: "Sudan", flag: "🇸🇩" },
+  { name: "Nepal", flag: "🇳🇵" },
+  { name: "Vietnam", flag: "🇻🇳" },
+  { name: "Oman", flag: "🇴🇲" },
+  { name: "Thailand", flag: "🇹🇭" },
+  { name: "United Kingdom", flag: "🇬🇧" },
 ];
 
 const OverseasMarket = () => (
@@ -35,11 +50,11 @@ const OverseasMarket = () => (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
             {countries.map((country) => (
               <div
-                key={country}
+                key={country.name}
                 className="flex items-center gap-3 p-4 bg-secondary rounded-xl border border-border hover:border-accent/50 hover:shadow-md transition-all"
               >
-                <MapPin className="w-4 h-4 text-accent shrink-0" />
-                <span className="font-heading font-semibold text-sm text-foreground">{country}</span>
+                <span className="text-2xl shrink-0">{country.flag}</span>
+                <span className="font-heading font-semibold text-sm text-foreground">{country.name}</span>
               </div>
             ))}
           </div>

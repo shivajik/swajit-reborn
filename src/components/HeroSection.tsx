@@ -3,48 +3,72 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useHeroSlides } from "@/hooks/useSupabaseData";
-import hero1 from "@/assets/hero-1.jpg";
-import hero2 from "@/assets/hero-2.jpg";
-import hero3 from "@/assets/hero-3.jpg";
-import hero4 from "@/assets/hero-4.jpg";
-import hero5 from "@/assets/hero-5.jpg";
+import hero1 from "@/assets/FIRST.jpg";
+import hero2 from "@/assets/SUGAR.jpg";
+import hero3 from "@/assets/CEMENT.jpg";
+import hero4 from "@/assets/PALM OIL.jpg";
+import hero5 from "@/assets/POWER.jpg";
+import hero6 from "@/assets/CHEMICAL & FERTILIZER.jpg";
+import hero7 from "@/assets/AUTOMOBILE.jpg";
+import hero8 from "@/assets/DRIVER CHAIN & SPROCKET.jpg";
 
 const fallbackSlides = [
   {
-    title: "India's Leading Conveyor Chain Manufacturer",
-    subtitle: "Precision-engineered chains powering cement plants across the nation — built to endure the toughest industrial environments",
-    cta_text: "Explore Products",
-    cta_link: "/products",
+    title: "",
+    subtitle: "",
+    cta_text: "",
+    cta_link: "",
     image_url: hero1,
   },
   {
-    title: "Trusted by Chemical & Fertilizer Giants",
-    subtitle: "Corrosion-resistant conveyor solutions designed for chemical processing and fertilizer production lines worldwide",
-    cta_text: "View Industries",
-    cta_link: "/products",
+    title: "",
+    subtitle: "",
+    cta_text: "",
+    cta_link: "",
     image_url: hero2,
   },
   {
-    title: "Powering 300+ Sugar Factories Nationwide",
-    subtitle: "From cane handling to bagasse conveyors — our chains keep India's sugar industry moving with zero downtime",
-    cta_text: "Our Clients",
-    cta_link: "/clients",
+    title: "",
+    subtitle: "",
+    cta_text: "",
+    cta_link: "",
     image_url: hero3,
   },
   {
-    title: "Palm Oil & Edible Oil Industry Experts",
-    subtitle: "Heavy-duty chain systems engineered for palm oil mills, extraction plants, and refinery operations across 18+ countries",
-    cta_text: "Export Reach",
-    cta_link: "/about",
+    title: "",
+    subtitle: "",
+    cta_text: "",
+    cta_link: "",
     image_url: hero4,
   },
   {
-    title: "32+ Years of Engineering Excellence",
-    subtitle: "State-of-the-art CNC machining, precision heat treatment, and world-class assembly — delivering unmatched quality since 1992",
-    cta_text: "Our Infrastructure",
-    cta_link: "/infrastructure",
+    title: "",
+    subtitle: "",
+    cta_text: "",
+    cta_link: "",
     image_url: hero5,
   },
+  {
+    title: "",
+    subtitle: "",
+    cta_text: "",
+    cta_link: "",
+    image_url: hero6,
+  },
+  {
+    title: "",
+    subtitle: "",
+    cta_text: "",
+    cta_link: "",
+    image_url: hero7,
+  },
+  {
+    title: "",
+    subtitle: "",
+    cta_text: "",
+    cta_link: "",
+    image_url: hero8,
+  }
 ];
 
 const HeroSection = () => {
@@ -111,49 +135,69 @@ const HeroSection = () => {
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 w-full py-16 md:py-0">
         <div className="max-w-3xl">
-          {/* Badge */}
-          <div
-            className="inline-block bg-accent/15 border border-accent/25 rounded-full px-4 py-1.5 mb-4 md:mb-6 backdrop-blur-sm transition-all duration-700"
-            style={{ opacity: 1, transform: 'translateY(0)' }}
-          >
-            <span className="text-accent text-xs sm:text-sm font-heading font-semibold tracking-wider uppercase">
-              Since 1992 — Aurangabad, India
-            </span>
-          </div>
+          {(() => {
+            const slide = slides[current];
+            const hasTitle = slide.title && slide.title.trim();
+            const hasSubtitle = slide.subtitle && slide.subtitle.trim();
+            const hasCta = slide.cta_text && slide.cta_text.trim() && slide.cta_link && slide.cta_link.trim();
+            const hasContent = hasTitle || hasSubtitle || hasCta;
 
-          {/* Title */}
-          <h1
-            key={current}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-black text-primary-foreground leading-[1.1] mb-4 md:mb-6 break-words animate-fade-in"
-          >
-            {slides[current].title}
-          </h1>
+            if (!hasContent) return null;
 
-          {/* Accent bar */}
-          <div className="w-16 md:w-24 h-1 bg-accent rounded-full mb-4 md:mb-6" />
+            return (
+              <>
+                {/* Badge */}
+                <div
+                  className="inline-block bg-accent/15 border border-accent/25 rounded-full px-4 py-1.5 mb-4 md:mb-6 backdrop-blur-sm transition-all duration-700"
+                  style={{ opacity: 1, transform: 'translateY(0)' }}
+                >
+                  <span className="text-accent text-xs sm:text-sm font-heading font-semibold tracking-wider uppercase">
+                    Since 1992 — Aurangabad, India
+                  </span>
+                </div>
 
-          {/* Subtitle */}
-          <p
-            key={`sub-${current}`}
-            className="text-sm sm:text-base md:text-lg lg:text-xl text-primary-foreground/80 mb-6 md:mb-8 max-w-2xl leading-relaxed animate-fade-in"
-            style={{ animationDelay: '150ms' }}
-          >
-            {slides[current].subtitle}
-          </p>
+                {/* Title */}
+                {hasTitle && (
+                  <h1
+                    key={current}
+                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-black text-primary-foreground leading-[1.1] mb-4 md:mb-6 break-words animate-fade-in"
+                  >
+                    {slide.title}
+                  </h1>
+                )}
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <Link to={slides[current].cta_link}>
-              <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase tracking-wider px-6 sm:px-8 py-5 sm:py-6 text-xs sm:text-sm w-full sm:w-auto">
-                {slides[current].cta_text}
-              </Button>
-            </Link>
-            <Link to="/about">
-              <Button variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-heading uppercase tracking-wider px-6 sm:px-8 py-5 sm:py-6 text-xs sm:text-sm w-full sm:w-auto">
-                About Us
-              </Button>
-            </Link>
-          </div>
+                {/* Accent bar */}
+                {hasTitle && <div className="w-16 md:w-24 h-1 bg-accent rounded-full mb-4 md:mb-6" />}
+
+                {/* Subtitle */}
+                {hasSubtitle && (
+                  <p
+                    key={`sub-${current}`}
+                    className="text-sm sm:text-base md:text-lg lg:text-xl text-primary-foreground/80 mb-6 md:mb-8 max-w-2xl leading-relaxed animate-fade-in"
+                    style={{ animationDelay: '150ms' }}
+                  >
+                    {slide.subtitle}
+                  </p>
+                )}
+
+                {/* CTA Buttons */}
+                {hasCta && (
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <Link to={slide.cta_link}>
+                      <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase tracking-wider px-6 sm:px-8 py-5 sm:py-6 text-xs sm:text-sm w-full sm:w-auto">
+                        {slide.cta_text}
+                      </Button>
+                    </Link>
+                    <Link to="/about">
+                      <Button variant="outline" className="border-accent/60 text-primary-foreground hover:bg-accent/20 hover:border-accent font-heading uppercase tracking-wider px-6 sm:px-8 py-5 sm:py-6 text-xs sm:text-sm w-full sm:w-auto">
+                        About Us
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </>
+            );
+          })()}
         </div>
 
         {/* Slide indicators */}

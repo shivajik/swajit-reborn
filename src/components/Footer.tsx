@@ -10,7 +10,6 @@ const quickLinks = [
   { label: "Products", href: "/products" },
   { label: "Photo Gallery", href: "/photo-gallery" },
   { label: "Clients", href: "/clients" },
-  { label: "Feedback", href: "/feedback" },
   { label: "Download", href: "/download" },
   { label: "Contact Us", href: "/contact" },
 ];

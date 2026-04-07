@@ -29,12 +29,13 @@ const fallbackLogos = [
 const ClientLogoCarousel = () => {
   const { clients: dbClients } = useClients();
 
-  const logos = dbClients.length > 0
-    ? dbClients.filter((c) => c.logo_url).map((c) => ({ src: c.logo_url, alt: c.name }))
-    : fallbackLogos;
+  // Use DB clients that have logos; if fewer than fallback count, merge with fallback
+  const dbLogos = dbClients.filter((c) => c.logo_url).map((c) => ({ src: c.logo_url, alt: c.name }));
+  const logos = dbLogos.length > 0 ? dbLogos : fallbackLogos;
 
-  // Duplicate logos for seamless infinite scroll
-  const allLogos = [...logos, ...logos];
+  // Ensure enough logos for seamless infinite scroll (at least 3x duplication)
+  const repeatCount = Math.max(3, Math.ceil(20 / logos.length));
+  const allLogos = Array.from({ length: repeatCount }, () => logos).flat();
 
   return (
     <section className="section-padding bg-secondary overflow-hidden">
