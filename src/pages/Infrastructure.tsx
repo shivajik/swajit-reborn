@@ -1,6 +1,7 @@
 import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import InfrastructureSection from "@/components/InfrastructureSection";
+import InfrastructureGallery from "@/components/InfrastructureGallery";
 import CertificationsSection from "@/components/CertificationsSection";
 import StatsSection from "@/components/StatsSection";
 
@@ -12,6 +13,7 @@ const Infrastructure = () => (
       breadcrumb="Infrastructure"
     />
     <InfrastructureSection />
+    <InfrastructureGallery />
     <StatsSection />
     <CertificationsSection />
   </PageLayout>
