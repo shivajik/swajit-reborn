@@ -155,7 +155,7 @@ const Contact = () => {
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
           <div className="rounded-xl overflow-hidden border border-border h-[400px]">
             <iframe
-              src={settings.company_map_link || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3752.228!2d75.3834!3d19.8762!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdb98fd7a0e9b97%3A0x6c6c14d2e32c1e0!2sMIDC%20Chikalthana%2C%20Aurangabad%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"}
+              src={settings.company_map_link || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3752.228!2d75.3834!3d19.8762!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdb98fd7a0e9b97%3A0x6c6c14d2e32c1e0!2sMIDC%20Chikalthana%2C%20Chhatrapati%20Sambhajinagar%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"}
               width="100%"
               height="100%"
               style={{ border: 0 }}
