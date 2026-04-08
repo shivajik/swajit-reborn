@@ -112,7 +112,7 @@ const Careers = () => {
                   <div>
                     <h4 className="font-heading font-bold text-foreground text-sm mb-1">Work Location</h4>
                     <p className="text-sm text-muted-foreground">K-9, M.I.D.C., Waluj</p>
-                    <p className="text-sm text-muted-foreground">Aurangabad-431136, Maharashtra, India</p>
+                    <p className="text-sm text-muted-foreground">Chhatrapati Sambhajinagar-431136, Maharashtra, India</p>
                   </div>
                 </div>
                 <div className="flex gap-4 p-5 bg-secondary rounded-xl border border-border">

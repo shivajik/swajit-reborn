@@ -22,7 +22,7 @@ const AboutSection = () => (
           <div>
             <h3 className="text-2xl font-heading font-bold text-foreground mb-4">Swajit Engineering Pvt. Ltd.</h3>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              Founded in 1992 in Aurangabad, Maharashtra, <strong className="text-foreground">Swajit Engineering Pvt. Ltd.</strong> has grown to become India's No. 1 conveyor chain manufacturer. With over three decades of expertise, we specialize in manufacturing high-quality industrial conveyor chains for diverse industries including Sugar, Cement, Steel, Chemical, Automobile, and Thermal Power sectors.
+              Founded in 1992 in Chhatrapati Sambhajinagar, Maharashtra, <strong className="text-foreground">Swajit Engineering Pvt. Ltd.</strong> has grown to become India's No. 1 conveyor chain manufacturer. With over three decades of expertise, we specialize in manufacturing high-quality industrial conveyor chains for diverse industries including Sugar, Cement, Steel, Chemical, Automobile, and Thermal Power sectors.
             </p>
             <p className="text-muted-foreground leading-relaxed mb-4">
               Our state-of-the-art manufacturing facility spans over <strong className="text-foreground">1,20,000 sq ft</strong> and is equipped with advanced machinery, PLC-controlled heat treatment furnaces, and a dedicated quality testing lab. We proudly serve <strong className="text-foreground">300+ sugar factories</strong>, <strong className="text-foreground">100+ cement & steel plants</strong>, and export to <strong className="text-foreground">18+ countries</strong> worldwide.

@@ -148,7 +148,7 @@ const HeroSection = () => {
                   style={{ opacity: 1, transform: 'translateY(0)' }}
                 >
                   <span className="text-accent text-xs sm:text-sm font-heading font-semibold tracking-wider uppercase">
-                    Since 1992 — Aurangabad, India
+                    Since 1992 — Chhatrapati Sambhajinagar, India
                   </span>
                 </div>
 

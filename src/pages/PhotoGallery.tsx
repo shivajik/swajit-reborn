@@ -11,7 +11,7 @@ interface GallerySection {
 
 const gallerySections: GallerySection[] = [
   {
-    title: "Dealers Meet 2017-18 @ Aurangabad",
+    title: "Dealers Meet 2017-18 @ Chhatrapati Sambhajinagar",
     images: [
       {
         src: "https://swajit.com/wp-content/uploads/2015/11/Mr.Manohar-Parrikar-Defence-Mininster-of-India.jpg",
