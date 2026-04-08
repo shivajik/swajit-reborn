@@ -2,7 +2,7 @@ import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ScrollReveal from "@/components/ScrollReveal";
 import { Globe } from "lucide-react";
-import overseasMap from "@/assets/overseas-map.png";
+import overseasMap from "@/assets/overseas-map.jpg";
 
 const countries = [
   { name: "Philippines", code: "ph" },
