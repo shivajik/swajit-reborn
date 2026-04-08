@@ -21,49 +21,49 @@ const fallbackSlides = [
     image_url: hero1,
   },
   {
-    title: "",
+    title: "SUGAR",
     subtitle: "",
     cta_text: "",
     cta_link: "",
     image_url: hero2,
   },
   {
-    title: "",
+    title: "CEMENT",
     subtitle: "",
     cta_text: "",
     cta_link: "",
     image_url: hero3,
   },
   {
-    title: "",
+    title: "PALM OIL",
     subtitle: "",
     cta_text: "",
     cta_link: "",
     image_url: hero4,
   },
   {
-    title: "",
+    title: "POWER",
     subtitle: "",
     cta_text: "",
     cta_link: "",
     image_url: hero5,
   },
   {
-    title: "",
+    title: "CHEMICAL & FERTILIZER",
     subtitle: "",
     cta_text: "",
     cta_link: "",
     image_url: hero6,
   },
   {
-    title: "",
+    title: "AUTOMOBILE",
     subtitle: "",
     cta_text: "",
     cta_link: "",
     image_url: hero7,
   },
   {
-    title: "",
+    title: "DRIVER CHAIN & SPROCKET",
     subtitle: "",
     cta_text: "",
     cta_link: "",
@@ -120,10 +120,6 @@ const HeroSection = () => {
           />
         </div>
       ))}
-
-      {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/70 to-primary/50" />
-      <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-primary/30" />
 
       {/* Decorative elements */}
       <div className="absolute inset-0 opacity-[0.07] pointer-events-none">
