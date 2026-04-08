@@ -102,7 +102,7 @@ const HeroSection = () => {
   }, [next]);
 
   return (
-    <section id="home" className="relative min-h-[85vh] md:min-h-screen flex items-center overflow-hidden">
+    <section id="home" className="relative min-h-[70vh] md:min-h-screen flex items-center overflow-hidden">
       {/* Background images with Ken Burns effect */}
       {slides.map((slide, i) => (
         <div
@@ -128,88 +128,105 @@ const HeroSection = () => {
         <div className="absolute top-1/2 right-1/3 w-48 h-48 border border-accent/20 rounded-full" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 w-full py-16 md:py-0">
-        <div className="max-w-3xl">
-          {(() => {
-            const slide = slides[current];
-            const hasTitle = slide.title && slide.title.trim();
-            const hasSubtitle = slide.subtitle && slide.subtitle.trim();
-            const hasCta = slide.cta_text && slide.cta_text.trim() && slide.cta_link && slide.cta_link.trim();
-            const hasContent = hasTitle || hasSubtitle || hasCta;
+      {/* Content - Mobile: badge top, title bottom. Desktop: all together center-left */}
+      {(() => {
+        const slide = slides[current];
+        const hasTitle = slide.title && slide.title.trim();
+        const hasSubtitle = slide.subtitle && slide.subtitle.trim();
+        const hasCta = slide.cta_text && slide.cta_text.trim() && slide.cta_link && slide.cta_link.trim();
+        const hasContent = hasTitle || hasSubtitle || hasCta;
 
-            if (!hasContent) return null;
+        if (!hasContent) return null;
 
-            return (
-              <>
-                {/* Badge */}
-                <div
-                  className="inline-block bg-accent/15 border border-accent/25 rounded-full px-4 py-1.5 mb-4 md:mb-6 backdrop-blur-sm transition-all duration-700"
-                  style={{ opacity: 1, transform: 'translateY(0)' }}
+        return (
+          <>
+            {/* Mobile layout: Badge at top */}
+            <div className="absolute top-20 left-4 right-4 z-10 md:hidden">
+              <div className="inline-block bg-accent/15 border border-accent/25 rounded-full px-4 py-1.5 backdrop-blur-sm">
+                <span className="text-accent text-xs font-heading font-semibold tracking-wider uppercase">
+                  Since 1992 — Chhatrapati Sambhajinagar, India
+                </span>
+              </div>
+            </div>
+
+            {/* Mobile layout: Title at bottom */}
+            <div className="absolute bottom-14 left-4 right-4 z-10 md:hidden">
+              {hasTitle && (
+                <h1
+                  key={`mobile-${current}`}
+                  className="text-2xl sm:text-3xl font-heading font-black text-primary-foreground leading-[1.1] mb-2 break-words animate-fade-in"
                 >
-                  <span className="text-accent text-xs sm:text-sm font-heading font-semibold tracking-wider uppercase">
+                  {slide.title}
+                </h1>
+              )}
+              {hasTitle && <div className="w-16 h-1 bg-accent rounded-full mb-2" />}
+              {hasSubtitle && (
+                <p className="text-sm text-primary-foreground/80 max-w-2xl leading-relaxed animate-fade-in" style={{ animationDelay: '150ms' }}>
+                  {slide.subtitle}
+                </p>
+              )}
+              {hasCta && (
+                <div className="flex flex-col sm:flex-row gap-3 mt-3">
+                  <Link to={slide.cta_link}>
+                    <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase tracking-wider px-6 py-5 text-xs w-full sm:w-auto">
+                      {slide.cta_text}
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Desktop layout: All together */}
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 w-full hidden md:block">
+              <div className="max-w-3xl">
+                <div className="inline-block bg-accent/15 border border-accent/25 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm">
+                  <span className="text-accent text-sm font-heading font-semibold tracking-wider uppercase">
                     Since 1992 — Chhatrapati Sambhajinagar, India
                   </span>
                 </div>
-
-                {/* Title */}
                 {hasTitle && (
-                  <h1
-                    key={current}
-                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-black text-primary-foreground leading-[1.1] mb-4 md:mb-6 break-words animate-fade-in"
-                  >
+                  <h1 key={current} className="text-4xl lg:text-5xl xl:text-6xl font-heading font-black text-primary-foreground leading-[1.1] mb-6 break-words animate-fade-in">
                     {slide.title}
                   </h1>
                 )}
-
-                {/* Accent bar */}
-                {hasTitle && <div className="w-16 md:w-24 h-1 bg-accent rounded-full mb-4 md:mb-6" />}
-
-                {/* Subtitle */}
+                {hasTitle && <div className="w-24 h-1 bg-accent rounded-full mb-6" />}
                 {hasSubtitle && (
-                  <p
-                    key={`sub-${current}`}
-                    className="text-sm sm:text-base md:text-lg lg:text-xl text-primary-foreground/80 mb-6 md:mb-8 max-w-2xl leading-relaxed animate-fade-in"
-                    style={{ animationDelay: '150ms' }}
-                  >
+                  <p key={`sub-${current}`} className="text-lg lg:text-xl text-primary-foreground/80 mb-8 max-w-2xl leading-relaxed animate-fade-in" style={{ animationDelay: '150ms' }}>
                     {slide.subtitle}
                   </p>
                 )}
-
-                {/* CTA Buttons */}
                 {hasCta && (
-                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  <div className="flex flex-row gap-4">
                     <Link to={slide.cta_link}>
-                      <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase tracking-wider px-6 sm:px-8 py-5 sm:py-6 text-xs sm:text-sm w-full sm:w-auto">
+                      <Button className="bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase tracking-wider px-8 py-6 text-sm">
                         {slide.cta_text}
                       </Button>
                     </Link>
                     <Link to="/about">
-                      <Button variant="outline" className="border-accent/60 text-primary-foreground hover:bg-accent/20 hover:border-accent font-heading uppercase tracking-wider px-6 sm:px-8 py-5 sm:py-6 text-xs sm:text-sm w-full sm:w-auto">
+                      <Button variant="outline" className="border-accent/60 text-primary-foreground hover:bg-accent/20 hover:border-accent font-heading uppercase tracking-wider px-8 py-6 text-sm">
                         About Us
                       </Button>
                     </Link>
                   </div>
                 )}
-              </>
-            );
-          })()}
-        </div>
+              </div>
+            </div>
+          </>
+        );
+      })()}
 
-      </div>
-
-      {/* Slide indicators - bottom center */}
-      <div className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 sm:gap-3">
+      {/* Slide indicators - bottom left on mobile, bottom center on desktop */}
+      <div className="absolute bottom-4 md:bottom-10 left-4 md:left-1/2 md:-translate-x-1/2 z-10 flex items-center gap-2 sm:gap-3">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => goTo(i)}
             className={`h-1.5 sm:h-2 rounded-full transition-all duration-500 ${
-              i === current ? "w-8 sm:w-12 bg-accent" : "w-3 sm:w-4 bg-primary-foreground/25 hover:bg-primary-foreground/40"
+              i === current ? "w-6 sm:w-12 bg-accent" : "w-2.5 sm:w-4 bg-primary-foreground/25 hover:bg-primary-foreground/40"
             }`}
           />
         ))}
-        <span className="ml-3 text-primary-foreground/60 text-sm font-heading font-semibold">
+        <span className="ml-2 sm:ml-3 text-primary-foreground/60 text-xs sm:text-sm font-heading font-semibold">
           {String(current + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
         </span>
       </div>

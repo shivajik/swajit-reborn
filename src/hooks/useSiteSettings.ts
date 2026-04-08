@@ -5,12 +5,13 @@ export type SiteSettings = Record<string, string>;
 
 // Default fallback values
 const DEFAULTS: SiteSettings = {
-  company_name: 'Swajit Engineering Pvt. Ltd.',
-  company_phone: '+91 240 2484032 / 33',
+  company_name: 'SWAJIT ENGINEERING (P) LTD',
+  company_phone: '+91 9922941689',
   company_email: 'marketing@swajit.com',
-  // company_email_sales: 'sales@swajit.com',
-  company_fax: '+91 240 2484034',
-  company_address: 'Plot No. C-1 to C-5, MIDC Chikalthana, Chhatrapati Sambhajinagar - 431006, Maharashtra, India',
+  company_email_sales: 'sales@swajit.com',
+  company_fax: '',
+  company_address: 'K-9, M.I.D.C., Waluj, Ch.Sambhajinagar (Aurangabad) - 431136, Maharashtra, India',
+  company_website: 'www.swajit.com',
   company_map_link: '',
   social_facebook: '',
   social_linkedin: '',
