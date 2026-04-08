@@ -67,12 +67,12 @@ const DropdownMenu = ({ item, pathname }: { item: NavDropdown; pathname: string 
   return (
     <div ref={ref} className="relative" onMouseEnter={enter} onMouseLeave={leave}>
       <button
-        className={`px-3 py-2 text-sm font-medium transition-colors font-heading uppercase tracking-wide flex items-center gap-1 ${
+        className={`px-2 py-2 text-xs font-medium transition-colors font-heading uppercase tracking-wide flex items-center gap-0.5 whitespace-nowrap ${
           isActive ? "text-accent" : "text-primary/80 hover:text-accent"
         }`}
       >
         {item.label}
-        <ChevronDown className="w-3.5 h-3.5" />
+        <ChevronDown className="w-3 h-3" />
       </button>
       {open && (
         <div className="absolute top-full left-0 mt-1 bg-white border border-border rounded-lg shadow-xl min-w-[220px] py-2 z-50">
@@ -115,7 +115,7 @@ const Navbar = () => {
           <img src={logo} alt="Swajit Engineering Pvt. Ltd." className="h-12 md:h-16 w-auto" />
         </Link>
 
-        <div className="hidden lg:flex items-center gap-0.5">
+        <div className="hidden xl:flex items-center gap-0">
           {navLinks.map((entry) =>
             isDropdown(entry) ? (
               <DropdownMenu key={entry.label} item={entry} pathname={location.pathname} />
@@ -123,7 +123,7 @@ const Navbar = () => {
               <Link
                 key={entry.href}
                 to={entry.href}
-                className={`px-3 py-2 text-sm font-medium transition-colors font-heading uppercase tracking-wide ${
+                className={`px-2 py-2 text-xs font-medium transition-colors font-heading uppercase tracking-wide whitespace-nowrap ${
                   location.pathname === entry.href
                     ? "text-accent"
                     : "text-primary/80 hover:text-accent"
@@ -134,19 +134,19 @@ const Navbar = () => {
             )
           )}
           <Link to="/contact">
-            <Button className="ml-2 bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase text-xs tracking-wider">
-              <Phone className="w-3.5 h-3.5 mr-1" /> Request Quote
+            <Button className="ml-1 bg-accent text-accent-foreground hover:bg-accent/90 font-heading font-bold uppercase text-[11px] tracking-wider px-3">
+              <Phone className="w-3 h-3 mr-1" /> Request Quote
             </Button>
           </Link>
         </div>
 
-        <button onClick={() => setOpen(!open)} className="lg:hidden text-primary p-2">
+        <button onClick={() => setOpen(!open)} className="xl:hidden text-primary p-2">
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
 
       {open && (
-        <div className="lg:hidden bg-white border-t border-border pb-4 max-h-[80vh] overflow-y-auto">
+        <div className="xl:hidden bg-white border-t border-border pb-4 max-h-[80vh] overflow-y-auto">
           {navLinks.map((entry) =>
             isDropdown(entry) ? (
               <div key={entry.label}>

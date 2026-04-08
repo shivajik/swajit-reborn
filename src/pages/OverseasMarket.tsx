@@ -1,27 +1,28 @@
 import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ScrollReveal from "@/components/ScrollReveal";
-import { Globe, MapPin } from "lucide-react";
+import { Globe } from "lucide-react";
+import overseasMap from "@/assets/overseas-map.png";
 
 const countries = [
-  { name: "Philippines", flag: "🇵🇭" },
-  { name: "Mauritius", flag: "🇲🇺" },
-  { name: "Malaysia", flag: "🇲🇾" },
-  { name: "Uganda", flag: "🇺🇬" },
-  { name: "Kenya", flag: "🇰🇪" },
-  { name: "Tanzania", flag: "🇹🇿" },
-  { name: "Zambia", flag: "🇿🇲" },
-  { name: "Indonesia", flag: "🇮🇩" },
-  { name: "Rwanda", flag: "🇷🇼" },
-  { name: "Ethiopia", flag: "🇪🇹" },
-  { name: "Spain", flag: "🇪🇸" },
-  { name: "Jamaica", flag: "🇯🇲" },
-  { name: "Sudan", flag: "🇸🇩" },
-  { name: "Nepal", flag: "🇳🇵" },
-  { name: "Vietnam", flag: "🇻🇳" },
-  { name: "Oman", flag: "🇴🇲" },
-  { name: "Thailand", flag: "🇹🇭" },
-  { name: "United Kingdom", flag: "🇬🇧" },
+  { name: "Philippines", code: "ph" },
+  { name: "Mauritius", code: "mu" },
+  { name: "Malaysia", code: "my" },
+  { name: "Uganda", code: "ug" },
+  { name: "Kenya", code: "ke" },
+  { name: "Tanzania", code: "tz" },
+  { name: "Zambia", code: "zm" },
+  { name: "Indonesia", code: "id" },
+  { name: "Rwanda", code: "rw" },
+  { name: "Ethiopia", code: "et" },
+  { name: "Spain", code: "es" },
+  { name: "Jamaica", code: "jm" },
+  { name: "Sudan", code: "sd" },
+  { name: "Nepal", code: "np" },
+  { name: "Vietnam", code: "vn" },
+  { name: "Oman", code: "om" },
+  { name: "Thailand", code: "th" },
+  { name: "United Kingdom", code: "gb" },
 ];
 
 const OverseasMarket = () => (
@@ -53,10 +54,24 @@ const OverseasMarket = () => (
                 key={country.name}
                 className="flex items-center gap-3 p-4 bg-secondary rounded-xl border border-border hover:border-accent/50 hover:shadow-md transition-all"
               >
-                <span className="text-2xl shrink-0">{country.flag}</span>
+                <img
+                  src={`https://flagcdn.com/w40/${country.code}.png`}
+                  alt={`${country.name} flag`}
+                  className="w-8 h-5 object-cover rounded shrink-0"
+                />
                 <span className="font-heading font-semibold text-sm text-foreground">{country.name}</span>
               </div>
             ))}
+          </div>
+
+          {/* World Map */}
+          <div className="mt-12">
+            <img
+              src={overseasMap}
+              alt="Swajit Engineering international presence - world map showing export countries"
+              className="w-full rounded-xl shadow-lg border border-border"
+              loading="lazy"
+            />
           </div>
         </ScrollReveal>
       </div>
