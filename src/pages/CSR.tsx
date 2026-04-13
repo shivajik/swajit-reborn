@@ -1,8 +1,8 @@
 import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ScrollReveal from "@/components/ScrollReveal";
-import { Heart } from "lucide-react";
-import { useState } from "react";
+import { Heart, Play } from "lucide-react";
+import { useState, useRef } from "react";
 import { X } from "lucide-react";
 
 const csrImages = [
@@ -22,6 +22,15 @@ const csrImages = [
 
 const CSR = () => {
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlayVideo = () => {
+    if (videoRef.current) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    }
+  };
 
   return (
     <PageLayout>
@@ -40,11 +49,36 @@ const CSR = () => {
                 <Heart className="w-10 h-10 text-destructive" />
               </div>
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">
-                Organized Blood Donation Camp
+                Blood Donation Camp
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                In the memory of Hon. Late Vishwasrao Chavan & Hon. Late Avinash V. Chavan.
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                A blood donation camp was organized on 14th February, marking the death anniversary of our respected Chairman, Mr. Anil Chavan, as a humble tribute to his inspiring life and unwavering dedication to society. His values and vision continue to guide and motivate us in our commitment to serve the community.
               </p>
+            </div>
+
+            {/* Video Section */}
+            <div className="mb-12">
+              <div className="relative rounded-xl overflow-hidden shadow-lg border border-border aspect-video bg-muted max-w-3xl mx-auto">
+                <video
+                  ref={videoRef}
+                  className="w-full h-full object-cover"
+                  controls={isPlaying}
+                  preload="metadata"
+                  src="https://res.cloudinary.com/dog6ygkwz/video/upload/v1776054367/WhatsApp_Video_2026-04-13_at_9.02.51_AM_dboydr.mp4"
+                >
+                  Your browser does not support the video tag.
+                </video>
+                {!isPlaying && (
+                  <button
+                    onClick={handlePlayVideo}
+                    className="absolute inset-0 flex items-center justify-center bg-primary/40 hover:bg-primary/50 transition-colors"
+                  >
+                    <div className="w-20 h-20 rounded-full bg-accent flex items-center justify-center shadow-lg">
+                      <Play className="w-8 h-8 text-accent-foreground ml-1" />
+                    </div>
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Image Grid */}

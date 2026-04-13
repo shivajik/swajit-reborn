@@ -53,12 +53,9 @@ const Footer = () => {
                 <span className="text-accent text-[10px] tracking-widest">PVT. LTD.</span>
               </div>
             </Link>
-            <p className="text-sm text-primary-foreground/60 leading-relaxed mb-1">
+            <p className="text-sm text-primary-foreground/60 leading-relaxed mb-4">
               India's No. 1 conveyor chain manufacturer. Delivering precision-engineered industrial chains since 1992.
             </p>
-            {settings.company_website && (
-              <p className="text-sm text-accent mb-4">{settings.company_website}</p>
-            )}
             {activeSocials.length > 0 && (
               <div className="flex gap-2">
                 {activeSocials.map((s) => (
