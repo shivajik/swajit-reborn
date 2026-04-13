@@ -14,7 +14,7 @@ const AboutSection = () => (
       <ScrollReveal>
         <h2 className="section-title text-foreground">About Our Company</h2>
         <div className="gold-underline" />
-        <p className="section-subtitle">Delivering world-class conveyor chain solutions since 1992</p>
+        <p className="section-subtitle">Delivering world-class conveyor chain solutions since 1991</p>
       </ScrollReveal>
 
       <div className="grid lg:grid-cols-2 gap-12 items-start">

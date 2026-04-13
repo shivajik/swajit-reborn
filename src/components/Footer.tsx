@@ -54,7 +54,7 @@ const Footer = () => {
               </div>
             </Link>
             <p className="text-sm text-primary-foreground/60 leading-relaxed mb-4">
-              India's No. 1 conveyor chain manufacturer. Delivering precision-engineered industrial chains since 1992.
+              India's No. 1 conveyor chain manufacturer. Delivering precision-engineered industrial chains since 1991.
             </p>
             {activeSocials.length > 0 && (
               <div className="flex gap-2">

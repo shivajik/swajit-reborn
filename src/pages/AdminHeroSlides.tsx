@@ -57,7 +57,7 @@ const DEFAULT_SLIDES = [
   },
   {
     title: "32+ Years of Engineering Excellence",
-    subtitle: "State-of-the-art CNC machining, precision heat treatment, and world-class assembly — delivering unmatched quality since 1992",
+    subtitle: "State-of-the-art CNC machining, precision heat treatment, and world-class assembly — delivering unmatched quality since 1991",
     cta_text: "Our Infrastructure",
     cta_link: "/infrastructure",
     image_url: "/images/hero/hero-5.jpg",
