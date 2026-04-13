@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, Globe, Factory } from "lucide-react";
 
 const milestones = [
-  { year: "1992", event: "Founded in Chhatrapati Sambhajinagar, Maharashtra" },
+  { year: "1991", event: "Founded in Chhatrapati Sambhajinagar, Maharashtra" },
   { year: "2000", event: "Expanded manufacturing to 50,000 sq ft" },
   { year: "2005", event: "Started export operations to Southeast Asia" },
   { year: "2010", event: "ISO 9001:2008 Certification achieved" },

@@ -38,7 +38,7 @@ const Index = () => (
           <ScrollReveal delay={100}>
             <div>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Founded in 1992 in Chhatrapati Sambhajinagar, Maharashtra, <strong className="text-foreground">Swajit Engineering Pvt. Ltd.</strong> has grown to become India's No. 1 conveyor chain manufacturer with over three decades of expertise serving diverse industries.
+                Founded in 1991 in Chhatrapati Sambhajinagar, Maharashtra, <strong className="text-foreground">Swajit Engineering Pvt. Ltd.</strong> has grown to become India's No. 1 conveyor chain manufacturer with over three decades of expertise serving diverse industries.
               </p>
               <p className="text-muted-foreground leading-relaxed mb-6">
                 Our state-of-the-art facility spans <strong className="text-foreground">1,20,000+ sq ft</strong>, equipped with PLC-controlled heat treatment furnaces and advanced testing labs.

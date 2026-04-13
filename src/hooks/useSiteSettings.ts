@@ -7,6 +7,7 @@ export type SiteSettings = Record<string, string>;
 const DEFAULTS: SiteSettings = {
   company_name: 'Swajit Engineering Pvt. Ltd.',
   company_phone: '+91 240 2484032 / 33 / 2555031 / 2554531',
+  company_whatsapp: '+91 9922941689',
   company_email: 'marketing@swajit.com',
   company_fax: '+91 240 2484034',
   company_address: 'Plot No. C-1 to C-5, MIDC Chikalthana, Chhatrapati Sambhajinagar - 431006, Maharashtra, India',
