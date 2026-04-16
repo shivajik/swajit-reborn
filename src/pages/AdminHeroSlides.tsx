@@ -56,7 +56,7 @@ const DEFAULT_SLIDES = [
     sort_order: 3,
   },
   {
-    title: "32+ Years of Engineering Excellence",
+    title: "35+ Years of Engineering Excellence",
     subtitle: "State-of-the-art CNC machining, precision heat treatment, and world-class assembly — delivering unmatched quality since 1991",
     cta_text: "Our Infrastructure",
     cta_link: "/infrastructure",

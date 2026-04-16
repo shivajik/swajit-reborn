@@ -10,7 +10,7 @@ const DEFAULTS: SiteSettings = {
   company_whatsapp: '+91 9922941689',
   company_email: 'marketing@swajit.com',
   company_fax: '+91 240 2484034',
-  company_address: 'Plot No. C-1 to C-5, MIDC Chikalthana, Chhatrapati Sambhajinagar - 431006, Maharashtra, India',
+  company_address: 'K-9, M.I.D.C., Waluj, Ch.Sambhajinagar (Aurangabad) - 431136, Maharashtra, India',
   company_website: 'https://www.swajit.com',
   company_map_link: '',
   social_facebook: 'https://www.facebook.com/share/1AvMjWaQYi/',

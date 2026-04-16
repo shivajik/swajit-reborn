@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, ArrowUp, Facebook, Linkedin, Twitter, Youtube, Instagram } from "lucide-react";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import logo from "@/assets/logo.png";
 
 const quickLinks = [
   { label: "Home", href: "/" },
@@ -44,14 +45,8 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto section-padding pb-8">
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           <div>
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
-                <span className="text-accent-foreground font-heading font-black text-lg">S</span>
-              </div>
-              <div>
-                <span className="font-heading font-bold text-sm block">SWAJIT ENGINEERING</span>
-                <span className="text-accent text-[10px] tracking-widest">PVT. LTD.</span>
-              </div>
+            <Link to="/" className="flex items-center gap-3 mb-4">
+              <img src={logo} alt="Swajit Engineering Pvt. Ltd." className="h-12 w-auto" />
             </Link>
             <p className="text-sm text-primary-foreground/60 leading-relaxed mb-4">
               India's No. 1 conveyor chain manufacturer. Delivering precision-engineered industrial chains since 1991.

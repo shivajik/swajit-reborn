@@ -1,7 +1,7 @@
 import { useCounterAnimation } from "@/hooks/useCounterAnimation";
 
 const stats = [
-  { value: 32, suffix: "+", label: "Years of Experience" },
+  { value: 35, suffix: "+", label: "Years of Experience" },
   { value: 300, suffix: "+", label: "Sugar Factory Clients" },
   { value: 100, suffix: "+", label: "Cement & Steel Plants" },
   { value: 250, suffix: "+", label: "Team Members" },
