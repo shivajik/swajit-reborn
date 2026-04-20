@@ -15,6 +15,7 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import CustomPage from "./pages/CustomPage";
 import AdminLogin from "./pages/AdminLogin";
+import AdminSetup from "./pages/AdminSetup";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
 import AdminHeroSlides from "./pages/AdminHeroSlides";
@@ -73,6 +74,7 @@ const App = () => (
           <Route path="/mission-vision" element={<MissionVision />} />
           <Route path="/milestone" element={<Milestone />} />
           <Route path="/page/:slug" element={<CustomPage />} />
+          <Route path="/admin/setup" element={<AdminSetup />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<AdminProducts />} />
