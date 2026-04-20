@@ -1,4 +1,4 @@
-import { MessageCircle, Facebook, Linkedin, Twitter, Youtube, Instagram, Phone } from "lucide-react";
+import { MessageCircle, Facebook, Linkedin, Twitter, Youtube, Instagram, Mail } from "lucide-react";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const socialIcons = [
@@ -31,11 +31,11 @@ const TopStrip = () => {
 
         <div className="flex items-center gap-3">
           <a
-            href={`tel:${(settings.company_phone || "").replace(/[^\d+]/g, "")}`}
+            href="mailto:marketing@swajit.com"
             className="hidden md:flex items-center gap-1.5 hover:text-accent transition-colors"
           >
-            <Phone className="w-3 h-3 text-accent" />
-            <span>{settings.company_phone}</span>
+            <Mail className="w-3 h-3 text-accent" />
+            <span>marketing@swajit.com</span>
           </a>
           {activeSocials.length > 0 && (
             <div className="flex items-center gap-1.5">

@@ -6,7 +6,7 @@ export type SiteSettings = Record<string, string>;
 // Default fallback values
 const DEFAULTS: SiteSettings = {
   company_name: 'Swajit Engineering Pvt. Ltd.',
-  company_phone: '+91 2555031 / 2554531',
+  company_phone: '+91240 2555031 / 2554531',
   company_whatsapp: '+91 9922941689',
   company_email: 'marketing@swajit.com',
   // company_fax: '+91 240 2484034',
