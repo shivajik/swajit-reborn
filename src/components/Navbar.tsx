@@ -44,7 +44,7 @@ const navLinks: NavEntry[] = [
       { label: "Application Videos", href: "/application-videos" },
     ],
   },
-  { label: "Careers", href: "/careers" },
+  // { label: "Careers", href: "/careers" },
   { label: "CSR", href: "/csr" },
   { label: "Contact Us", href: "/contact" },
 ];

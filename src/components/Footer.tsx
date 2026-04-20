@@ -22,7 +22,7 @@ const resourceLinks = [
   { label: "Safety Policy", href: "/safety-policy" },
   { label: "Overseas Market", href: "/overseas-market" },
   { label: "Application Videos", href: "/application-videos" },
-  { label: "Careers", href: "/careers" },
+  // { label: "Careers", href: "/careers" },
   { label: "CSR", href: "/csr" },
 ];
 

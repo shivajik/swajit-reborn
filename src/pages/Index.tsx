@@ -16,7 +16,7 @@ const previewProducts = [
 
 const reasons = [
   { icon: Award, text: "India's Topmost Manufacturer" },
-  { icon: Shield, text: "ISI Specification Standards" },
+  // { icon: Shield, text: "ISI Specification Standards" },
   { icon: CheckCircle2, text: "Rigorous Quality Control" },
   { icon: Clock, text: "Timely Delivery" },
 ];
