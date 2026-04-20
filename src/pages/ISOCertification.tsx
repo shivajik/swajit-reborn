@@ -2,6 +2,7 @@ import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ScrollReveal from "@/components/ScrollReveal";
 import { Award } from "lucide-react";
+import ISOcertificate from "@/assets/ISO 9001 2018 VALID 09-02-2028_page-0001.jpg";
 
 const ISOCertification = () => (
   <PageLayout>
@@ -29,7 +30,7 @@ const ISOCertification = () => (
           <div className="flex justify-center">
             <div className="rounded-xl overflow-hidden shadow-lg border border-border">
               <img
-                src="http://swajit.com/wp-content/uploads/2016/01/Iso-Certifictate-till-2016.jpg"
+                src={ISOcertificate}
                 alt="ISO 9001:2015 Certificate - TUV NORD"
                 className="w-full max-w-xl object-contain"
                 loading="lazy"
