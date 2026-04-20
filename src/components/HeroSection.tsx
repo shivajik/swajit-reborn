@@ -142,9 +142,9 @@ const HeroSection = () => {
 
             return (
               <>
-                {/* Badge */}
+                {/* Badge - positioned higher */}
                 <div
-                  className="inline-block bg-accent/15 border border-accent/25 rounded-full px-4 py-1.5 mb-4 md:mb-6 backdrop-blur-sm transition-all duration-700"
+                  className="inline-block bg-accent/15 border border-accent/25 rounded-full px-4 py-1.5 mb-8 md:mb-12 backdrop-blur-sm transition-all duration-700"
                   style={{ opacity: 1, transform: 'translateY(0)' }}
                 >
                   <span className="text-accent text-xs sm:text-sm font-heading font-semibold tracking-wider uppercase">
@@ -152,11 +152,11 @@ const HeroSection = () => {
                   </span>
                 </div>
 
-                {/* Title */}
+                {/* Title - positioned lower */}
                 {hasTitle && (
                   <h1
                     key={current}
-                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-black text-primary-foreground leading-[1.1] mb-4 md:mb-6 break-words animate-fade-in"
+                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-black text-primary-foreground leading-[1.1] mt-2 md:mt-4 mb-4 md:mb-6 break-words animate-fade-in"
                   >
                     {slide.title}
                   </h1>
@@ -215,10 +215,10 @@ const HeroSection = () => {
       </div>
 
       {/* Navigation arrows */}
-      <button onClick={prev} className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 text-primary-foreground/30 hover:text-accent transition-colors p-2 hidden md:block">
+      <button onClick={prev} aria-label="Previous slide" className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 z-20 text-primary-foreground/40 hover:text-accent transition-colors p-2 hidden md:block">
         <ChevronLeft className="w-8 h-8 lg:w-10 lg:h-10" />
       </button>
-      <button onClick={next} className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 text-primary-foreground/30 hover:text-accent transition-colors p-2 hidden md:block">
+      <button onClick={next} aria-label="Next slide" className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 z-20 text-primary-foreground/40 hover:text-accent transition-colors p-2 hidden md:block">
         <ChevronRight className="w-8 h-8 lg:w-10 lg:h-10" />
       </button>
     </section>

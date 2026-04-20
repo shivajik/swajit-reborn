@@ -44,9 +44,9 @@ const ProductsSection = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {products.map((p, i) => {
             const content = (
-              <div className="bg-card rounded-xl border border-border p-6 hover:shadow-xl hover:border-accent/40 transition-all group cursor-pointer h-full">
-                <div className="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-4 group-hover:bg-accent group-hover:scale-110 transition-all">
-                  <p.icon className="w-7 h-7 text-accent group-hover:text-accent-foreground transition-colors" />
+              <div className="bg-card rounded-xl border border-border p-6 hover:shadow-xl hover:border-primary/40 transition-all group cursor-pointer h-full">
+                <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary group-hover:scale-110 transition-all">
+                  <p.icon className="w-7 h-7 text-primary group-hover:text-primary-foreground transition-colors" />
                 </div>
                 <h3 className="text-lg font-heading font-bold text-foreground mb-3">{p.category}</h3>
                 <ul className="space-y-1.5">

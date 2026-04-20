@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MapPin, Phone, Mail, ArrowUp, Facebook, Linkedin, Twitter, Youtube, Instagram } from "lucide-react";
+import { MapPin, Phone, Mail, MessageCircle, ArrowUp, Facebook, Linkedin, Twitter, Youtube, Instagram } from "lucide-react";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import logo from "@/assets/logo.png";
 
@@ -113,6 +113,19 @@ const Footer = () => {
                 <Phone className="w-4 h-4 text-accent shrink-0" />
                 <span>{settings.company_phone}</span>
               </li>
+              {settings.company_whatsapp && (
+                <li className="flex gap-3 items-center">
+                  <MessageCircle className="w-4 h-4 text-accent shrink-0" />
+                  <a
+                    href={`https://wa.me/${settings.company_whatsapp.replace(/[^\d]/g, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-accent transition-colors"
+                  >
+                    {settings.company_whatsapp} (WhatsApp)
+                  </a>
+                </li>
+              )}
               <li className="flex gap-3 items-center">
                 <Mail className="w-4 h-4 text-accent shrink-0" />
                 <span>{settings.company_email}</span>
