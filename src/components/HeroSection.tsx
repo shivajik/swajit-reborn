@@ -11,6 +11,7 @@ import hero5 from "@/assets/POWER.jpg";
 import hero6 from "@/assets/CHEMICAL & FERTILIZER.jpg";
 import hero7 from "@/assets/AUTOMOBILE.jpg";
 import hero8 from "@/assets/DRIVER CHAIN & SPROCKET.jpg";
+import hero9 from "@/assets/STEEL.jpg";
 
 const fallbackSlides = [
   {
@@ -68,6 +69,13 @@ const fallbackSlides = [
     cta_text: "",
     cta_link: "",
     image_url: hero8,
+  },
+  {
+    title: "Steel",
+    subtitle: "",
+    cta_text: "",
+    cta_link: "",
+    image_url: hero9
   }
 ];
 
