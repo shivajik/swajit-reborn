@@ -128,55 +128,57 @@ const HeroSection = () => {
         <div className="absolute top-1/2 right-1/3 w-48 h-48 border border-accent/20 rounded-full" />
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 w-full py-16 md:py-0">
-        <div className="max-w-3xl">
-          {(() => {
-            const slide = slides[current];
-            const hasTitle = slide.title && slide.title.trim();
-            const hasSubtitle = slide.subtitle && slide.subtitle.trim();
-            const hasCta = slide.cta_text && slide.cta_text.trim() && slide.cta_link && slide.cta_link.trim();
-            const hasContent = hasTitle || hasSubtitle || hasCta;
+      {/* Content - absolute zones: badge top, title/subtitle/cta bottom */}
+      <div className="absolute inset-0 z-10 max-w-7xl mx-auto px-4 sm:px-6 md:px-8 w-full pt-28 md:pt-36 pb-24 md:pb-28 flex flex-col">
+        {(() => {
+          const slide = slides[current];
+          const hasTitle = slide.title && slide.title.trim();
+          const hasSubtitle = slide.subtitle && slide.subtitle.trim();
+          const hasCta = slide.cta_text && slide.cta_text.trim() && slide.cta_link && slide.cta_link.trim();
+          const hasContent = hasTitle || hasSubtitle || hasCta;
 
-            if (!hasContent) return null;
+          if (!hasContent) return null;
 
-            return (
-              <>
-                {/* Badge - positioned higher */}
+          return (
+            <>
+              {/* Badge - top zone */}
+              <div className="max-w-3xl">
                 <div
-                  className="inline-block bg-accent/15 border border-accent/25 rounded-full px-4 py-1.5 mb-8 md:mb-12 backdrop-blur-sm transition-all duration-700"
+                  className="inline-block bg-accent/15 border border-accent/25 rounded-full px-4 py-1.5 backdrop-blur-sm transition-all duration-700"
                   style={{ opacity: 1, transform: 'translateY(0)' }}
                 >
                   <span className="text-accent text-xs sm:text-sm font-heading font-semibold tracking-wider uppercase">
                     since 1991 — Chhatrapati Sambhajinagar, India
                   </span>
                 </div>
+              </div>
 
-                {/* Title - positioned lower */}
+              {/* Spacer pushes title to bottom */}
+              <div className="flex-1" />
+
+              {/* Title / subtitle / CTA - bottom zone */}
+              <div className="max-w-3xl">
                 {hasTitle && (
                   <h1
                     key={current}
-                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-black text-primary-foreground leading-[1.1] mt-2 md:mt-4 mb-4 md:mb-6 break-words animate-fade-in"
+                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-black text-primary-foreground leading-[1.1] mb-4 md:mb-6 break-words animate-fade-in"
                   >
                     {slide.title}
                   </h1>
                 )}
 
-                {/* Accent bar */}
                 {hasTitle && <div className="w-16 md:w-24 h-1 bg-accent rounded-full mb-4 md:mb-6" />}
 
-                {/* Subtitle */}
                 {hasSubtitle && (
                   <p
                     key={`sub-${current}`}
-                    className="text-sm sm:text-base md:text-lg lg:text-xl text-primary-foreground/80 mb-6 md:mb-8 max-w-2xl leading-relaxed animate-fade-in"
+                    className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-primary-foreground font-heading font-semibold mb-6 md:mb-8 max-w-3xl leading-tight animate-fade-in drop-shadow-lg"
                     style={{ animationDelay: '150ms' }}
                   >
                     {slide.subtitle}
                   </p>
                 )}
 
-                {/* CTA Buttons */}
                 {hasCta && (
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     <Link to={slide.cta_link}>
@@ -191,11 +193,10 @@ const HeroSection = () => {
                     </Link>
                   </div>
                 )}
-              </>
-            );
-          })()}
-        </div>
-
+              </div>
+            </>
+          );
+        })()}
       </div>
 
       {/* Slide indicators - bottom center */}

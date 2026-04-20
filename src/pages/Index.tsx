@@ -23,7 +23,7 @@ const reasons = [
 
 const Index = () => (
   <PageLayout>
-    <div className="-mt-16 md:-mt-20">
+    <div className="-mt-24 md:-mt-[116px]">
       <HeroSection />
     </div>
 
