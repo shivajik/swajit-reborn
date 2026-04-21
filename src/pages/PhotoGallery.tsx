@@ -1,66 +1,56 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ScrollReveal from "@/components/ScrollReveal";
 import { X } from "lucide-react";
+import { useGallery } from "@/hooks/useSupabaseData";
 
 interface GallerySection {
   title: string;
   images: { src: string; alt: string }[];
 }
 
-const gallerySections: GallerySection[] = [
+const fallbackSections: GallerySection[] = [
   {
     title: "Dealers Meet 2017-18 @ Chhatrapati Sambhajinagar",
     images: [
-      {
-        src: "https://swajit.com/wp-content/uploads/2015/11/Mr.Manohar-Parrikar-Defence-Mininster-of-India.jpg",
-        alt: "Mr. Manohar Parrikar - Defence Minister of India",
-      },
-      {
-        src: "https://swajit.com/wp-content/uploads/2015/11/Mr.Anant-GiteMinster-for-heavy-engineering.jpg",
-        alt: "Mr. Anant Gite - Minister for Heavy Engineering",
-      },
+      { src: "https://swajit.com/wp-content/uploads/2015/11/Mr.Manohar-Parrikar-Defence-Mininster-of-India.jpg", alt: "Mr. Manohar Parrikar - Defence Minister of India" },
+      { src: "https://swajit.com/wp-content/uploads/2015/11/Mr.Anant-GiteMinster-for-heavy-engineering.jpg", alt: "Mr. Anant Gite - Minister for Heavy Engineering" },
     ],
   },
   {
     title: "Germany Hannover Exhibition",
     images: [
-      {
-        src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0320-300x225.jpg",
-        alt: "Hannover Exhibition - Booth Display",
-      },
-      {
-        src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0376-300x225.jpg",
-        alt: "Hannover Exhibition - Team",
-      },
-      {
-        src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0312-300x225.jpg",
-        alt: "Hannover Exhibition - Products",
-      },
+      { src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0320-300x225.jpg", alt: "Hannover Exhibition - Booth Display" },
+      { src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0376-300x225.jpg", alt: "Hannover Exhibition - Team" },
+      { src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0312-300x225.jpg", alt: "Hannover Exhibition - Products" },
     ],
   },
   {
     title: "Dealers Meet 2018",
     images: [
-      {
-        src: "https://swajit.com/wp-content/uploads/2015/11/5.jpg",
-        alt: "Dealers Meet 2018 - Event 1",
-      },
-      {
-        src: "https://swajit.com/wp-content/uploads/2015/11/6.jpg",
-        alt: "Dealers Meet 2018 - Event 2",
-      },
-      {
-        src: "https://swajit.com/wp-content/uploads/2015/11/7.jpg",
-        alt: "Dealers Meet 2018 - Event 3",
-      },
+      { src: "https://swajit.com/wp-content/uploads/2015/11/5.jpg", alt: "Dealers Meet 2018 - Event 1" },
+      { src: "https://swajit.com/wp-content/uploads/2015/11/6.jpg", alt: "Dealers Meet 2018 - Event 2" },
+      { src: "https://swajit.com/wp-content/uploads/2015/11/7.jpg", alt: "Dealers Meet 2018 - Event 3" },
     ],
   },
 ];
 
 const PhotoGallery = () => {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const { items } = useGallery();
+
+  // Group DB rows by section_title; fall back to hardcoded sections if DB is empty
+  const sections: GallerySection[] = useMemo(() => {
+    if (items.length === 0) return fallbackSections;
+    const grouped = new Map<string, { src: string; alt: string }[]>();
+    for (const it of items) {
+      const arr = grouped.get(it.section_title) || [];
+      arr.push({ src: it.image_url, alt: it.alt_text || it.section_title });
+      grouped.set(it.section_title, arr);
+    }
+    return Array.from(grouped.entries()).map(([title, images]) => ({ title, images }));
+  }, [items]);
 
   return (
     <PageLayout>
@@ -72,10 +62,9 @@ const PhotoGallery = () => {
 
       <section className="py-16 md:py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          {gallerySections.map((section, sIdx) => (
+          {sections.map((section, sIdx) => (
             <ScrollReveal key={sIdx}>
               <div className="mb-16 last:mb-0">
-                {/* Section Title */}
                 <div className="flex items-center gap-4 mb-8">
                   <div className="w-1 h-8 bg-accent rounded-full" />
                   <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground pt-4">
@@ -84,7 +73,6 @@ const PhotoGallery = () => {
                 </div>
                 <div className="h-px bg-border mb-8" />
 
-                {/* Image Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {section.images.map((img, iIdx) => (
                     <button
@@ -98,7 +86,6 @@ const PhotoGallery = () => {
                         loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
-                      {/* Hover overlay */}
                       <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/40 transition-colors duration-300 flex items-center justify-center">
                         <span className="text-primary-foreground font-heading font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-accent/90 px-4 py-2 rounded-full">
                           View
@@ -113,7 +100,6 @@ const PhotoGallery = () => {
         </div>
       </section>
 
-      {/* Lightbox Modal */}
       {lightboxImage && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"

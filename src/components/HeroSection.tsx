@@ -82,15 +82,21 @@ const fallbackSlides = [
 const HeroSection = () => {
   const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [brokenImages, setBrokenImages] = useState<Record<number, boolean>>({});
   const { slides: dbSlides } = useHeroSlides();
 
+  // Bundled fallback pool — used when a DB image URL is missing or fails to load
+  const fallbackImages = [hero1, hero2, hero3, hero4, hero5, hero6, hero7, hero8, hero9];
+
   const slides = dbSlides.length > 0
-    ? dbSlides.map((s) => ({
+    ? dbSlides.map((s, i) => ({
         title: s.title,
         subtitle: s.subtitle,
         cta_text: s.cta_text,
         cta_link: s.cta_link,
-        image_url: s.image_url,
+        image_url: brokenImages[i] || !s.image_url
+          ? fallbackImages[i % fallbackImages.length]
+          : s.image_url,
       }))
     : fallbackSlides;
 
@@ -121,6 +127,8 @@ const HeroSection = () => {
           <img
             src={slide.image_url}
             alt=""
+            loading={i === 0 ? "eager" : "lazy"}
+            onError={() => setBrokenImages((prev) => ({ ...prev, [i]: true }))}
             className="absolute inset-0 w-full h-full object-cover scale-105"
             style={{
               animation: i === current ? 'kenburns 8s ease-in-out forwards' : 'none',

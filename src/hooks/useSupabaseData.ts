@@ -154,3 +154,32 @@ export function usePageContent(pageKey: string) {
 
   return { sections, loading };
 }
+
+export interface DBGalleryItem {
+  id: string;
+  section_title: string;
+  image_url: string;
+  alt_text: string;
+  sort_order: number;
+  is_active: boolean;
+}
+
+export function useGallery() {
+  const [items, setItems] = useState<DBGalleryItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (supabase as any)
+      .from('gallery_items')
+      .select('*')
+      .eq('is_active', true)
+      .order('sort_order')
+      .then(({ data }: { data: DBGalleryItem[] | null }) => {
+        if (data && data.length > 0) setItems(data);
+        setLoading(false);
+      });
+  }, []);
+
+  return { items, loading };
+}
+
