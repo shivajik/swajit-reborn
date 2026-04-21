@@ -6,6 +6,7 @@ import HeroSection from "@/components/HeroSection";
 import StatsSection from "@/components/StatsSection";
 import ClientLogoCarousel from "@/components/ClientLogoCarousel";
 import ScrollReveal from "@/components/ScrollReveal";
+import NewsTicker from "@/pages/NewsTicker";
 
 const previewProducts = [
   { icon: Link2, category: "Sugar Industry" },
@@ -26,6 +27,9 @@ const Index = () => (
     <div className="-mt-24 md:-mt-[116px]">
       <HeroSection />
     </div>
+
+    {/* News ticker — appears directly below hero slider */}
+    <NewsTicker />
 
     {/* About Preview */}
     <section className="section-padding bg-background">

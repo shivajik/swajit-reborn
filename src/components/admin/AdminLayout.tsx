@@ -81,10 +81,9 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
             Logged in as <span className="text-accent">{session?.username}</span>
           </div>
           <Button
-            variant="outline"
             size="sm"
             onClick={handleLogout}
-            className="w-full border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10"
+            className="w-full bg-primary-foreground text-primary hover:bg-primary-foreground/90"
           >
             <LogOut className="w-4 h-4 mr-2" /> Logout
           </Button>
