@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Save, Plus, Trash2, FileText, Pencil, X, ChevronDown, ChevronRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface PageContent {
   id: string;
@@ -58,16 +59,19 @@ const AdminPageContent = () => {
 
   const saveItem = async (item: PageContent) => {
     setSaving(item.id);
-    const { error } = await supabase.from('page_content').update({
+    const { data, error } = await supabase.from('page_content').update({
       title: item.title,
       content: item.content,
       image_url: item.image_url,
-    }).eq('id', item.id);
+    }).eq('id', item.id).select().single();
 
     setSaving(null);
     if (error) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } else if (!data) {
+      toast({ title: 'Update blocked', description: 'No row updated. Run docs/storage-and-rls-setup.sql in Supabase.', variant: 'destructive' });
     } else {
+      setItems(prev => prev.map(i => i.id === data.id ? data : i));
       toast({ title: 'Saved', description: `${item.page_key} › ${item.section_key} updated.` });
       setEditingId(null);
     }
@@ -83,23 +87,23 @@ const AdminPageContent = () => {
       return;
     }
     setCreating(true);
-    const { error } = await supabase.from('page_content').insert({
+    const { data, error } = await supabase.from('page_content').insert({
       page_key: newPageKey.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_'),
       section_key: newSectionKey.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_'),
       title: newTitle.trim(),
       content: newContent.trim() || '<p></p>',
       image_url: newImageUrl.trim(),
       metadata: {},
-    });
+    }).select().single();
     setCreating(false);
 
     if (error) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } else {
+      if (data) setItems(prev => [...prev, data]);
       toast({ title: 'Created', description: 'New content section added.' });
       setNewPageKey(''); setNewSectionKey('main'); setNewTitle(''); setNewContent(''); setNewImageUrl('');
       setShowCreate(false);
-      fetchContent();
     }
   };
 
@@ -182,11 +186,12 @@ const AdminPageContent = () => {
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Image URL (optional)</Label>
-              <Input
-                placeholder="https://..."
+              <Label className="text-xs">Image (optional)</Label>
+              <ImageUpload
                 value={newImageUrl}
-                onChange={(e) => setNewImageUrl(e.target.value)}
+                onChange={setNewImageUrl}
+                bucket="site-assets"
+                folder="page-content"
               />
             </div>
             <div className="space-y-1.5">
@@ -261,21 +266,21 @@ const AdminPageContent = () => {
 
                             {isEditing ? (
                               <>
-                                <div className="grid sm:grid-cols-2 gap-3">
-                                  <div className="space-y-1">
-                                    <Label className="text-xs">Title</Label>
-                                    <Input
-                                      value={item.title}
-                                      onChange={(e) => updateItem(item.id, 'title', e.target.value)}
-                                    />
-                                  </div>
-                                  <div className="space-y-1">
-                                    <Label className="text-xs">Image URL</Label>
-                                    <Input
-                                      value={item.image_url}
-                                      onChange={(e) => updateItem(item.id, 'image_url', e.target.value)}
-                                    />
-                                  </div>
+                                <div className="space-y-1">
+                                  <Label className="text-xs">Title</Label>
+                                  <Input
+                                    value={item.title}
+                                    onChange={(e) => updateItem(item.id, 'title', e.target.value)}
+                                  />
+                                </div>
+                                <div className="space-y-1">
+                                  <Label className="text-xs">Image</Label>
+                                  <ImageUpload
+                                    value={item.image_url}
+                                    onChange={(url) => updateItem(item.id, 'image_url', url)}
+                                    bucket="site-assets"
+                                    folder="page-content"
+                                  />
                                 </div>
                                 <div className="space-y-1">
                                   <Label className="text-xs">Content</Label>

@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus, Pencil, Trash2, Save, X, GripVertical } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface Category {
   id: string;
@@ -35,15 +36,15 @@ const AdminProducts = () => {
   const [editingCategory, setEditingCategory] = useState<Partial<Category> | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = async () => {
-    setLoading(true);
+  const fetchData = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
     const [catRes, prodRes] = await Promise.all([
       supabase.from('categories').select('*').order('sort_order'),
       supabase.from('products').select('*').order('sort_order'),
     ]);
     if (catRes.data) setCategories(catRes.data);
     if (prodRes.data) setProducts(prodRes.data);
-    setLoading(false);
+    if (showLoading) setLoading(false);
   };
 
   useEffect(() => { fetchData(); }, []);
@@ -56,69 +57,77 @@ const AdminProducts = () => {
   const saveCategory = async () => {
     if (!editingCategory?.name) return;
     const slug = editingCategory.slug || editingCategory.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-    
+
     if (editingCategory.id) {
-      const { error } = await supabase.from('categories').update({
+      const { data, error } = await supabase.from('categories').update({
         name: editingCategory.name,
         slug,
         description: editingCategory.description || '',
         icon_name: editingCategory.icon_name || '',
-      }).eq('id', editingCategory.id);
+      }).eq('id', editingCategory.id).select().single();
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      if (data) setCategories(prev => prev.map(c => c.id === data.id ? data : c));
     } else {
-      const { error } = await supabase.from('categories').insert({
+      const { data, error } = await supabase.from('categories').insert({
         name: editingCategory.name,
         slug,
         description: editingCategory.description || '',
         icon_name: editingCategory.icon_name || '',
         sort_order: categories.length,
-      });
+      }).select().single();
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      if (data) setCategories(prev => [...prev, data]);
     }
-    
+
     setEditingCategory(null);
-    fetchData();
     toast({ title: 'Saved', description: 'Category saved successfully.' });
   };
 
   const deleteCategory = async (id: string) => {
     if (!confirm('Delete this category and all its products?')) return;
-    await supabase.from('products').delete().eq('category_id', id);
-    await supabase.from('categories').delete().eq('id', id);
-    fetchData();
+    const { error } = await supabase.from('categories').delete().eq('id', id);
+    if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+    setCategories(prev => prev.filter(c => c.id !== id));
+    setProducts(prev => prev.filter(p => p.category_id !== id));
     toast({ title: 'Deleted', description: 'Category deleted.' });
   };
 
   // Product CRUD
   const saveProduct = async () => {
     if (!editingProduct?.name || !editingProduct?.category_id) return;
-    
+
     if (editingProduct.id) {
-      const { error } = await supabase.from('products').update({
+      const { data, error } = await supabase.from('products').update({
         name: editingProduct.name,
         image_url: editingProduct.image_url || '',
         category_id: editingProduct.category_id,
-      }).eq('id', editingProduct.id);
+      }).eq('id', editingProduct.id).select().single();
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      if (!data) {
+        toast({ title: 'Update blocked', description: 'No row updated. Check RLS policies — run docs/storage-and-rls-setup.sql.', variant: 'destructive' });
+        return;
+      }
+      setProducts(prev => prev.map(p => p.id === data.id ? data : p));
     } else {
-      const { error } = await supabase.from('products').insert({
+      const { data, error } = await supabase.from('products').insert({
         name: editingProduct.name,
         image_url: editingProduct.image_url || '',
         category_id: editingProduct.category_id,
         sort_order: filteredProducts.length,
-      });
+      }).select().single();
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      if (data) setProducts(prev => [...prev, data]);
     }
-    
+
     setEditingProduct(null);
-    fetchData();
     toast({ title: 'Saved', description: 'Product saved successfully.' });
   };
 
   const deleteProduct = async (id: string) => {
     if (!confirm('Delete this product?')) return;
-    await supabase.from('products').delete().eq('id', id);
-    fetchData();
+    const { error } = await supabase.from('products').delete().eq('id', id);
+    if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+    setProducts(prev => prev.filter(p => p.id !== id));
     toast({ title: 'Deleted', description: 'Product deleted.' });
   };
 
@@ -243,11 +252,11 @@ const AdminProducts = () => {
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <Label>Image URL</Label>
-                  <Input
+                  <Label>Product Image</Label>
+                  <ImageUpload
                     value={editingProduct.image_url || ''}
-                    onChange={(e) => setEditingProduct({ ...editingProduct, image_url: e.target.value })}
-                    placeholder="https://... or /path/to/image.jpg"
+                    onChange={(url) => setEditingProduct({ ...editingProduct, image_url: url })}
+                    bucket="products"
                   />
                 </div>
                 <div className="flex gap-2">

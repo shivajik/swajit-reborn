@@ -117,17 +117,19 @@ const AdminHeroSlides = () => {
   const saveSlide = async () => {
     if (!editing?.title) return;
     if (editing.id) {
-      const { error } = await supabase.from('hero_slides').update({
+      const { data, error } = await supabase.from('hero_slides').update({
         title: editing.title,
         subtitle: editing.subtitle || '',
         image_url: editing.image_url || '',
         cta_text: editing.cta_text || '',
         cta_link: editing.cta_link || '',
         is_active: editing.is_active ?? true,
-      }).eq('id', editing.id);
+      }).eq('id', editing.id).select().single();
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      if (!data) { toast({ title: 'Update blocked', description: 'No row updated. Run docs/storage-and-rls-setup.sql.', variant: 'destructive' }); return; }
+      setSlides(prev => prev.map(s => s.id === (data as HeroSlide).id ? (data as HeroSlide) : s));
     } else {
-      const { error } = await supabase.from('hero_slides').insert({
+      const { data, error } = await supabase.from('hero_slides').insert({
         title: editing.title,
         subtitle: editing.subtitle || '',
         image_url: editing.image_url || '',
@@ -135,24 +137,26 @@ const AdminHeroSlides = () => {
         cta_link: editing.cta_link || '',
         sort_order: slides.length,
         is_active: true,
-      });
+      }).select().single();
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      if (data) setSlides(prev => [...prev, data as HeroSlide]);
     }
     setEditing(null);
-    fetchSlides();
     toast({ title: 'Saved' });
   };
 
   const deleteSlide = async (id: string) => {
     if (!confirm('Delete this slide?')) return;
-    await supabase.from('hero_slides').delete().eq('id', id);
-    fetchSlides();
+    const { error } = await supabase.from('hero_slides').delete().eq('id', id);
+    if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+    setSlides(prev => prev.filter(s => s.id !== id));
     toast({ title: 'Deleted' });
   };
 
   const toggleActive = async (slide: HeroSlide) => {
-    await supabase.from('hero_slides').update({ is_active: !slide.is_active }).eq('id', slide.id);
-    fetchSlides();
+    const { data, error } = await supabase.from('hero_slides').update({ is_active: !slide.is_active }).eq('id', slide.id).select().single();
+    if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+    if (data) setSlides(prev => prev.map(s => s.id === (data as HeroSlide).id ? (data as HeroSlide) : s));
   };
 
   const resetToDefaults = async () => {

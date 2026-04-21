@@ -67,32 +67,35 @@ const AdminClients = () => {
   const saveClient = async () => {
     if (!editing?.name) return;
     if (editing.id) {
-      const { error } = await supabase.from('clients').update({
+      const { data, error } = await supabase.from('clients').update({
         name: editing.name,
         logo_url: editing.logo_url || '',
         category: editing.category || 'Other',
         is_active: editing.is_active ?? true,
-      }).eq('id', editing.id);
+      }).eq('id', editing.id).select().single();
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      if (!data) { toast({ title: 'Update blocked', description: 'No row updated. Run docs/storage-and-rls-setup.sql.', variant: 'destructive' }); return; }
+      setClients(prev => prev.map(c => c.id === (data as Client).id ? (data as Client) : c));
     } else {
-      const { error } = await supabase.from('clients').insert({
+      const { data, error } = await supabase.from('clients').insert({
         name: editing.name,
         logo_url: editing.logo_url || '',
         category: editing.category || 'Other',
         sort_order: clients.length + 1,
         is_active: true,
-      });
+      }).select().single();
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+      if (data) setClients(prev => [...prev, data as Client]);
     }
     setEditing(null);
-    fetchClients();
     toast({ title: 'Saved' });
   };
 
   const deleteClient = async (id: string) => {
     if (!confirm('Delete this client?')) return;
-    await supabase.from('clients').delete().eq('id', id);
-    fetchClients();
+    const { error } = await supabase.from('clients').delete().eq('id', id);
+    if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+    setClients(prev => prev.filter(c => c.id !== id));
     toast({ title: 'Deleted' });
   };
 

@@ -116,41 +116,45 @@ const AdminNews = () => {
           : editing.published_at,
     };
 
-    let error;
     if (editing.id) {
-      ({ error } = await supabase.from("news").update(payload).eq("id", editing.id));
+      const { data, error } = await supabase.from("news").update(payload).eq("id", editing.id).select().single();
+      setSaving(false);
+      if (error) { toast({ title: "Save failed", description: error.message, variant: "destructive" }); return; }
+      if (!data) { toast({ title: "Update blocked", description: "No row updated. Run docs/storage-and-rls-setup.sql.", variant: "destructive" }); return; }
+      setItems(prev => prev.map(i => i.id === (data as NewsRow).id ? (data as NewsRow) : i));
+      toast({ title: "News updated" });
     } else {
-      ({ error } = await supabase.from("news").insert(payload));
+      const { data, error } = await supabase.from("news").insert(payload).select().single();
+      setSaving(false);
+      if (error) { toast({ title: "Save failed", description: error.message, variant: "destructive" }); return; }
+      if (data) setItems(prev => [...prev, data as NewsRow]);
+      toast({ title: "News created" });
     }
-    setSaving(false);
-
-    if (error) {
-      toast({ title: "Save failed", description: error.message, variant: "destructive" });
-      return;
-    }
-    toast({ title: editing.id ? "News updated" : "News created" });
     setEditing(null);
-    fetchItems();
   };
 
   const togglePublish = async (item: NewsRow) => {
     const newState = !item.is_published;
-    await supabase
+    const { data, error } = await supabase
       .from("news")
       .update({
         is_published: newState,
         published_at: newState && !item.published_at ? new Date().toISOString() : item.published_at,
       })
-      .eq("id", item.id);
-    fetchItems();
+      .eq("id", item.id)
+      .select()
+      .single();
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    if (data) setItems(prev => prev.map(i => i.id === (data as NewsRow).id ? (data as NewsRow) : i));
   };
 
   const confirmDelete = async () => {
     if (!deleteId) return;
-    await supabase.from("news").delete().eq("id", deleteId);
+    const { error } = await supabase.from("news").delete().eq("id", deleteId);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); setDeleteId(null); return; }
+    setItems(prev => prev.filter(i => i.id !== deleteId));
     setDeleteId(null);
     toast({ title: "News deleted" });
-    fetchItems();
   };
 
   return (
