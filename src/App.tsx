@@ -35,6 +35,8 @@ import Feedback from "./pages/Feedback";
 import Download from "./pages/Download";
 import MissionVision from "./pages/MissionVision";
 import Milestone from "./pages/Milestone";
+import NewsDetail from "./pages/NewsDetail";
+import AdminNews from "./pages/AdminNews";
 
 const queryClient = new QueryClient();
 
@@ -83,6 +85,8 @@ const App = () => (
           <Route path="/admin/content" element={<AdminPageContent />} />
           <Route path="/admin/navigation" element={<AdminNavigation />} />
           <Route path="/admin/settings" element={<AdminSiteSettings />} />
+          <Route path="/admin/news" element={<AdminNews />} />
+          <Route path="/news/:slug" element={<NewsDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
