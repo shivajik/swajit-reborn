@@ -33,6 +33,7 @@ const AdminGallery = () => {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Partial<GalleryItem> | null>(null);
   const [saving, setSaving] = useState(false);
+  const [tableMissing, setTableMissing] = useState(false);
 
   const fetchItems = async () => {
     setLoading(true);
@@ -42,13 +43,20 @@ const AdminGallery = () => {
       .order('section_title')
       .order('sort_order');
     if (error) {
+      const missing =
+        error.message.includes('does not exist') ||
+        error.message.includes('schema cache') ||
+        (error as any).code === 'PGRST205';
+      setTableMissing(missing);
       toast({
         title: 'Failed to load',
-        description: error.message.includes('does not exist')
+        description: missing
           ? 'gallery_items table missing. Run docs/storage-and-rls-setup.sql in Supabase.'
           : error.message,
         variant: 'destructive',
       });
+    } else {
+      setTableMissing(false);
     }
     if (data) setItems(data as GalleryItem[]);
     setLoading(false);
@@ -128,6 +136,18 @@ const AdminGallery = () => {
             <Plus className="w-4 h-4 mr-1" /> Add Image
           </Button>
         </div>
+
+        {tableMissing && (
+          <div className="mb-6 rounded-lg border-2 border-destructive/40 bg-destructive/10 p-4 text-sm">
+            <p className="font-heading font-bold text-destructive mb-1">⚠ Database setup required</p>
+            <p className="text-foreground">
+              The <code className="bg-muted px-1 rounded">gallery_items</code> table doesn't exist yet. Open
+              {' '}<code className="bg-muted px-1 rounded">docs/storage-and-rls-setup.sql</code> from this project,
+              copy its contents, and run it once in your Supabase SQL Editor. This same script also creates
+              the storage buckets needed for image uploads (Hero, Products, News, Page Content, etc.).
+            </p>
+          </div>
+        )}
 
         {editing && (
           <div className="bg-card rounded-xl border border-border p-5 mb-6 space-y-4">

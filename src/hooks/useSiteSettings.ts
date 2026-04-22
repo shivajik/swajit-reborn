@@ -27,6 +27,11 @@ const DEFAULTS: SiteSettings = {
 
 let cachedSettings: SiteSettings | null = null;
 
+/** Clear the in-memory cache so the next mount re-fetches from DB. */
+export function clearSiteSettingsCache() {
+  cachedSettings = null;
+}
+
 export function useSiteSettings() {
   const [settings, setSettings] = useState<SiteSettings>(cachedSettings || DEFAULTS);
   const [loading, setLoading] = useState(!cachedSettings);

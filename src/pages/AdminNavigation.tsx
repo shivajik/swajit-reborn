@@ -14,7 +14,7 @@ import {
   Save, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Eye, EyeOff, Navigation, FilePlus, Pencil, X,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { NavItem, DEFAULT_NAV_ITEMS, clearNavCache } from '@/hooks/useNavItems';
+import { NavItem, DEFAULT_NAV_ITEMS, clearNavCache, parseNavItems, NAV_GROUP_LABELS } from '@/hooks/useNavItems';
 
 const generateId = () => Math.random().toString(36).substring(2, 10);
 
@@ -51,15 +51,7 @@ const AdminNavigation = () => {
       .eq('setting_key', 'nav_items')
       .maybeSingle();
 
-    let navItems: NavItem[] = [...DEFAULT_NAV_ITEMS];
-    if (data?.setting_value) {
-      try {
-        const parsed = JSON.parse(data.setting_value);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          navItems = parsed.sort((a: NavItem, b: NavItem) => a.sort_order - b.sort_order);
-        }
-      } catch { /* use defaults */ }
-    }
+    const navItems: NavItem[] = parseNavItems(data?.setting_value) || [...DEFAULT_NAV_ITEMS];
     setItems(navItems);
     setLoading(false);
 
@@ -395,9 +387,9 @@ const AdminNavigation = () => {
                       onChange={(e) => updateItemLabel(item.id, e.target.value)}
                       className="h-8 text-sm font-heading"
                     />
-                    {item.is_custom && (
+                    {(item.group || item.is_custom) && (
                       <span className="text-[10px] text-accent font-heading uppercase tracking-wider mt-0.5 inline-block">
-                        Custom Page
+                        {item.is_custom ? 'Custom Page' : NAV_GROUP_LABELS[item.group!]}
                       </span>
                     )}
                   </div>

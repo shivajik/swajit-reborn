@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Phone, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavItems, NavItem, NAV_GROUP_LABELS, NavGroupKey } from "@/hooks/useNavItems";
 import logo from "@/assets/logo.png";
 
 interface NavLinkItem {
@@ -20,34 +21,59 @@ function isDropdown(entry: NavEntry): entry is NavDropdown {
   return "children" in entry;
 }
 
-const navLinks: NavEntry[] = [
-  { label: "Home", href: "/" },
-  {
-    label: "Corporate",
-    children: [
-      { label: "About Us", href: "/about" },
-      { label: "Mission And Vision", href: "/mission-vision" },
-      { label: "Milestone", href: "/milestone" },
-    ],
-  },
-  { label: "Products", href: "/products" },
-  { label: "Photo Gallery", href: "/photo-gallery" },
-  {
-    label: "Resources",
-    children: [
-      { label: "Infrastructure", href: "/infrastructure" },
-      { label: "ISO Certification", href: "/iso-certification" },
-      { label: "Quality Policy", href: "/quality-policy" },
-      { label: "Safety Policy", href: "/safety-policy" },
-      { label: "Overseas Market", href: "/overseas-market" },
-      { label: "Download", href: "/download" },
-      { label: "Application Videos", href: "/application-videos" },
-    ],
-  },
-  // { label: "Careers", href: "/careers" },
-  { label: "CSR", href: "/csr" },
-  { label: "Contact Us", href: "/contact" },
-];
+const GROUP_ORDER: NavGroupKey[] = ["corporate", "resources"];
+
+/**
+ * Build the final nav list:
+ * 1. Render visible nav items in admin order.
+ * 2. Build dropdowns from admin-assigned groups.
+ * 3. Insert Corporate after Home and Resources after Products.
+ */
+function buildNavEntries(items: NavItem[]): NavEntry[] {
+  const visibleItems = items
+    .filter((i) => i.visible)
+    .sort((a, b) => a.sort_order - b.sort_order)
+;
+
+  const topLevelItems = visibleItems
+    .filter((i) => !i.group)
+    .map<NavLinkItem>((i) => ({ label: i.label, href: i.href }));
+
+  const dropdowns = new Map<NavGroupKey, NavDropdown>();
+  GROUP_ORDER.forEach((group) => {
+    const children = visibleItems
+      .filter((item) => item.group === group)
+      .map<NavLinkItem>((item) => ({ label: item.label, href: item.href }));
+
+    if (children.length > 0) {
+      dropdowns.set(group, { label: NAV_GROUP_LABELS[group], children });
+    }
+  });
+
+  const result: NavEntry[] = [];
+  const insertedGroups = new Set<NavGroupKey>();
+
+  for (const item of topLevelItems) {
+    result.push(item);
+    if (item.href === "/" && dropdowns.has("corporate")) {
+      result.push(dropdowns.get("corporate")!);
+      insertedGroups.add("corporate");
+    }
+    if (item.href === "/products" && dropdowns.has("resources")) {
+      result.push(dropdowns.get("resources")!);
+      insertedGroups.add("resources");
+    }
+  }
+
+  GROUP_ORDER.forEach((group) => {
+    if (!insertedGroups.has(group) && dropdowns.has(group)) {
+      if (group === "corporate") result.unshift(dropdowns.get(group)!);
+      else result.push(dropdowns.get(group)!);
+    }
+  });
+
+  return result;
+}
 
 const DropdownMenu = ({ item, pathname }: { item: NavDropdown; pathname: string }) => {
   const [open, setOpen] = useState(false);
@@ -101,6 +127,9 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [expandedMobile, setExpandedMobile] = useState<string | null>(null);
   const location = useLocation();
+  const { navItems } = useNavItems();
+
+  const navLinks = useMemo(() => buildNavEntries(navItems), [navItems]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -116,12 +145,12 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden xl:flex items-center gap-0">
-          {navLinks.map((entry) =>
+          {navLinks.map((entry, idx) =>
             isDropdown(entry) ? (
-              <DropdownMenu key={entry.label} item={entry} pathname={location.pathname} />
+              <DropdownMenu key={`drop-${entry.label}-${idx}`} item={entry} pathname={location.pathname} />
             ) : (
               <Link
-                key={entry.href}
+                key={`link-${entry.href}-${idx}`}
                 to={entry.href}
                 className={`px-2 py-2 text-xs font-medium transition-colors font-heading uppercase tracking-wide whitespace-nowrap ${
                   location.pathname === entry.href
@@ -147,9 +176,9 @@ const Navbar = () => {
 
       {open && (
         <div className="xl:hidden bg-white border-t border-border pb-4 max-h-[80vh] overflow-y-auto">
-          {navLinks.map((entry) =>
+          {navLinks.map((entry, idx) =>
             isDropdown(entry) ? (
-              <div key={entry.label}>
+              <div key={`mdrop-${entry.label}-${idx}`}>
                 <button
                   onClick={() => setExpandedMobile(expandedMobile === entry.label ? null : entry.label)}
                   className="flex items-center justify-between w-full text-left px-6 py-3 font-heading uppercase text-sm tracking-wide text-primary/80 hover:text-accent hover:bg-muted"
@@ -178,7 +207,7 @@ const Navbar = () => {
               </div>
             ) : (
               <Link
-                key={entry.href}
+                key={`mlink-${entry.href}-${idx}`}
                 to={entry.href}
                 onClick={() => setOpen(false)}
                 className={`block w-full text-left px-6 py-3 font-heading uppercase text-sm tracking-wide ${

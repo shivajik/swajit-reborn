@@ -37,7 +37,6 @@ import MissionVision from "./pages/MissionVision";
 import Milestone from "./pages/Milestone";
 import NewsDetail from "./pages/NewsDetail";
 import AdminNews from "./pages/AdminNews";
-import AdminGallery from "./pages/AdminGallery";
 
 const queryClient = new QueryClient();
 
@@ -87,7 +86,6 @@ const App = () => (
           <Route path="/admin/navigation" element={<AdminNavigation />} />
           <Route path="/admin/settings" element={<AdminSiteSettings />} />
           <Route path="/admin/news" element={<AdminNews />} />
-          <Route path="/admin/gallery" element={<AdminGallery />} />
           <Route path="/news/:slug" element={<NewsDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

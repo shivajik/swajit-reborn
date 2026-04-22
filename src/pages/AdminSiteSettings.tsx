@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
+import { clearSiteSettingsCache } from '@/hooks/useSiteSettings';
 import { Building2, Globe, Search, Palette, Save, Upload, Loader2 } from 'lucide-react';
 
 type Settings = Record<string, string>;
@@ -94,22 +95,29 @@ const AdminSiteSettings = () => {
 
   const handleSave = async () => {
     setSaving(true);
-    const updates = Object.entries(settings).map(([setting_key, setting_value]) =>
-      supabase
-        .from('site_settings')
-        .update({ setting_value, updated_at: new Date().toISOString() })
-        .eq('setting_key', setting_key)
-    );
+    // Use upsert so missing setting rows are CREATED (not silently skipped).
+    const rows = Object.entries(settings).map(([setting_key, setting_value]) => ({
+      setting_key,
+      setting_value: setting_value ?? '',
+      updated_at: new Date().toISOString(),
+    }));
 
-    const results = await Promise.all(updates);
-    const hasError = results.some((r) => r.error);
+    const { error } = await supabase
+      .from('site_settings')
+      .upsert(rows, { onConflict: 'setting_key' });
 
-    if (hasError) {
-      toast({ title: 'Error saving some settings', variant: 'destructive' });
-    } else {
-      toast({ title: 'Settings saved successfully!' });
-    }
     setSaving(false);
+    if (error) {
+      toast({
+        title: 'Error saving settings',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } else {
+      toast({ title: 'Settings saved successfully!', description: 'Changes are now live. Refresh public pages to see updates.' });
+      // Bust the in-memory cache so the Footer/TopStrip re-fetch on next mount.
+      clearSiteSettingsCache();
+    }
   };
 
   const handleImageUpload = async (key: string, file: File) => {

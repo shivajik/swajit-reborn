@@ -26,8 +26,17 @@ const NewsTicker = () => {
 
   if (items.length === 0) return null;
 
-  // duplicate for seamless marquee
-  const loop = [...items, ...items, ...items];
+  // For a seamless marquee, render the list TWICE and translate by exactly -50%.
+  // (The .animate-marquee keyframes go from 0 → -50%.)
+  const renderItem = (item: NewsItem, i: number) => (
+    <Link
+      key={`${item.id}-${i}`}
+      to={`/news/${item.slug}`}
+      className="px-6 text-sm font-medium hover:text-accent transition-colors border-r border-primary-foreground/20 shrink-0"
+    >
+      {item.title}
+    </Link>
+  );
 
   return (
     <section className="bg-primary text-primary-foreground border-y border-accent/30 overflow-hidden">
@@ -37,16 +46,15 @@ const NewsTicker = () => {
           Latest News
         </div>
         <div className="relative flex-1 overflow-hidden">
-          <div className="flex animate-marquee whitespace-nowrap py-2">
-            {loop.map((item, i) => (
-              <Link
-                key={`${item.id}-${i}`}
-                to={`/news/${item.slug}`}
-                className="px-6 text-sm font-medium hover:text-accent transition-colors border-r border-primary-foreground/20"
-              >
-                {item.title}
-              </Link>
-            ))}
+          <div className="flex w-max animate-marquee whitespace-nowrap py-2">
+            {/* First copy */}
+            <div className="flex shrink-0">
+              {items.map(renderItem)}
+            </div>
+            {/* Exact duplicate — required for seamless loop with translate(-50%) */}
+            <div className="flex shrink-0" aria-hidden="true">
+              {items.map(renderItem)}
+            </div>
           </div>
         </div>
       </div>

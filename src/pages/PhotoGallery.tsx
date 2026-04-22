@@ -3,7 +3,7 @@ import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ScrollReveal from "@/components/ScrollReveal";
 import { X } from "lucide-react";
-import { useGallery } from "@/hooks/useSupabaseData";
+import { useGallery, usePageContent } from "@/hooks/useSupabaseData";
 
 interface GallerySection {
   title: string;
@@ -38,10 +38,28 @@ const fallbackSections: GallerySection[] = [
 
 const PhotoGallery = () => {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const { sections: pageSections } = usePageContent("photo_gallery");
   const { items } = useGallery();
 
-  // Group DB rows by section_title; fall back to hardcoded sections if DB is empty
+  // Prefer admin-managed Page Content gallery rows, then legacy gallery_items, then hardcoded fallback.
   const sections: GallerySection[] = useMemo(() => {
+    if (pageSections.length > 0) {
+      const grouped = new Map<string, { src: string; alt: string }[]>();
+
+      for (const section of pageSections) {
+        if (!section.image_url) continue;
+        const title = section.title?.trim() || section.section_key.replace(/_/g, " ");
+        const alt = (section.content || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || title;
+        const arr = grouped.get(title) || [];
+        arr.push({ src: section.image_url, alt });
+        grouped.set(title, arr);
+      }
+
+      if (grouped.size > 0) {
+        return Array.from(grouped.entries()).map(([title, images]) => ({ title, images }));
+      }
+    }
+
     if (items.length === 0) return fallbackSections;
     const grouped = new Map<string, { src: string; alt: string }[]>();
     for (const it of items) {

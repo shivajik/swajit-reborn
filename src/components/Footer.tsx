@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail, MessageCircle, ArrowUp, Facebook, Linkedin, Twitter, Youtube, Instagram } from "lucide-react";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { useNavItems } from "@/hooks/useNavItems";
 import logo from "@/assets/logo.png";
 
-const quickLinks = [
+const fallbackQuickLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Mission & Vision", href: "/mission-vision" },
@@ -36,7 +37,14 @@ const socialIcons = [
 
 const Footer = () => {
   const { settings } = useSiteSettings();
+  const { navItems } = useNavItems();
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // Use admin-managed visible nav items if available, otherwise fall back.
+  const quickLinks =
+    navItems.filter((i) => i.visible).length > 0
+      ? navItems.filter((i) => i.visible).map((i) => ({ label: i.label, href: i.href }))
+      : fallbackQuickLinks;
 
   const activeSocials = socialIcons.filter((s) => settings[s.key]);
 

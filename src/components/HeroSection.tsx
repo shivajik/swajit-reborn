@@ -203,7 +203,10 @@ const HeroSection = () => {
                       </Button>
                     </Link>
                     <Link to="/about">
-                      <Button variant="outline" className="border-accent/60 text-primary-foreground hover:bg-accent/20 hover:border-accent font-heading uppercase tracking-wider px-6 sm:px-8 py-5 sm:py-6 text-xs sm:text-sm w-full sm:w-auto">
+                      <Button
+                        variant="outline"
+                        className="bg-primary/40 backdrop-blur-sm border-2 border-accent text-primary-foreground hover:bg-accent hover:text-accent-foreground font-heading font-bold uppercase tracking-wider px-6 sm:px-8 py-5 sm:py-6 text-xs sm:text-sm w-full sm:w-auto"
+                      >
                         About Us
                       </Button>
                     </Link>
