@@ -2,8 +2,8 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Phone, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavItems, NavItem, NAV_GROUP_LABELS, NavGroupKey } from "@/hooks/useNavItems";
 import logo from "@/assets/logo.png";
+import { useNavItems } from "@/hooks/useNavItems";
 
 interface NavLinkItem {
   label: string;
@@ -19,60 +19,6 @@ type NavEntry = NavLinkItem | NavDropdown;
 
 function isDropdown(entry: NavEntry): entry is NavDropdown {
   return "children" in entry;
-}
-
-const GROUP_ORDER: NavGroupKey[] = ["corporate", "resources"];
-
-/**
- * Build the final nav list:
- * 1. Render visible nav items in admin order.
- * 2. Build dropdowns from admin-assigned groups.
- * 3. Insert Corporate after Home and Resources after Products.
- */
-function buildNavEntries(items: NavItem[]): NavEntry[] {
-  const visibleItems = items
-    .filter((i) => i.visible)
-    .sort((a, b) => a.sort_order - b.sort_order)
-;
-
-  const topLevelItems = visibleItems
-    .filter((i) => !i.group)
-    .map<NavLinkItem>((i) => ({ label: i.label, href: i.href }));
-
-  const dropdowns = new Map<NavGroupKey, NavDropdown>();
-  GROUP_ORDER.forEach((group) => {
-    const children = visibleItems
-      .filter((item) => item.group === group)
-      .map<NavLinkItem>((item) => ({ label: item.label, href: item.href }));
-
-    if (children.length > 0) {
-      dropdowns.set(group, { label: NAV_GROUP_LABELS[group], children });
-    }
-  });
-
-  const result: NavEntry[] = [];
-  const insertedGroups = new Set<NavGroupKey>();
-
-  for (const item of topLevelItems) {
-    result.push(item);
-    if (item.href === "/" && dropdowns.has("corporate")) {
-      result.push(dropdowns.get("corporate")!);
-      insertedGroups.add("corporate");
-    }
-    if (item.href === "/products" && dropdowns.has("resources")) {
-      result.push(dropdowns.get("resources")!);
-      insertedGroups.add("resources");
-    }
-  }
-
-  GROUP_ORDER.forEach((group) => {
-    if (!insertedGroups.has(group) && dropdowns.has(group)) {
-      if (group === "corporate") result.unshift(dropdowns.get(group)!);
-      else result.push(dropdowns.get(group)!);
-    }
-  });
-
-  return result;
 }
 
 const DropdownMenu = ({ item, pathname }: { item: NavDropdown; pathname: string }) => {
@@ -129,7 +75,40 @@ const Navbar = () => {
   const location = useLocation();
   const { navItems } = useNavItems();
 
-  const navLinks = useMemo(() => buildNavEntries(navItems), [navItems]);
+  const navLinks = useMemo<NavEntry[]>(() => {
+    const visibleItems = navItems.filter((item) => item.visible);
+    const grouped = new Map<string, NavLinkItem[]>();
+    const topLevel: Array<NavEntry & { sort_order?: number }> = [];
+
+    visibleItems.forEach((item) => {
+      const navItem = { label: item.label, href: item.href };
+
+      if (item.parent_label) {
+        const group = grouped.get(item.parent_label) ?? [];
+        group.push(navItem);
+        grouped.set(item.parent_label, group);
+        return;
+      }
+
+      topLevel.push({ ...navItem, sort_order: item.sort_order });
+    });
+
+    const dropdowns = Array.from(grouped.entries()).map(([label, children]) => {
+      const earliestChildOrder = visibleItems
+        .filter((item) => item.parent_label === label)
+        .reduce((min, item) => Math.min(min, item.sort_order), Number.POSITIVE_INFINITY);
+
+      return {
+        label,
+        children,
+        sort_order: Number.isFinite(earliestChildOrder) ? earliestChildOrder : 999,
+      };
+    });
+
+    return [...topLevel, ...dropdowns]
+      .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+      .map(({ sort_order: _sortOrder, ...entry }) => entry);
+  }, [navItems]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -145,12 +124,12 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden xl:flex items-center gap-0">
-          {navLinks.map((entry, idx) =>
+          {navLinks.map((entry) =>
             isDropdown(entry) ? (
-              <DropdownMenu key={`drop-${entry.label}-${idx}`} item={entry} pathname={location.pathname} />
+              <DropdownMenu key={entry.label} item={entry} pathname={location.pathname} />
             ) : (
               <Link
-                key={`link-${entry.href}-${idx}`}
+                key={entry.href}
                 to={entry.href}
                 className={`px-2 py-2 text-xs font-medium transition-colors font-heading uppercase tracking-wide whitespace-nowrap ${
                   location.pathname === entry.href
@@ -176,9 +155,9 @@ const Navbar = () => {
 
       {open && (
         <div className="xl:hidden bg-white border-t border-border pb-4 max-h-[80vh] overflow-y-auto">
-          {navLinks.map((entry, idx) =>
+          {navLinks.map((entry) =>
             isDropdown(entry) ? (
-              <div key={`mdrop-${entry.label}-${idx}`}>
+              <div key={entry.label}>
                 <button
                   onClick={() => setExpandedMobile(expandedMobile === entry.label ? null : entry.label)}
                   className="flex items-center justify-between w-full text-left px-6 py-3 font-heading uppercase text-sm tracking-wide text-primary/80 hover:text-accent hover:bg-muted"
@@ -207,7 +186,7 @@ const Navbar = () => {
               </div>
             ) : (
               <Link
-                key={`mlink-${entry.href}-${idx}`}
+                key={entry.href}
                 to={entry.href}
                 onClick={() => setOpen(false)}
                 className={`block w-full text-left px-6 py-3 font-heading uppercase text-sm tracking-wide ${

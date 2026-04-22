@@ -1,74 +1,135 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ScrollReveal from "@/components/ScrollReveal";
 import { X } from "lucide-react";
-import { useGallery, usePageContent } from "@/hooks/useSupabaseData";
+import { supabase } from "@/integrations/supabase/client";
 
 interface GallerySection {
   title: string;
   images: { src: string; alt: string }[];
 }
 
-const fallbackSections: GallerySection[] = [
+const gallerySections: GallerySection[] = [
   {
     title: "Dealers Meet 2017-18 @ Chhatrapati Sambhajinagar",
     images: [
-      { src: "https://swajit.com/wp-content/uploads/2015/11/Mr.Manohar-Parrikar-Defence-Mininster-of-India.jpg", alt: "Mr. Manohar Parrikar - Defence Minister of India" },
-      { src: "https://swajit.com/wp-content/uploads/2015/11/Mr.Anant-GiteMinster-for-heavy-engineering.jpg", alt: "Mr. Anant Gite - Minister for Heavy Engineering" },
+      {
+        src: "https://swajit.com/wp-content/uploads/2015/11/Mr.Manohar-Parrikar-Defence-Mininster-of-India.jpg",
+        alt: "Mr. Manohar Parrikar - Defence Minister of India",
+      },
+      {
+        src: "https://swajit.com/wp-content/uploads/2015/11/Mr.Anant-GiteMinster-for-heavy-engineering.jpg",
+        alt: "Mr. Anant Gite - Minister for Heavy Engineering",
+      },
     ],
   },
   {
     title: "Germany Hannover Exhibition",
     images: [
-      { src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0320-300x225.jpg", alt: "Hannover Exhibition - Booth Display" },
-      { src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0376-300x225.jpg", alt: "Hannover Exhibition - Team" },
-      { src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0312-300x225.jpg", alt: "Hannover Exhibition - Products" },
+      {
+        src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0320-300x225.jpg",
+        alt: "Hannover Exhibition - Booth Display",
+      },
+      {
+        src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0376-300x225.jpg",
+        alt: "Hannover Exhibition - Team",
+      },
+      {
+        src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0312-300x225.jpg",
+        alt: "Hannover Exhibition - Products",
+      },
     ],
   },
   {
     title: "Dealers Meet 2018",
     images: [
-      { src: "https://swajit.com/wp-content/uploads/2015/11/5.jpg", alt: "Dealers Meet 2018 - Event 1" },
-      { src: "https://swajit.com/wp-content/uploads/2015/11/6.jpg", alt: "Dealers Meet 2018 - Event 2" },
-      { src: "https://swajit.com/wp-content/uploads/2015/11/7.jpg", alt: "Dealers Meet 2018 - Event 3" },
+      {
+        src: "https://swajit.com/wp-content/uploads/2015/11/5.jpg",
+        alt: "Dealers Meet 2018 - Event 1",
+      },
+      {
+        src: "https://swajit.com/wp-content/uploads/2015/11/6.jpg",
+        alt: "Dealers Meet 2018 - Event 2",
+      },
+      {
+        src: "https://swajit.com/wp-content/uploads/2015/11/7.jpg",
+        alt: "Dealers Meet 2018 - Event 3",
+      },
     ],
   },
 ];
 
+const fallbackGallerySections = gallerySections;
+
 const PhotoGallery = () => {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
-  const { sections: pageSections } = usePageContent("photo_gallery");
-  const { items } = useGallery();
+  const [dbItems, setDbItems] = useState<GallerySection[]>([]);
 
-  // Prefer admin-managed Page Content gallery rows, then legacy gallery_items, then hardcoded fallback.
-  const sections: GallerySection[] = useMemo(() => {
-    if (pageSections.length > 0) {
-      const grouped = new Map<string, { src: string; alt: string }[]>();
+  useEffect(() => {
+    const loadGallery = async () => {
+      const { data } = await supabase
+        .from("page_content")
+        .select("id, title, image_url, section_key, metadata")
+        .eq("page_key", "photo_gallery")
+        .order("section_key");
 
-      for (const section of pageSections) {
-        if (!section.image_url) continue;
-        const title = section.title?.trim() || section.section_key.replace(/_/g, " ");
-        const alt = (section.content || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || title;
-        const arr = grouped.get(title) || [];
-        arr.push({ src: section.image_url, alt });
-        grouped.set(title, arr);
+      if (!data || data.length === 0) {
+        setDbItems([]);
+        return;
       }
 
-      if (grouped.size > 0) {
-        return Array.from(grouped.entries()).map(([title, images]) => ({ title, images }));
-      }
-    }
+      const grouped = data.reduce<Record<string, GallerySection>>((acc, item) => {
+        const metadata = (item.metadata ?? {}) as Record<string, unknown>;
+        const sectionTitle = String(metadata.section || item.title || item.section_key || "Photo Gallery");
+        const imageAlt = String(metadata.alt || item.title || sectionTitle);
 
-    if (items.length === 0) return fallbackSections;
-    const grouped = new Map<string, { src: string; alt: string }[]>();
-    for (const it of items) {
-      const arr = grouped.get(it.section_title) || [];
-      arr.push({ src: it.image_url, alt: it.alt_text || it.section_title });
-      grouped.set(it.section_title, arr);
-    }
-    return Array.from(grouped.entries()).map(([title, images]) => ({ title, images }));
-  }, [items]);
+        if (!item.image_url) {
+          return acc;
+        }
+
+        if (!acc[sectionTitle]) {
+          acc[sectionTitle] = { title: sectionTitle, images: [] };
+        }
+
+        acc[sectionTitle].images.push({
+          src: item.image_url,
+          alt: imageAlt,
+        });
+
+        return acc;
+      }, {});
+
+      setDbItems(Object.values(grouped).filter((section) => section.images.length > 0));
+    };
+
+    loadGallery();
+
+    const channel = supabase
+      .channel("photo-gallery-content")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "page_content" },
+        (payload) => {
+          const pageKey = (payload.new as { page_key?: string } | null)?.page_key
+            ?? (payload.old as { page_key?: string } | null)?.page_key;
+
+          if (pageKey === "photo_gallery") {
+            loadGallery();
+          }
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const sectionsToRender = useMemo(
+    () => (dbItems.length > 0 ? dbItems : fallbackGallerySections),
+    [dbItems],
+  );
 
   return (
     <PageLayout>
@@ -80,9 +141,10 @@ const PhotoGallery = () => {
 
       <section className="py-16 md:py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
-          {sections.map((section, sIdx) => (
+          {sectionsToRender.map((section, sIdx) => (
             <ScrollReveal key={sIdx}>
               <div className="mb-16 last:mb-0">
+                {/* Section Title */}
                 <div className="flex items-center gap-4 mb-8">
                   <div className="w-1 h-8 bg-accent rounded-full" />
                   <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground pt-4">
@@ -91,6 +153,7 @@ const PhotoGallery = () => {
                 </div>
                 <div className="h-px bg-border mb-8" />
 
+                {/* Image Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {section.images.map((img, iIdx) => (
                     <button
@@ -104,6 +167,7 @@ const PhotoGallery = () => {
                         loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
+                      {/* Hover overlay */}
                       <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/40 transition-colors duration-300 flex items-center justify-center">
                         <span className="text-primary-foreground font-heading font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-accent/90 px-4 py-2 rounded-full">
                           View
@@ -118,6 +182,7 @@ const PhotoGallery = () => {
         </div>
       </section>
 
+      {/* Lightbox Modal */}
       {lightboxImage && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"

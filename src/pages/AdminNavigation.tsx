@@ -14,7 +14,7 @@ import {
   Save, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Eye, EyeOff, Navigation, FilePlus, Pencil, X,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { NavItem, DEFAULT_NAV_ITEMS, clearNavCache, parseNavItems, NAV_GROUP_LABELS } from '@/hooks/useNavItems';
+import { NavItem, DEFAULT_NAV_ITEMS, clearNavCache, normalizeNavItems } from '@/hooks/useNavItems';
 
 const generateId = () => Math.random().toString(36).substring(2, 10);
 
@@ -37,6 +37,7 @@ const AdminNavigation = () => {
   const [newPageLabel, setNewPageLabel] = useState('');
   const [newPageSlug, setNewPageSlug] = useState('');
   const [newPageContent, setNewPageContent] = useState('');
+  const [newPageParentLabel, setNewPageParentLabel] = useState('');
 
   // Custom page edit
   const [editingPage, setEditingPage] = useState<EditingPage | null>(null);
@@ -51,7 +52,15 @@ const AdminNavigation = () => {
       .eq('setting_key', 'nav_items')
       .maybeSingle();
 
-    const navItems: NavItem[] = parseNavItems(data?.setting_value) || [...DEFAULT_NAV_ITEMS];
+    let navItems: NavItem[] = [...DEFAULT_NAV_ITEMS];
+    if (data?.setting_value) {
+      try {
+        const parsed = JSON.parse(data.setting_value);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          navItems = normalizeNavItems(parsed);
+        }
+      } catch { /* use defaults */ }
+    }
     setItems(navItems);
     setLoading(false);
 
@@ -83,7 +92,7 @@ const AdminNavigation = () => {
 
   const saveItems = async (itemsToSave?: NavItem[]) => {
     setSaving(true);
-    const toSave = (itemsToSave || items).map((item, i) => ({ ...item, sort_order: i }));
+    const toSave = normalizeNavItems(itemsToSave || items).map((item, i) => ({ ...item, sort_order: i }));
 
     const { error } = await supabase.from('site_settings').upsert(
       { setting_key: 'nav_items', setting_value: JSON.stringify(toSave) },
@@ -167,6 +176,7 @@ const AdminNavigation = () => {
       visible: true,
       is_custom: true,
       sort_order: items.length,
+      parent_label: newPageParentLabel || null,
     };
 
     const updated = [...items, newItem];
@@ -176,10 +186,27 @@ const AdminNavigation = () => {
     setNewPageLabel('');
     setNewPageSlug('');
     setNewPageContent('');
+    setNewPageParentLabel('');
     setShowNewPage(false);
 
     toast({ title: 'Created', description: `Custom page "${newPageLabel.trim()}" added.` });
   };
+
+  const updateItemParent = (id: string, parentLabel: string) => {
+    setItems((prev) => prev.map((item) => (
+      item.id === id
+        ? {
+            ...item,
+            parent_label: parentLabel.trim() ? parentLabel.trim() : null,
+          }
+        : item
+    )));
+  };
+
+  const parentOptions = Array.from(new Set(items
+    .map((item) => item.parent_label)
+    .filter((value): value is string => Boolean(value))
+    .concat(['Corporate', 'Resources'])));
 
   // Edit custom page
   const openEditPage = async (item: NavItem) => {
@@ -328,6 +355,20 @@ const AdminNavigation = () => {
               </div>
             </div>
             <div className="space-y-1.5">
+              <Label className="text-xs">Parent Navigation Group (optional)</Label>
+              <Input
+                placeholder="e.g. Resources"
+                value={newPageParentLabel}
+                onChange={(e) => setNewPageParentLabel(e.target.value)}
+                list="nav-parent-options"
+              />
+              <datalist id="nav-parent-options">
+                {parentOptions.map((option) => (
+                  <option key={option} value={option} />
+                ))}
+              </datalist>
+            </div>
+            <div className="space-y-1.5">
               <Label className="text-xs">Page Content</Label>
               <RichTextEditor
                 value={newPageContent}
@@ -387,9 +428,16 @@ const AdminNavigation = () => {
                       onChange={(e) => updateItemLabel(item.id, e.target.value)}
                       className="h-8 text-sm font-heading"
                     />
-                    {(item.group || item.is_custom) && (
+                    <Input
+                      value={item.parent_label ?? ''}
+                      onChange={(e) => updateItemParent(item.id, e.target.value)}
+                      placeholder="Parent group (optional)"
+                      className="h-8 text-xs mt-2"
+                      list="nav-parent-options"
+                    />
+                    {item.is_custom && (
                       <span className="text-[10px] text-accent font-heading uppercase tracking-wider mt-0.5 inline-block">
-                        {item.is_custom ? 'Custom Page' : NAV_GROUP_LABELS[item.group!]}
+                        Custom Page
                       </span>
                     )}
                   </div>
