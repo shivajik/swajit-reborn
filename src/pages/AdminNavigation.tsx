@@ -138,13 +138,15 @@ const AdminNavigation = () => {
 
   const confirmDelete = async () => {
     if (!deleteTarget) return;
-    // Remove from nav list
-    setItems(prev => prev.filter(i => i.id !== deleteTarget.id));
+    const target = deleteTarget;
+    const updated = items.filter(i => i.id !== target.id);
+    // Persist nav list change to site_settings
+    await saveItems(updated);
     // Also delete the page_content record
-    const slug = deleteTarget.href.replace('/page/', '');
+    const slug = target.href.replace('/page/', '');
     await supabase.from('page_content').delete().eq('page_key', `custom_${slug}`).eq('section_key', 'main');
     setDeleteTarget(null);
-    toast({ title: 'Deleted', description: `Custom page "${deleteTarget.label}" removed.` });
+    toast({ title: 'Deleted', description: `Custom page "${target.label}" removed.` });
   };
 
   const addCustomPage = async () => {
