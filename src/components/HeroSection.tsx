@@ -160,10 +160,10 @@ const HeroSection = () => {
               {/* Badge - top zone */}
               <div className="max-w-3xl">
                 <div
-                  className="inline-block bg-accent/15 border border-accent/25 rounded-full px-4 py-1.5 backdrop-blur-sm transition-all duration-700"
+                  className="inline-block bg-primary/80 border border-accent rounded-full px-4 py-1.5 backdrop-blur-md shadow-lg transition-all duration-700"
                   style={{ opacity: 1, transform: 'translateY(0)' }}
                 >
-                  <span className="text-accent text-xs sm:text-sm font-heading font-semibold tracking-wider uppercase">
+                  <span className="text-accent text-xs sm:text-sm font-heading font-bold tracking-wider uppercase drop-shadow">
                     since 1991 — Chhatrapati Sambhajinagar, India
                   </span>
                 </div>
