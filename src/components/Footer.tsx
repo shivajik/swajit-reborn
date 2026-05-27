@@ -102,7 +102,7 @@ const Footer = () => {
           <div>
             <h4 className="font-heading font-bold text-accent mb-4 uppercase text-sm tracking-wider">Industries</h4>
             <ul className="space-y-2 text-sm text-primary-foreground/60">
-              {["Sugar", "Cement", "Steel", "Chemical", "Automobile", "Boiler & Thermal", "Solvent"].map((i) => (
+              {["Sugar", "Cement", "Steel", "Chemical", "Automobile", "Boiler & Thermal", "Edible Oil"].map((i) => (
                 <li key={i}>
                   <Link to="/products" className="hover:text-accent transition-colors">{i}</Link>
                 </li>

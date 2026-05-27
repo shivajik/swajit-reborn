@@ -7,7 +7,7 @@ import virendraImg from "@/assets/team/virendra-chavan.jpg";
 
 const team = [
   {
-    name: "Shri Anil V. Chavan",
+    name: "Late Shri Anil V. Chavan",
     role: "Former Chairman & Founder",
     image: anilImg,
     bio: "The visionary founder of Swajit Engineering, Shri Anil V. Chavan laid the foundation in 1991 with a commitment to engineering excellence and integrity. His leadership shaped the company into India's leading conveyor chain manufacturer.",
