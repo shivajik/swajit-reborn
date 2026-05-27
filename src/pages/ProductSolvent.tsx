@@ -15,9 +15,9 @@ const products: ProductItem[] = [
 const ProductSolvent = () => (
   <PageLayout>
     <PageBanner
-      title="Solvent Plant"
-      subtitle="Specialized conveyor chains for solvent extraction and processing plants"
-      breadcrumb="Products > Solvent Plant"
+      title="Edible Oil"
+      subtitle="Specialized conveyor chains for edible oil extraction and processing plants"
+      breadcrumb="Products > Edible Oil"
     />
     <ProductCategoryGrid products={products} />
   </PageLayout>

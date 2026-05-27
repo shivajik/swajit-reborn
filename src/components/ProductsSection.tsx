@@ -14,7 +14,7 @@ const fallbackProducts = [
   { icon: FlaskConical, category: "Chemical & Fertilizer", href: "/products/chemical-fertilizer", items: ["Bucket Elevator Chain", "Bucket Elevator Chain – G2 Attachment"] },
   { icon: Car, category: "Automobile Industry", href: "/products/automobile", items: ["Conveyor Chain Types 1–5", "Slat Conveyor Chain"] },
   { icon: Flame, category: "Boiler & Thermal Power", href: "/products/boiler-thermal-power", items: ["Ash Handling Chain", "Drag/Redler Chain", "Gate Chain", "Traveling Grate Chain"] },
-  { icon: Droplets, category: "Solvent Plant", href: "/products/solvent-plant", items: ["Bucket Elevator Chain", "Drag / Enmass Conveyor Chain", "Extractor Chain"] },
+  { icon: Droplets, category: "Edible Oil", href: "/products/solvent-plant", items: ["Bucket Elevator Chain", "Drag / Enmass Conveyor Chain", "Extractor Chain"] },
   { icon: FileText, category: "Paper Industry", href: "/products/paper-industry", items: ["Bucket Elevator Chain", "Coal Feeder Chain", "Drag Chain", "Enmass Conveyor Chain"] },
   { icon: Layers, category: "Refractory Industry", href: "/products/refractory-industry", items: ["Bucket Elevator Chain", "Drag / Enmass Conveyor Chain", "Redler Chain"] },
   { icon: Factory, category: "Other Industries", href: "/products/other-industry", items: ["Agriculture", "Asphalt Manufacturing", "Bakeries", "Escalator", "Food Processing"] },

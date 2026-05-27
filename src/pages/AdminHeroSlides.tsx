@@ -48,7 +48,7 @@ const DEFAULT_SLIDES = [
     sort_order: 2,
   },
   {
-    title: "Palm Oil & Edible Oil Industry Experts",
+    title: "Edible Oil Industry Experts",
     subtitle: "Heavy-duty chain systems engineered for palm oil mills, extraction plants, and refinery operations across 18+ countries",
     cta_text: "Export Reach",
     cta_link: "/about",
