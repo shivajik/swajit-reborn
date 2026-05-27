@@ -16,6 +16,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
   { id: 'about', label: 'About', href: '/about', visible: true, is_custom: false, sort_order: 1, parent_label: 'Corporate' },
   { id: 'mission-vision', label: 'Mission And Vision', href: '/mission-vision', visible: true, is_custom: false, sort_order: 2, parent_label: 'Corporate' },
   { id: 'milestone', label: 'Milestone', href: '/milestone', visible: true, is_custom: false, sort_order: 3, parent_label: 'Corporate' },
+  { id: 'management-team', label: 'Management Team', href: '/management-team', visible: true, is_custom: false, sort_order: 4, parent_label: 'Corporate' },
   { id: 'products', label: 'Products', href: '/products', visible: true, is_custom: false, sort_order: 4 },
   { id: 'photo-gallery', label: 'Photo Gallery', href: '/photo-gallery', visible: true, is_custom: false, sort_order: 5 },
   { id: 'infrastructure', label: 'Infrastructure', href: '/infrastructure', visible: true, is_custom: false, sort_order: 6, parent_label: 'Resources' },
