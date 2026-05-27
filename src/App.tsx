@@ -37,6 +37,7 @@ import MissionVision from "./pages/MissionVision";
 import Milestone from "./pages/Milestone";
 import NewsDetail from "./pages/NewsDetail";
 import AdminNews from "./pages/AdminNews";
+import ManagementTeam from "./pages/ManagementTeam";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +76,7 @@ const App = () => (
           <Route path="/download" element={<Download />} />
           <Route path="/mission-vision" element={<MissionVision />} />
           <Route path="/milestone" element={<Milestone />} />
+          <Route path="/management-team" element={<ManagementTeam />} />
           <Route path="/page/:slug" element={<CustomPage />} />
           <Route path="/admin/setup" element={<AdminSetup />} />
           <Route path="/admin/login" element={<AdminLogin />} />
