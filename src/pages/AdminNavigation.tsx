@@ -347,7 +347,7 @@ const AdminNavigation = () => {
               <div className="space-y-1.5">
                 <Label className="text-xs">URL Slug</Label>
                 <div className="flex items-center gap-1">
-                  <span className="text-sm text-muted-foreground">/page/</span>
+                  <span className="text-sm text-muted-foreground">/</span>
                   <Input
                     placeholder="our-services"
                     value={newPageSlug}
