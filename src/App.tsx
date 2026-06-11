@@ -89,6 +89,7 @@ const App = () => (
           <Route path="/admin/settings" element={<AdminSiteSettings />} />
           <Route path="/admin/news" element={<AdminNews />} />
           <Route path="/news/:slug" element={<NewsDetail />} />
+          <Route path="/:slug" element={<CustomPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

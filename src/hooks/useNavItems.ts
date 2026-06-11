@@ -41,7 +41,18 @@ const defaultByKey = new Map(
 );
 
 export function normalizeNavItems(items: NavItem[]) {
-  return items
+  // Merge: start with saved items, then append any defaults that aren't present (by id or href).
+  const savedKeys = new Set<string>();
+  items.forEach((item) => {
+    if (item.id) savedKeys.add(item.id);
+    if (item.href) savedKeys.add(item.href);
+  });
+  const missingDefaults = DEFAULT_NAV_ITEMS.filter(
+    (d) => !savedKeys.has(d.id) && !savedKeys.has(d.href),
+  );
+  const merged = [...items, ...missingDefaults];
+
+  return merged
     .map((item, index) => {
       const defaultItem = defaultByKey.get(item.id) || defaultByKey.get(item.href);
 
