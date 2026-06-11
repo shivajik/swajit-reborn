@@ -66,7 +66,7 @@ const AdminNavigation = () => {
 
     // Clean up orphaned page_content records (custom pages with no nav entry)
     const customSlugs = new Set(
-      navItems.filter(i => i.is_custom).map(i => i.href.replace('/page/', ''))
+      navItems.filter(i => i.is_custom).map(i => i.href.replace('/page/', '').replace(/^\//, ''))
     );
     const { data: allCustomPages } = await supabase
       .from('page_content')
@@ -143,7 +143,7 @@ const AdminNavigation = () => {
     // Persist nav list change to site_settings
     await saveItems(updated);
     // Also delete the page_content record
-    const slug = target.href.replace('/page/', '');
+    const slug = target.href.replace('/page/', '').replace(/^\//, '');
     await supabase.from('page_content').delete().eq('page_key', `custom_${slug}`).eq('section_key', 'main');
     setDeleteTarget(null);
     toast({ title: 'Deleted', description: `Custom page "${target.label}" removed.` });
@@ -174,7 +174,7 @@ const AdminNavigation = () => {
     const newItem: NavItem = {
       id: generateId(),
       label: newPageLabel.trim(),
-      href: `/page/${slug}`,
+      href: `/${slug}`,
       visible: true,
       is_custom: true,
       sort_order: items.length,
@@ -212,7 +212,7 @@ const AdminNavigation = () => {
 
   // Edit custom page
   const openEditPage = async (item: NavItem) => {
-    const slug = item.href.replace('/page/', '');
+    const slug = item.href.replace('/page/', '').replace(/^\//, '');
     const { data } = await supabase
       .from('page_content')
       .select('*')
