@@ -7,15 +7,15 @@ import { X } from "lucide-react";
 
 const csrImages = [
   {
-    src: "https://swajit.com/wp-content/uploads/2016/01/IMG_20150712_100351221-copy.jpg",
+    src: "/blood/blood-donation-poster.jpg",
     alt: "Blood Donation Camp Event 1",
   },
   {
-    src: "https://swajit.com/wp-content/uploads/2016/01/IMG_20150712_111031623-copy.jpg",
+    src: "/blood/blood-donation2.jpg",
     alt: "Blood Donation Camp Event 2",
   },
   {
-    src: "https://swajit.com/wp-content/uploads/2016/01/untitled5.jpg",
+    src: "/blood/blood-donation3.jpg",
     alt: "Blood Donation Camp Event 3",
   },
 ];
