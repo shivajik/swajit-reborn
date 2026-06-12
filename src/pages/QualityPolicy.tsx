@@ -16,7 +16,7 @@ const QualityPolicy = () => (
           <div className="flex justify-center">
             <div className="rounded-xl shadow-lg border border-border" style={{ aspectRatio: '980/1024', maxWidth: '500px', width: '100%', overflow: 'hidden' }}>
               <img
-                src="http://swajit.com/wp-content/uploads/2016/01/QualityPolicy-680x1024.jpg"
+                src="/QualityPolicy-768x1157.jpg"
                 alt="Swajit Engineering Quality Policy Certificate"
                 className="w-full h-full object-contain"
                 style={{ transform: 'rotate(-90deg)' }}
