@@ -36,7 +36,7 @@ const fallbackSlides = [
     image_url: hero3,
   },
   {
-    title: "PALM OIL",
+    title: "EDIBLE OIL",
     subtitle: "",
     cta_text: "",
     cta_link: "",
