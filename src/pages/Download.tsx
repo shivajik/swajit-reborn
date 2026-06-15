@@ -6,16 +6,16 @@ import officeImage from "@/assets/PLANT1.JPG";
 
 const brochures = [
   {
-    title: "SWAJIT – Cement, Power, Palm Oil, Chemical & Fertilizer",
-    url: "https://www.swajit.com/wp-content/uploads/2025/09/Swajit-Cement-Steel-Power-Automobile-Palm-Oil-Catalogue.pdf",
+    title: "SWAJIT – Sugar Industry Conveyor Catalogue",
+    url: "/catalogues/Swajit_Sugar_Catalogue_01-01-24.pdf",
   },
   {
-    title: "SWAJIT – Sugar Industry Conveyor Catalogue",
-    url: "https://www.swajit.com/wp-content/uploads/2025/09/Swajit_Sugar_Catalogue.pdf",
+    title: "SWAJIT – Cement, Power, Palm Oil, Chemical & Fertilizer",
+    url: "/catalogues/Swajit_Cement_Steel_Power_Edible Oil_Chemical & Fertilizer dtd 13-06-2026.pdf",
   },
   {
     title: "SWAJIT – Maintenance Manual",
-    url: "https://www.swajit.com/wp-content/uploads/2025/09/SWAJIT-Maintenance-Manual.pdf",
+    url:"/catalogues/SWAJIT-Maintenance_Manual.pdf",
   },
   {
     title: "SWAJIT – Sprocket, Bucket and Pan Catalogue",
@@ -23,7 +23,11 @@ const brochures = [
   },
   {
     title: "SWAJIT – Transmission Chain Brochure",
-    url: "https://www.swajit.com/wp-content/uploads/2025/09/SWAJIT-Transmission-Chain.pdf",
+    url: "/catalogues/SWAJIT-Transmission_Chain_Catalogue.pdf",
+  },
+  {
+    title: "SWAJIT – Material Specification (BS970 / DIN17200 / American)",
+    url: "/catalogues/SWAJIT-Material_Specification_as_per_(BS970-DIN17200-AMERICAN).pdf",
   },
 ];
 
