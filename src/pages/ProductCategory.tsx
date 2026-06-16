@@ -11,6 +11,7 @@ const ProductCategory = () => {
   const productItems = products.map((p) => ({
     name: p.name,
     image: p.image_url,
+    description: p.description || '',
   }));
 
   if (loading) {

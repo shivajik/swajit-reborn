@@ -2,17 +2,27 @@ import { Link } from "react-router-dom";
 import { Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ScrollReveal from "@/components/ScrollReveal";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export interface ProductItem {
   name: string;
   image: string;
+  description?: string;
 }
 
 interface ProductCategoryGridProps {
   products: ProductItem[];
 }
 
-const ProductCategoryGrid = ({ products }: ProductCategoryGridProps) => (
+const ProductCategoryGrid = ({ products }: ProductCategoryGridProps) => {
+  const [openProduct, setOpenProduct] = useState<ProductItem | null>(null);
+  return (
   <>
     <section className="section-padding bg-background">
       <div className="max-w-7xl mx-auto">
@@ -23,14 +33,28 @@ const ProductCategoryGrid = ({ products }: ProductCategoryGridProps) => (
         </ScrollReveal>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product, i) => (
+          {products.map((product, i) => {
+            const hasDescription = !!product.description?.trim();
+            return (
             <ScrollReveal key={product.name} delay={i * 60}>
-              <div className="bg-card rounded-xl border border-border overflow-hidden hover:shadow-xl hover:border-accent/40 transition-all group h-full">
+              <button
+                type="button"
+                onClick={() => hasDescription && setOpenProduct(product)}
+                disabled={!hasDescription}
+                aria-disabled={!hasDescription}
+                className={`text-left w-full bg-card rounded-xl border border-border overflow-hidden transition-all group h-full focus:outline-none ${
+                  hasDescription
+                    ? 'hover:shadow-xl hover:border-accent/40 focus:ring-2 focus:ring-accent cursor-pointer'
+                    : 'cursor-default'
+                }`}
+              >
                 <div className="aspect-square bg-muted flex items-center justify-center p-4 overflow-hidden">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                    className={`max-h-full max-w-full object-contain transition-transform duration-300 ${
+                      hasDescription ? 'group-hover:scale-105' : ''
+                    }`}
                     loading="lazy"
                   />
                 </div>
@@ -39,12 +63,33 @@ const ProductCategoryGrid = ({ products }: ProductCategoryGridProps) => (
                     {product.name}
                   </h3>
                 </div>
-              </div>
+              </button>
             </ScrollReveal>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
+
+    <Dialog open={!!openProduct} onOpenChange={(o) => !o && setOpenProduct(null)}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="font-heading">{openProduct?.name}</DialogTitle>
+        </DialogHeader>
+        {openProduct?.image && (
+          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center p-4 overflow-hidden">
+            <img
+              src={openProduct.image}
+              alt={openProduct.name}
+              className="max-h-full max-w-full object-contain"
+            />
+          </div>
+        )}
+        <div className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+          {openProduct?.description}
+        </div>
+      </DialogContent>
+    </Dialog>
 
     <section className="section-padding bg-primary">
       <div className="max-w-4xl mx-auto text-center">
@@ -62,6 +107,7 @@ const ProductCategoryGrid = ({ products }: ProductCategoryGridProps) => (
       </div>
     </section>
   </>
-);
+  );
+};
 
 export default ProductCategoryGrid;

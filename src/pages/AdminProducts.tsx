@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Pencil, Trash2, Save, X, GripVertical } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, X, ArrowUp, ArrowDown, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ImageUpload from '@/components/admin/ImageUpload';
 
@@ -25,6 +25,8 @@ interface Product {
   image_url: string;
   category_id: string;
   sort_order: number;
+  description?: string;
+  is_visible?: boolean;
 }
 
 const AdminProducts = () => {
@@ -101,6 +103,10 @@ const AdminProducts = () => {
         name: editingProduct.name,
         image_url: editingProduct.image_url || '',
         category_id: editingProduct.category_id,
+        description: editingProduct.description || '',
+        sort_order: Number.isFinite(editingProduct.sort_order as number)
+          ? (editingProduct.sort_order as number)
+          : 0,
       }).eq('id', editingProduct.id).select().single();
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
       if (!data) {
@@ -113,7 +119,11 @@ const AdminProducts = () => {
         name: editingProduct.name,
         image_url: editingProduct.image_url || '',
         category_id: editingProduct.category_id,
-        sort_order: filteredProducts.length,
+        description: editingProduct.description || '',
+        is_visible: true,
+        sort_order: Number.isFinite(editingProduct.sort_order as number)
+          ? (editingProduct.sort_order as number)
+          : filteredProducts.length,
       }).select().single();
       if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
       if (data) setProducts(prev => [...prev, data]);
@@ -129,6 +139,46 @@ const AdminProducts = () => {
     if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
     setProducts(prev => prev.filter(p => p.id !== id));
     toast({ title: 'Deleted', description: 'Product deleted.' });
+  };
+
+  const toggleVisibility = async (product: Product) => {
+    const next = !(product.is_visible ?? true);
+    const { data, error } = await supabase
+      .from('products')
+      .update({ is_visible: next })
+      .eq('id', product.id)
+      .select()
+      .single();
+    if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+    if (data) setProducts(prev => prev.map(p => p.id === data.id ? data : p));
+  };
+
+  const moveProduct = async (product: Product, direction: -1 | 1) => {
+    const siblings = products
+      .filter(p => p.category_id === product.category_id)
+      .sort((a, b) => a.sort_order - b.sort_order);
+    const idx = siblings.findIndex(p => p.id === product.id);
+    const swapIdx = idx + direction;
+    if (swapIdx < 0 || swapIdx >= siblings.length) return;
+    const other = siblings[swapIdx];
+    const a = product.sort_order;
+    const b = other.sort_order;
+    // If sort_orders are equal, force a delta
+    const newA = a === b ? b + direction : b;
+    const newB = a === b ? a : a;
+    const [r1, r2] = await Promise.all([
+      supabase.from('products').update({ sort_order: newA }).eq('id', product.id).select().single(),
+      supabase.from('products').update({ sort_order: newB }).eq('id', other.id).select().single(),
+    ]);
+    if (r1.error || r2.error) {
+      toast({ title: 'Error', description: (r1.error || r2.error)?.message || 'Reorder failed', variant: 'destructive' });
+      return;
+    }
+    setProducts(prev => prev.map(p => {
+      if (p.id === product.id) return { ...p, sort_order: newA };
+      if (p.id === other.id) return { ...p, sort_order: newB };
+      return p;
+    }));
   };
 
   return (
@@ -251,12 +301,42 @@ const AdminProducts = () => {
                     </select>
                   </div>
                 </div>
+                <div className="space-y-1 max-w-[200px]">
+                  <Label>Order Number</Label>
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    value={
+                      editingProduct.sort_order === undefined || editingProduct.sort_order === null
+                        ? ''
+                        : String(editingProduct.sort_order)
+                    }
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setEditingProduct({
+                        ...editingProduct,
+                        sort_order: v === '' ? undefined : Number(v),
+                      });
+                    }}
+                    placeholder="e.g. 1, 2, 3..."
+                  />
+                  <p className="text-xs text-muted-foreground">Lower numbers appear first on the website.</p>
+                </div>
                 <div className="space-y-1">
                   <Label>Product Image</Label>
                   <ImageUpload
                     value={editingProduct.image_url || ''}
                     onChange={(url) => setEditingProduct({ ...editingProduct, image_url: url })}
                     bucket="products"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label>Description</Label>
+                  <Textarea
+                    rows={5}
+                    placeholder="Product description shown in the popup on the website"
+                    value={editingProduct.description || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
                   />
                 </div>
                 <div className="flex gap-2">
@@ -274,8 +354,13 @@ const AdminProducts = () => {
               </div>
             ) : (
               <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                {filteredProducts.map((product) => (
-                  <div key={product.id} className="border border-border rounded-lg overflow-hidden group">
+                {[...filteredProducts].sort((a, b) => a.sort_order - b.sort_order).map((product, idx, arr) => (
+                  <div
+                    key={product.id}
+                    className={`border border-border rounded-lg overflow-hidden group ${
+                      product.is_visible === false ? 'opacity-50' : ''
+                    }`}
+                  >
                     <div className="aspect-square bg-muted flex items-center justify-center p-2">
                       {product.image_url ? (
                         <img src={product.image_url} alt={product.name} className="max-h-full max-w-full object-contain" />
@@ -283,15 +368,47 @@ const AdminProducts = () => {
                         <span className="text-muted-foreground text-xs">No image</span>
                       )}
                     </div>
-                    <div className="p-3 border-t border-border flex items-center justify-between">
-                      <span className="text-sm font-heading font-semibold text-foreground truncate">{product.name}</span>
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => setEditingProduct(product)} className="p-1 hover:text-accent">
-                          <Pencil className="w-3.5 h-3.5" />
-                        </button>
-                        <button onClick={() => deleteProduct(product.id)} className="p-1 hover:text-red-500">
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                    <div className="p-2 border-t border-border space-y-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted-foreground tabular-nums">#{idx + 1}</span>
+                        <span className="text-sm font-heading font-semibold text-foreground truncate flex-1">{product.name}</span>
+                      </div>
+                      <div className="flex items-center justify-between gap-1">
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => moveProduct(product, -1)}
+                            disabled={idx === 0}
+                            title="Move up"
+                            className="p-1 rounded hover:bg-muted disabled:opacity-30"
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => moveProduct(product, 1)}
+                            disabled={idx === arr.length - 1}
+                            title="Move down"
+                            className="p-1 rounded hover:bg-muted disabled:opacity-30"
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => toggleVisibility(product)}
+                            title={product.is_visible === false ? 'Show on website' : 'Hide from website'}
+                            className="p-1 rounded hover:bg-muted"
+                          >
+                            {product.is_visible === false
+                              ? <EyeOff className="w-3.5 h-3.5 text-red-500" />
+                              : <Eye className="w-3.5 h-3.5 text-green-600" />}
+                          </button>
+                        </div>
+                        <div className="flex gap-1">
+                          <button onClick={() => setEditingProduct(product)} className="p-1 hover:text-accent" title="Edit">
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+                          <button onClick={() => deleteProduct(product.id)} className="p-1 hover:text-red-500" title="Delete">
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -16,6 +16,8 @@ export interface DBProduct {
   image_url: string;
   category_id: string;
   sort_order: number;
+  description?: string;
+  is_visible?: boolean;
 }
 
 export interface DBHeroSlide {
@@ -88,7 +90,12 @@ export function useProductsByCategory(categorySlug: string) {
           .select('*')
           .eq('category_id', catData.id)
           .order('sort_order');
-        if (prodData) setProducts(prodData);
+        if (prodData) {
+          // hide products whose is_visible is explicitly false; default to visible
+          setProducts(
+            (prodData as DBProduct[]).filter((p) => p.is_visible !== false),
+          );
+        }
       }
       setLoading(false);
     };
