@@ -68,6 +68,26 @@ export function useCategories() {
   return { categories, loading };
 }
 
+export function useAllVisibleProducts() {
+  const [products, setProducts] = useState<DBProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from('products')
+      .select('*')
+      .order('sort_order')
+      .then(({ data }) => {
+        if (data) {
+          setProducts((data as DBProduct[]).filter((p) => p.is_visible !== false));
+        }
+        setLoading(false);
+      });
+  }, []);
+
+  return { products, loading };
+}
+
 export function useProductsByCategory(categorySlug: string) {
   const [products, setProducts] = useState<DBProduct[]>([]);
   const [category, setCategory] = useState<DBCategory | null>(null);

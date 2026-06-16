@@ -1,7 +1,7 @@
 import { Link2, Building2, HardHat, FlaskConical, Car, Flame, Droplets, Cog, FileText, Layers, Factory, LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import ScrollReveal from "@/components/ScrollReveal";
-import { useCategories } from "@/hooks/useSupabaseData";
+import { useCategories, useAllVisibleProducts } from "@/hooks/useSupabaseData";
 
 const iconMap: Record<string, LucideIcon> = {
   Link2, Building2, HardHat, FlaskConical, Car, Flame, Droplets, Cog, FileText, Layers, Factory,
@@ -21,15 +21,21 @@ const fallbackProducts = [
 ];
 
 const ProductsSection = () => {
-  const { categories, loading } = useCategories();
+  const { categories } = useCategories();
+  const { products: allProducts } = useAllVisibleProducts();
 
   const products = categories.length > 0
-    ? categories.map((cat) => ({
-        icon: iconMap[cat.icon_name] || Factory,
-        category: cat.name,
-        href: `/products/${cat.slug}`,
-        items: cat.description ? cat.description.split(',').map((s) => s.trim()) : [],
-      }))
+    ? categories.map((cat) => {
+        const items = allProducts
+          .filter((p) => p.category_id === cat.id)
+          .map((p) => p.name);
+        return {
+          icon: iconMap[cat.icon_name] || Factory,
+          category: cat.name,
+          href: `/products/${cat.slug}`,
+          items,
+        };
+      })
     : fallbackProducts;
 
   return (
