@@ -41,10 +41,16 @@ const Footer = () => {
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   // Use admin-managed visible nav items if available, otherwise fall back.
-  const quickLinks =
+  const resourceHrefs = new Set(resourceLinks.map((r) => r.href));
+  const excludedHrefs = new Set(["/", "/mission-vision", "/milestone"]);
+  const baseLinks =
     navItems.filter((i) => i.visible).length > 0
       ? navItems.filter((i) => i.visible).map((i) => ({ label: i.label, href: i.href }))
       : fallbackQuickLinks;
+  // Avoid repeating Resources items and hide Home/Mission/Milestone from Quick Links.
+  const quickLinks = baseLinks.filter(
+    (l) => !resourceHrefs.has(l.href) && !excludedHrefs.has(l.href)
+  );
 
   const activeSocials = socialIcons.filter((s) => settings[s.key]);
 
