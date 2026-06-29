@@ -16,7 +16,7 @@ import boilerIndia2024 from "@/assets/boiler/boiler-india-2024.jpeg";
 
 interface GallerySection {
   title: string;
-  images: { src: string; alt: string }[];
+  images: { src: string; alt: string; isVideo?: boolean }[];
 }
 
 const gallerySections: GallerySection[] = [
@@ -40,22 +40,22 @@ const gallerySections: GallerySection[] = [
       { src: vsi1, alt: "VSI Expo Invitation" },
       { src: vsi2, alt: "VSI Expo - Swajit Team with Visitors" },
       { src: vsi3, alt: "VSI Expo - Sugar Industry Chains Brochure" },
-      { src: vsi4.url, alt: "VSI Expo - Visitors at Swajit booth" },
-      { src: vsi5.url, alt: "VSI Expo - Swajit team" },
-      { src: vsi6.url, alt: "VSI Expo - Customer brochure handover" },
-      { src: vsi7.url, alt: "VSI Expo - Group photo at booth" },
+      { src: vsi4, alt: "VSI Expo - Visitors at Swajit booth" },
+      { src: vsi5, alt: "VSI Expo - Swajit team" },
+      { src: vsi6, alt: "VSI Expo - Customer brochure handover" },
+      { src: vsi7, alt: "VSI Expo - Group photo at booth" },
     ],
   },
   {
     title: "Boiler World S.E.A. — Bangkok, Thailand",
     images: [
-      { src: boilerSea1.url, alt: "Boiler World S.E.A. 2025 - Welcome Onboard, Booth 42" },
+      { src: boilerSea1, alt: "Boiler World S.E.A. 2025 - Welcome Onboard, Booth 42" },
     ],
   },
   {
     title: "Boiler India 2024 — Mumbai",
     images: [
-      { src: boilerIndia2024.url, alt: "Boiler India 2024 - Visit Swajit at Booth A67" },
+      { src: boilerIndia2024, alt: "Boiler India 2024 - Visit Swajit at Booth A67" },
     ],
   },
   // Germany Hannover Exhibition — hidden (do not remove)
@@ -89,7 +89,7 @@ const gallerySections: GallerySection[] = [
 const fallbackGallerySections = gallerySections;
 
 const PhotoGallery = () => {
-  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<{ src: string; isVideo: boolean } | null>(null);
   const [dbItems, setDbItems] = useState<GallerySection[]>([]);
 
   useEffect(() => {
@@ -109,8 +109,11 @@ const PhotoGallery = () => {
         const metadata = (item.metadata ?? {}) as Record<string, unknown>;
         const sectionTitle = String(metadata.section || item.title || item.section_key || "Photo Gallery");
         const imageAlt = String(metadata.alt || item.title || sectionTitle);
+        const videoUrl = typeof metadata.video_url === "string" ? metadata.video_url : "";
+        const mediaSrc = videoUrl || item.image_url;
+        const isVideo = !!videoUrl || /\.(mp4|webm|mov|m4v)(\?|$)/i.test(item.image_url || "");
 
-        if (!item.image_url) {
+        if (!mediaSrc) {
           return acc;
         }
 
@@ -119,8 +122,9 @@ const PhotoGallery = () => {
         }
 
         acc[sectionTitle].images.push({
-          src: item.image_url,
+          src: mediaSrc,
           alt: imageAlt,
+          isVideo,
         });
 
         return acc;
@@ -184,19 +188,29 @@ const PhotoGallery = () => {
                   {section.images.map((img, iIdx) => (
                     <button
                       key={iIdx}
-                      onClick={() => setLightboxImage(img.src)}
+                      onClick={() => setLightboxImage({ src: img.src, isVideo: !!img.isVideo })}
                       className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 aspect-[4/3] bg-muted focus:outline-none focus:ring-2 focus:ring-accent"
                     >
-                      <img
-                        src={img.src}
-                        alt={img.alt}
-                        loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
+                      {img.isVideo ? (
+                        <video
+                          src={img.src}
+                          className="w-full h-full object-contain bg-black"
+                          muted
+                          playsInline
+                          preload="metadata"
+                        />
+                      ) : (
+                        <img
+                          src={img.src}
+                          alt={img.alt}
+                          loading="lazy"
+                          className="w-full h-full object-contain bg-muted transition-transform duration-500 group-hover:scale-105"
+                        />
+                      )}
                       {/* Hover overlay */}
                       <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/40 transition-colors duration-300 flex items-center justify-center">
                         <span className="text-primary-foreground font-heading font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-accent/90 px-4 py-2 rounded-full">
-                          View
+                          {img.isVideo ? "Play" : "View"}
                         </span>
                       </div>
                     </button>
@@ -220,12 +234,22 @@ const PhotoGallery = () => {
           >
             <X className="w-8 h-8" />
           </button>
-          <img
-            src={lightboxImage}
-            alt="Gallery preview"
-            className="max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
+          {lightboxImage.isVideo ? (
+            <video
+              src={lightboxImage.src}
+              className="max-w-full max-h-[85vh] rounded-lg shadow-2xl"
+              controls
+              autoPlay
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <img
+              src={lightboxImage.src}
+              alt="Gallery preview"
+              className="max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
         </div>
       )}
     </PageLayout>

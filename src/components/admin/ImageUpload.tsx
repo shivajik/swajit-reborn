@@ -12,6 +12,7 @@ interface ImageUploadProps {
   folder?: string;
   placeholder?: string;
   previewClassName?: string;
+  allowVideo?: boolean;
 }
 
 /**
@@ -27,6 +28,7 @@ const ImageUpload = ({
   folder = '',
   placeholder = 'https://... or click upload',
   previewClassName = 'w-32 h-24',
+  allowVideo = true,
 }: ImageUploadProps) => {
   const { toast } = useToast();
   const [uploading, setUploading] = useState(false);
@@ -35,11 +37,17 @@ const ImageUpload = ({
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const isVideo = file.type.startsWith('video/');
+    if (isVideo && !allowVideo) {
+      toast({ title: 'Videos not allowed here', variant: 'destructive' });
+      return;
+    }
     setUploading(true);
     const ext = file.name.split('.').pop();
     const path = `${folder ? folder + '/' : ''}${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const { error } = await supabase.storage.from(bucket).upload(path, file, {
       cacheControl: '3600',
+      contentType: file.type || undefined,
       upsert: false,
     });
     if (error) {
@@ -60,13 +68,19 @@ const ImageUpload = ({
     if (inputRef.current) inputRef.current.value = '';
   };
 
+  const isVideoUrl = !!value && /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(value);
+
   return (
     <div className="space-y-2">
       <div className="flex gap-3 items-start">
         <div className={`${previewClassName} bg-muted rounded-lg overflow-hidden shrink-0 border border-border flex items-center justify-center relative`}>
           {value ? (
             <>
-              <img src={value} alt="Preview" className="w-full h-full object-cover" />
+              {isVideoUrl ? (
+                <video src={value} className="w-full h-full object-cover bg-black" muted playsInline preload="metadata" />
+              ) : (
+                <img src={value} alt="Preview" className="w-full h-full object-cover" />
+              )}
               <button
                 type="button"
                 onClick={() => onChange('')}
@@ -81,7 +95,13 @@ const ImageUpload = ({
           )}
         </div>
         <div className="flex-1 space-y-2 min-w-0">
-          <input ref={inputRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
+          <input
+            ref={inputRef}
+            type="file"
+            accept={allowVideo ? 'image/*,video/*' : 'image/*'}
+            onChange={handleFile}
+            className="hidden"
+          />
           <Button
             type="button"
             size="sm"
@@ -92,7 +112,7 @@ const ImageUpload = ({
             {uploading ? (
               <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Uploading...</>
             ) : (
-              <><Upload className="w-3 h-3 mr-1" /> Upload Image</>
+              <><Upload className="w-3 h-3 mr-1" /> {allowVideo ? 'Upload Image / Video' : 'Upload Image'}</>
             )}
           </Button>
           <Input
