@@ -37,6 +37,9 @@ const AdminPageContent = () => {
   const [newTitle, setNewTitle] = useState('');
   const [newContent, setNewContent] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
+  const [newMetaSection, setNewMetaSection] = useState('');
+  const [newMetaAlt, setNewMetaAlt] = useState('');
+  const [newMetaOrder, setNewMetaOrder] = useState<string>('');
   const [creating, setCreating] = useState(false);
 
   // Edit state
@@ -63,6 +66,7 @@ const AdminPageContent = () => {
       title: item.title,
       content: item.content,
       image_url: item.image_url,
+      metadata: item.metadata || {},
     }).eq('id', item.id).select().single();
 
     setSaving(null);
@@ -77,8 +81,11 @@ const AdminPageContent = () => {
     }
   };
 
-  const updateItem = (id: string, field: keyof PageContent, value: string) => {
+  const updateItem = (id: string, field: keyof PageContent, value: any) => {
     setItems(prev => prev.map(item => item.id === id ? { ...item, [field]: value } : item));
+  };
+  const updateItemMeta = (id: string, key: string, value: any) => {
+    setItems(prev => prev.map(item => item.id === id ? { ...item, metadata: { ...(item.metadata || {}), [key]: value } } : item));
   };
 
   const createItem = async () => {
@@ -87,13 +94,18 @@ const AdminPageContent = () => {
       return;
     }
     setCreating(true);
+    const metadata: Record<string, any> = {};
+    if (newMetaSection.trim()) metadata.section = newMetaSection.trim();
+    if (newMetaAlt.trim()) metadata.alt = newMetaAlt.trim();
+    if (newMetaOrder.trim()) metadata.image_order = Number(newMetaOrder) || 0;
+
     const { data, error } = await supabase.from('page_content').insert({
       page_key: newPageKey.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_'),
       section_key: newSectionKey.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_'),
       title: newTitle.trim(),
       content: newContent.trim() || '<p></p>',
       image_url: newImageUrl.trim(),
-      metadata: {},
+      metadata,
     }).select().single();
     setCreating(false);
 
@@ -103,6 +115,7 @@ const AdminPageContent = () => {
       if (data) setItems(prev => [...prev, data]);
       toast({ title: 'Created', description: 'New content section added.' });
       setNewPageKey(''); setNewSectionKey('main'); setNewTitle(''); setNewContent(''); setNewImageUrl('');
+      setNewMetaSection(''); setNewMetaAlt(''); setNewMetaOrder('');
       setShowCreate(false);
     }
   };
@@ -194,6 +207,39 @@ const AdminPageContent = () => {
                 folder="page-content"
               />
             </div>
+            <div className="rounded-lg border border-dashed border-border bg-muted/30 p-3 space-y-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Gallery metadata (use for Photo Gallery / Exhibitions page)</p>
+              <div className="grid sm:grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <Label className="text-xs">Gallery Section Name</Label>
+                  <Input
+                    placeholder='e.g. "Boiler World S.E.A. — Bangkok"'
+                    value={newMetaSection}
+                    onChange={(e) => setNewMetaSection(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Alt Text</Label>
+                  <Input
+                    placeholder="Describe the image"
+                    value={newMetaAlt}
+                    onChange={(e) => setNewMetaAlt(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Image Order</Label>
+                  <Input
+                    type="number"
+                    placeholder="1"
+                    value={newMetaOrder}
+                    onChange={(e) => setNewMetaOrder(e.target.value)}
+                  />
+                </div>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Tip: To add a new gallery group, set <code>Page Key = photo_gallery</code>, give each row a unique <code>Section Key</code> (e.g. <code>boiler_sea_1</code>), and use the same <em>Gallery Section Name</em> for all images that should appear together.
+              </p>
+            </div>
             <div className="space-y-1.5">
               <Label className="text-xs">Content</Label>
               <RichTextEditor
@@ -281,6 +327,33 @@ const AdminPageContent = () => {
                                     bucket="site-assets"
                                     folder="page-content"
                                   />
+                                </div>
+                                <div className="rounded-lg border border-dashed border-border bg-muted/30 p-3 space-y-3">
+                                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Gallery metadata</p>
+                                  <div className="grid sm:grid-cols-3 gap-3">
+                                    <div className="space-y-1">
+                                      <Label className="text-xs">Gallery Section Name</Label>
+                                      <Input
+                                        value={(item.metadata as any)?.section || ''}
+                                        onChange={(e) => updateItemMeta(item.id, 'section', e.target.value)}
+                                      />
+                                    </div>
+                                    <div className="space-y-1">
+                                      <Label className="text-xs">Alt Text</Label>
+                                      <Input
+                                        value={(item.metadata as any)?.alt || ''}
+                                        onChange={(e) => updateItemMeta(item.id, 'alt', e.target.value)}
+                                      />
+                                    </div>
+                                    <div className="space-y-1">
+                                      <Label className="text-xs">Image Order</Label>
+                                      <Input
+                                        type="number"
+                                        value={(item.metadata as any)?.image_order ?? ''}
+                                        onChange={(e) => updateItemMeta(item.id, 'image_order', Number(e.target.value) || 0)}
+                                      />
+                                    </div>
+                                  </div>
                                 </div>
                                 <div className="space-y-1">
                                   <Label className="text-xs">Content</Label>

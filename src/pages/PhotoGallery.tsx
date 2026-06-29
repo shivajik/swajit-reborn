@@ -7,6 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 import vsi1 from "@/assets/vsi/vsi-1.jpeg";
 import vsi2 from "@/assets/vsi/vsi-2.jpeg";
 import vsi3 from "@/assets/vsi/vsi-3.jpeg";
+import vsi4 from "@/assets/vsi/vsi-4.jpeg";
+import vsi5 from "@/assets/vsi/vsi-5.jpeg";
+import vsi6 from "@/assets/vsi/vsi-6.jpeg";
+import vsi7 from "@/assets/vsi/vsi-7.jpeg";
+import boilerSea1 from "@/assets/boiler/boiler-sea-1.jpeg";
+import boilerIndia2024 from "@/assets/boiler/boiler-india-2024.jpeg";
 
 interface GallerySection {
   title: string;
@@ -31,16 +37,25 @@ const gallerySections: GallerySection[] = [
   {
     title: "Vasantdada Sugar Institute (VSI) — Expo",
     images: [
-      { src: vsi1.url, alt: "VSI Expo Invitation" },
-      { src: vsi2.url, alt: "VSI Expo - Swajit Team with Visitors" },
-      { src: vsi3.url, alt: "VSI Expo - Sugar Industry Chains Brochure" },
-      // <!-- Add 5-6 more VSI Expo images here -->
-      // { src: "/path/to/vsi-4.jpg", alt: "VSI Expo 4" },
-      // { src: "/path/to/vsi-5.jpg", alt: "VSI Expo 5" },
-      // { src: "/path/to/vsi-6.jpg", alt: "VSI Expo 6" },
-      // { src: "/path/to/vsi-7.jpg", alt: "VSI Expo 7" },
-      // { src: "/path/to/vsi-8.jpg", alt: "VSI Expo 8" },
-      // { src: "/path/to/vsi-9.jpg", alt: "VSI Expo 9" },
+      { src: vsi1, alt: "VSI Expo Invitation" },
+      { src: vsi2, alt: "VSI Expo - Swajit Team with Visitors" },
+      { src: vsi3, alt: "VSI Expo - Sugar Industry Chains Brochure" },
+      { src: vsi4.url, alt: "VSI Expo - Visitors at Swajit booth" },
+      { src: vsi5.url, alt: "VSI Expo - Swajit team" },
+      { src: vsi6.url, alt: "VSI Expo - Customer brochure handover" },
+      { src: vsi7.url, alt: "VSI Expo - Group photo at booth" },
+    ],
+  },
+  {
+    title: "Boiler World S.E.A. — Bangkok, Thailand",
+    images: [
+      { src: boilerSea1.url, alt: "Boiler World S.E.A. 2025 - Welcome Onboard, Booth 42" },
+    ],
+  },
+  {
+    title: "Boiler India 2024 — Mumbai",
+    images: [
+      { src: boilerIndia2024.url, alt: "Boiler India 2024 - Visit Swajit at Booth A67" },
     ],
   },
   // Germany Hannover Exhibition — hidden (do not remove)
