@@ -4,7 +4,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import { Flag } from "lucide-react";
 
 const milestones = [
-  { year: "1990", text: "Started business with first Fabrication shop at Waluj MIDC." },
+  { year: "1991", text: "Started business with first Fabrication shop at Waluj MIDC." },
   { year: "1995", text: "Began manufacturing conveyor chains for the Sugar industry." },
   { year: "2000", text: "Expanded product range to include Steel and Cement industry chains." },
   { year: "2004", text: "Achieved ISO 9001:2000 certification from TUV NORD (Germany)." },
