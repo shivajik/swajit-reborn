@@ -18,7 +18,7 @@ const DEFAULT_NAV_ITEMS: NavItem[] = [
   { id: 'mission-vision', label: 'Mission And Vision', href: '/mission-vision', visible: true, is_custom: false, sort_order: 3, parent_label: 'Corporate' },
   { id: 'milestone', label: 'Milestone', href: '/milestone', visible: true, is_custom: false, sort_order: 4, parent_label: 'Corporate' },
   { id: 'products', label: 'Products', href: '/products', visible: true, is_custom: false, sort_order: 4 },
-  { id: 'photo-gallery', label: 'Photo Gallery', href: '/photo-gallery', visible: true, is_custom: false, sort_order: 5 },
+  { id: 'photo-gallery', label: 'Exhibitions', href: '/exhibitions', visible: true, is_custom: false, sort_order: 5 },
   { id: 'infrastructure', label: 'Infrastructure', href: '/infrastructure', visible: true, is_custom: false, sort_order: 6, parent_label: 'Resources' },
   { id: 'iso-certification', label: 'ISO Certification', href: '/iso-certification', visible: true, is_custom: false, sort_order: 7, parent_label: 'Resources' },
   { id: 'quality-policy', label: 'Quality Policy', href: '/quality-policy', visible: true, is_custom: false, sort_order: 8, parent_label: 'Resources' },

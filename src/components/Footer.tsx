@@ -10,7 +10,7 @@ const fallbackQuickLinks = [
   { label: "Mission & Vision", href: "/mission-vision" },
   { label: "Milestone", href: "/milestone" },
   { label: "Products", href: "/products" },
-  { label: "Photo Gallery", href: "/photo-gallery" },
+  { label: "Exhibitions", href: "/exhibitions" },
   { label: "Clients", href: "/clients" },
   { label: "Download", href: "/download" },
   { label: "Contact Us", href: "/contact" },

@@ -52,7 +52,7 @@ const CSR = () => {
                 Blood Donation Camp
               </h2>
               <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                A blood donation camp was organized on 14th February, marking the death anniversary of our respected Chairman, Mr. Anil Chavan, as a humble tribute to his inspiring life and unwavering dedication to society.
+                A blood donation camp is being organized every year on 14th February, in the loving memory of our respected Chairman, Mr. Anil Chavan, as a humble tribute to his inspiring life and unwavering dedication to society.
               </p>
             </div>
 

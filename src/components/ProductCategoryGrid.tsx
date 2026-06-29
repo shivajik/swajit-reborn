@@ -32,11 +32,11 @@ const ProductCategoryGrid = ({ products }: ProductCategoryGridProps) => {
           </p>
         </ScrollReveal>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="flex flex-wrap justify-center gap-6">
           {products.map((product, i) => {
             const hasDescription = !!product.description?.trim();
             return (
-            <ScrollReveal key={product.name} delay={i * 60}>
+            <ScrollReveal key={product.name} delay={i * 60} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] xl:w-[calc(25%-18px)]">
               <button
                 type="button"
                 onClick={() => hasDescription && setOpenProduct(product)}
@@ -52,7 +52,7 @@ const ProductCategoryGrid = ({ products }: ProductCategoryGridProps) => {
                   <img
                     src={product.image}
                     alt={product.name}
-                    className={`max-h-full max-w-full object-contain transition-transform duration-300 ${
+                    className={`w-full h-full object-contain transition-transform duration-300 ${
                       hasDescription ? 'group-hover:scale-105' : ''
                     }`}
                     loading="lazy"

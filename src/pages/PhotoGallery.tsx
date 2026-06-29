@@ -4,6 +4,9 @@ import PageBanner from "@/components/PageBanner";
 import ScrollReveal from "@/components/ScrollReveal";
 import { X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import vsi1 from "@/assets/vsi/vsi-1.jpeg";
+import vsi2 from "@/assets/vsi/vsi-2.jpeg";
+import vsi3 from "@/assets/vsi/vsi-3.jpeg";
 
 interface GallerySection {
   title: string;
@@ -12,7 +15,7 @@ interface GallerySection {
 
 const gallerySections: GallerySection[] = [
   {
-    title: "Dealers Meet 2017-18 @ Chhatrapati Sambhajinagar",
+    title: "MAC Expo@ Chhatrapati Sambhajinagar",
     images: [
       {
         src: "https://swajit.com/wp-content/uploads/2015/11/Mr.Manohar-Parrikar-Defence-Mininster-of-India.jpg",
@@ -24,23 +27,31 @@ const gallerySections: GallerySection[] = [
       },
     ],
   },
+  // Vasantdada Sugar Institute (VSI) - Expo
   {
-    title: "Germany Hannover Exhibition",
+    title: "Vasantdada Sugar Institute (VSI) — Expo",
     images: [
-      {
-        src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0320-300x225.jpg",
-        alt: "Hannover Exhibition - Booth Display",
-      },
-      {
-        src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0376-300x225.jpg",
-        alt: "Hannover Exhibition - Team",
-      },
-      {
-        src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0312-300x225.jpg",
-        alt: "Hannover Exhibition - Products",
-      },
+      { src: vsi1.url, alt: "VSI Expo Invitation" },
+      { src: vsi2.url, alt: "VSI Expo - Swajit Team with Visitors" },
+      { src: vsi3.url, alt: "VSI Expo - Sugar Industry Chains Brochure" },
+      // <!-- Add 5-6 more VSI Expo images here -->
+      // { src: "/path/to/vsi-4.jpg", alt: "VSI Expo 4" },
+      // { src: "/path/to/vsi-5.jpg", alt: "VSI Expo 5" },
+      // { src: "/path/to/vsi-6.jpg", alt: "VSI Expo 6" },
+      // { src: "/path/to/vsi-7.jpg", alt: "VSI Expo 7" },
+      // { src: "/path/to/vsi-8.jpg", alt: "VSI Expo 8" },
+      // { src: "/path/to/vsi-9.jpg", alt: "VSI Expo 9" },
     ],
   },
+  // Germany Hannover Exhibition — hidden (do not remove)
+  // {
+  //   title: "Germany Hannover Exhibition",
+  //   images: [
+  //     { src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0320-300x225.jpg", alt: "Hannover Exhibition - Booth Display" },
+  //     { src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0376-300x225.jpg", alt: "Hannover Exhibition - Team" },
+  //     { src: "https://swajit.com/wp-content/uploads/2015/11/IMG_0312-300x225.jpg", alt: "Hannover Exhibition - Products" },
+  //   ],
+  // },
   {
     title: "Dealers Meet 2018",
     images: [
@@ -134,9 +145,9 @@ const PhotoGallery = () => {
   return (
     <PageLayout>
       <PageBanner
-        title="Photo Gallery"
+        title="Exhibitions"
         subtitle="Capturing our journey — exhibitions, events, and milestones"
-        breadcrumb="Photo Gallery"
+        breadcrumb="Exhibitions"
       />
 
       <section className="py-16 md:py-24 bg-background">
