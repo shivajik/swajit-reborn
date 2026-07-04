@@ -13,7 +13,7 @@ import vsi6 from "@/assets/vsi/vsi-6.jpeg";
 import vsi7 from "@/assets/vsi/vsi-7.jpeg";
 import boilerSea1 from "@/assets/boiler/boiler-sea-1.jpeg";
 import boilerIndia2024 from "@/assets/boiler/boiler-india-2024.jpeg";
-
+  
 interface GallerySection {
   title: string;
   images: { src: string; alt: string; isVideo?: boolean }[];

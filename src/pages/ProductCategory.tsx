@@ -44,7 +44,7 @@ const ProductCategory = () => {
         breadcrumb={`Products > ${category.name}`}
       />
       {productItems.length > 0 ? (
-        <ProductCategoryGrid products={productItems} />
+        <ProductCategoryGrid products={productItems} categorySlug={slug} />
       ) : (
         <div className="section-padding bg-background text-center text-muted-foreground">
           No products found in this category yet.
