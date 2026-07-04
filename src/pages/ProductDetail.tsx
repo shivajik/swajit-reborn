@@ -7,6 +7,7 @@ import { ArrowLeft, Phone, CheckCircle2 } from "lucide-react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { useProductsByCategory } from "@/hooks/useSupabaseData";
 import { slugify } from "@/lib/slugify";
+import { findProductSpecs } from "@/data/productSpecs";
 
 const ProductDetail = () => {
   const { slug, productSlug } = useParams<{ slug: string; productSlug: string }>();
@@ -37,6 +38,8 @@ const ProductDetail = () => {
     .split(/\n\s*\n/)
     .map((p) => p.trim())
     .filter(Boolean);
+
+  const specs = findProductSpecs(product.name, slug);
 
   return (
     <PageLayout>
@@ -106,6 +109,75 @@ const ProductDetail = () => {
           </div>
         </div>
       </section>
+
+      {specs.length > 0 && (
+        <section className="section-padding bg-secondary/40 border-t border-border">
+          <div className="max-w-6xl mx-auto">
+            <ScrollReveal>
+              <h2 className="text-2xl md:text-3xl font-heading font-black text-foreground mb-2">
+                Technical Specifications
+              </h2>
+              <div className="w-16 h-1 bg-accent mb-8" />
+            </ScrollReveal>
+
+            <div className="space-y-10">
+              {specs.map((spec, si) => (
+                <ScrollReveal key={si} delay={si * 80}>
+                  <div className="bg-card border border-border rounded-2xl shadow-md overflow-hidden">
+                    {spec.title && (
+                      <div className="px-5 py-4 border-b border-border bg-muted/40">
+                        <h3 className="text-lg font-heading font-bold text-foreground">
+                          {spec.title}
+                        </h3>
+                        {spec.subtitle && (
+                          <p className="text-sm text-muted-foreground mt-1">{spec.subtitle}</p>
+                        )}
+                      </div>
+                    )}
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead className="bg-primary/5 text-foreground">
+                          <tr>
+                            {spec.columns.map((c, ci) => (
+                              <th
+                                key={ci}
+                                className="px-3 py-2 text-left font-heading font-semibold whitespace-nowrap border-b border-border"
+                              >
+                                {c}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {spec.rows.map((row, ri) => (
+                            <tr key={ri} className="odd:bg-background even:bg-muted/20">
+                              {row.map((cell, ci) => (
+                                <td
+                                  key={ci}
+                                  className="px-3 py-2 whitespace-nowrap border-b border-border/50 text-muted-foreground"
+                                >
+                                  {cell}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    {spec.notes && spec.notes.length > 0 && (
+                      <div className="px-5 py-3 text-xs text-muted-foreground bg-muted/30 border-t border-border">
+                        {spec.notes.map((n, ni) => (
+                          <p key={ni}>* {n}</p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="section-padding bg-primary">
         <div className="max-w-4xl mx-auto text-center">

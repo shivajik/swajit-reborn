@@ -16,7 +16,15 @@ import boilerIndia2024 from "@/assets/boiler/boiler-india-2024.jpeg";
   
 interface GallerySection {
   title: string;
-  images: { src: string; alt: string; isVideo?: boolean }[];
+  images: { src: string; alt: string; isVideo?: boolean; youtubeId?: string }[];
+}
+
+function extractYouTubeId(url: string): string | null {
+  if (!url) return null;
+  const m = url.match(
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{6,})/,
+  );
+  return m ? m[1] : null;
 }
 
 const gallerySections: GallerySection[] = [
@@ -89,7 +97,9 @@ const gallerySections: GallerySection[] = [
 const fallbackGallerySections = gallerySections;
 
 const PhotoGallery = () => {
-  const [lightboxImage, setLightboxImage] = useState<{ src: string; isVideo: boolean } | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<
+    { src: string; isVideo: boolean; youtubeId?: string } | null
+  >(null);
   const [dbItems, setDbItems] = useState<GallerySection[]>([]);
 
   useEffect(() => {
@@ -110,8 +120,16 @@ const PhotoGallery = () => {
         const sectionTitle = String(metadata.section || item.title || item.section_key || "Photo Gallery");
         const imageAlt = String(metadata.alt || item.title || sectionTitle);
         const videoUrl = typeof metadata.video_url === "string" ? metadata.video_url : "";
-        const mediaSrc = videoUrl || item.image_url;
-        const isVideo = !!videoUrl || /\.(mp4|webm|mov|m4v)(\?|$)/i.test(item.image_url || "");
+        const rawSrc = videoUrl || item.image_url;
+        const youtubeId = extractYouTubeId(rawSrc);
+        // Show a YouTube thumbnail in the grid; embed the video on click.
+        const mediaSrc = youtubeId
+          ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`
+          : rawSrc;
+        const isVideo =
+          !!videoUrl ||
+          !!youtubeId ||
+          /\.(mp4|webm|mov|m4v)(\?|$)/i.test(item.image_url || "");
 
         if (!mediaSrc) {
           return acc;
@@ -125,6 +143,7 @@ const PhotoGallery = () => {
           src: mediaSrc,
           alt: imageAlt,
           isVideo,
+          youtubeId: youtubeId || undefined,
         });
 
         return acc;
@@ -188,17 +207,32 @@ const PhotoGallery = () => {
                   {section.images.map((img, iIdx) => (
                     <button
                       key={iIdx}
-                      onClick={() => setLightboxImage({ src: img.src, isVideo: !!img.isVideo })}
+                      onClick={() =>
+                        setLightboxImage({
+                          src: img.src,
+                          isVideo: !!img.isVideo,
+                          youtubeId: img.youtubeId,
+                        })
+                      }
                       className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 aspect-[4/3] bg-muted focus:outline-none focus:ring-2 focus:ring-accent"
                     >
                       {img.isVideo ? (
-                        <video
-                          src={img.src}
-                          className="w-full h-full object-contain bg-black"
-                          muted
-                          playsInline
-                          preload="metadata"
-                        />
+                        img.youtubeId ? (
+                          <img
+                            src={img.src}
+                            alt={img.alt}
+                            loading="lazy"
+                            className="w-full h-full object-cover bg-black transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <video
+                            src={img.src}
+                            className="w-full h-full object-contain bg-black"
+                            muted
+                            playsInline
+                            preload="metadata"
+                          />
+                        )
                       ) : (
                         <img
                           src={img.src}
@@ -206,6 +240,15 @@ const PhotoGallery = () => {
                           loading="lazy"
                           className="w-full h-full object-contain bg-muted transition-transform duration-500 group-hover:scale-105"
                         />
+                      )}
+                      {img.isVideo && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="w-16 h-16 rounded-full bg-accent/90 flex items-center justify-center shadow-2xl">
+                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-accent-foreground ml-1">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </div>
                       )}
                       {/* Hover overlay */}
                       <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/40 transition-colors duration-300 flex items-center justify-center">
@@ -234,7 +277,20 @@ const PhotoGallery = () => {
           >
             <X className="w-8 h-8" />
           </button>
-          {lightboxImage.isVideo ? (
+          {lightboxImage.youtubeId ? (
+            <div
+              className="w-full max-w-5xl aspect-video rounded-lg overflow-hidden shadow-2xl bg-black"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <iframe
+                src={`https://www.youtube.com/embed/${lightboxImage.youtubeId}?autoplay=1&rel=0`}
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
+          ) : lightboxImage.isVideo ? (
             <video
               src={lightboxImage.src}
               className="max-w-full max-h-[85vh] rounded-lg shadow-2xl"
