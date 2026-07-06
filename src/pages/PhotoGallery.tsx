@@ -16,16 +16,93 @@ import boilerIndia2024 from "@/assets/boiler/boiler-india-2024.jpeg";
   
 interface GallerySection {
   title: string;
-  images: { src: string; alt: string; isVideo?: boolean; youtubeId?: string }[];
+  images: {
+    src: string;
+    alt: string;
+    isVideo?: boolean;
+    youtubeId?: string;
+    youtubeEmbedSrc?: string;
+    isYouTubeShort?: boolean;
+    videoSrc?: string;
+  }[];
 }
+
+const VIDEO_EXTENSION_RE = /\.(mp4|webm|mov|m4v|ogg)(\?|#|$)/i;
 
 function extractYouTubeId(url: string): string | null {
   if (!url) return null;
+  // Support pasted <iframe ... src="..."> embed codes
+  const iframeMatch = url.match(/<iframe[^>]*\ssrc=["']([^"']+)["']/i);
+  if (iframeMatch) url = iframeMatch[1];
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, "").replace(/^m\./, "");
+    if (host === "youtu.be") return parsed.pathname.split("/").filter(Boolean)[0] || null;
+    if (host.endsWith("youtube.com")) {
+      const watchId = parsed.searchParams.get("v");
+      if (watchId) return watchId;
+      const [type, id] = parsed.pathname.split("/").filter(Boolean);
+      if (["shorts", "embed", "live"].includes(type) && id) return id;
+    }
+  } catch {
+    // Fall back to regex for pasted values without protocol.
+  }
   const m = url.match(
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{6,})/,
+    /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/,
   );
   return m ? m[1] : null;
 }
+
+function isYouTubeShort(url: string): boolean {
+  return /youtube\.com\/shorts\//i.test(url);
+}
+
+function getYouTubeEmbedSrc(youtubeId: string): string {
+  const params = new URLSearchParams({
+    autoplay: "1",
+    mute: "1",
+    playsinline: "1",
+    rel: "0",
+    modestbranding: "1",
+    origin: window.location.origin,
+  });
+  return `https://www.youtube.com/embed/${youtubeId}?${params.toString()}`;
+}
+
+function getVideoPreviewSrc(src: string): string {
+  return src.includes("#") ? src : `${src}#t=1`;
+}
+
+const DirectVideoPreview = ({ src, alt }: { src: string; alt: string }) => {
+  const [ready, setReady] = useState(false);
+
+  const seekToPreviewFrame = (video: HTMLVideoElement) => {
+    try {
+      const target = Number.isFinite(video.duration) && video.duration > 1 ? Math.min(1, video.duration * 0.1) : 0.1;
+      if (Math.abs(video.currentTime - target) > 0.05) video.currentTime = target;
+    } catch {
+      setReady(true);
+    }
+  };
+
+  return (
+    <>
+      <video
+        src={src}
+        aria-label={alt}
+        className={`w-full h-full object-cover bg-black transition-opacity duration-300 ${ready ? "opacity-100" : "opacity-0"}`}
+        muted
+        playsInline
+        preload="auto"
+        crossOrigin="anonymous"
+        onLoadedMetadata={(event) => seekToPreviewFrame(event.currentTarget)}
+        onLoadedData={() => setReady(true)}
+        onSeeked={() => setReady(true)}
+      />
+      {!ready && <div className="absolute inset-0 bg-muted" />}
+    </>
+  );
+};
 
 const gallerySections: GallerySection[] = [
   {
@@ -98,7 +175,14 @@ const fallbackGallerySections = gallerySections;
 
 const PhotoGallery = () => {
   const [lightboxImage, setLightboxImage] = useState<
-    { src: string; isVideo: boolean; youtubeId?: string } | null
+    {
+      src: string;
+      isVideo: boolean;
+      youtubeId?: string;
+      youtubeEmbedSrc?: string;
+      isYouTubeShort?: boolean;
+      videoSrc?: string;
+    } | null
   >(null);
   const [dbItems, setDbItems] = useState<GallerySection[]>([]);
 
@@ -119,17 +203,19 @@ const PhotoGallery = () => {
         const metadata = (item.metadata ?? {}) as Record<string, unknown>;
         const sectionTitle = String(metadata.section || item.title || item.section_key || "Photo Gallery");
         const imageAlt = String(metadata.alt || item.title || sectionTitle);
-        const videoUrl = typeof metadata.video_url === "string" ? metadata.video_url : "";
+        const videoUrl = typeof metadata.video_url === "string" ? metadata.video_url.trim() : "";
         const rawSrc = videoUrl || item.image_url;
         const youtubeId = extractYouTubeId(rawSrc);
-        // Show a YouTube thumbnail in the grid; embed the video on click.
+        const isDirectVideo =
+          !youtubeId &&
+          (!!videoUrl || VIDEO_EXTENSION_RE.test(rawSrc || ""));
+        // Grid preview: YouTube -> hq thumbnail jpg; direct video -> video URL with #t fragment to force a first-frame preview; else the image.
         const mediaSrc = youtubeId
           ? `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`
+          : isDirectVideo
+          ? getVideoPreviewSrc(rawSrc)
           : rawSrc;
-        const isVideo =
-          !!videoUrl ||
-          !!youtubeId ||
-          /\.(mp4|webm|mov|m4v)(\?|$)/i.test(item.image_url || "");
+        const isVideo = !!youtubeId || isDirectVideo;
 
         if (!mediaSrc) {
           return acc;
@@ -144,6 +230,9 @@ const PhotoGallery = () => {
           alt: imageAlt,
           isVideo,
           youtubeId: youtubeId || undefined,
+          youtubeEmbedSrc: youtubeId ? getYouTubeEmbedSrc(youtubeId) : undefined,
+          isYouTubeShort: youtubeId ? isYouTubeShort(rawSrc) : undefined,
+          videoSrc: isDirectVideo ? rawSrc : undefined,
         });
 
         return acc;
@@ -167,7 +256,7 @@ const PhotoGallery = () => {
             loadGallery();
           }
         },
-      )
+      ) 
       .subscribe();
 
     return () => {
@@ -212,6 +301,9 @@ const PhotoGallery = () => {
                           src: img.src,
                           isVideo: !!img.isVideo,
                           youtubeId: img.youtubeId,
+                          youtubeEmbedSrc: img.youtubeEmbedSrc,
+                          isYouTubeShort: img.isYouTubeShort,
+                          videoSrc: img.videoSrc,
                         })
                       }
                       className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 aspect-[4/3] bg-muted focus:outline-none focus:ring-2 focus:ring-accent"
@@ -225,13 +317,7 @@ const PhotoGallery = () => {
                             className="w-full h-full object-cover bg-black transition-transform duration-500 group-hover:scale-105"
                           />
                         ) : (
-                          <video
-                            src={img.src}
-                            className="w-full h-full object-contain bg-black"
-                            muted
-                            playsInline
-                            preload="metadata"
-                          />
+                          <DirectVideoPreview src={img.src} alt={img.alt} />
                         )
                       ) : (
                         <img
@@ -279,23 +365,31 @@ const PhotoGallery = () => {
           </button>
           {lightboxImage.youtubeId ? (
             <div
-              className="w-full max-w-5xl aspect-video rounded-lg overflow-hidden shadow-2xl bg-black"
+              className={lightboxImage.isYouTubeShort
+                ? "h-[85vh] max-h-[85vh] aspect-[9/16] max-w-full rounded-lg overflow-hidden shadow-2xl bg-black"
+                : "w-full max-w-5xl aspect-video rounded-lg overflow-hidden shadow-2xl bg-black"}
               onClick={(e) => e.stopPropagation()}
             >
               <iframe
-                src={`https://www.youtube.com/embed/${lightboxImage.youtubeId}?autoplay=1&rel=0`}
+                src={lightboxImage.youtubeEmbedSrc || getYouTubeEmbedSrc(lightboxImage.youtubeId)}
                 title="YouTube video player"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="origin"
                 allowFullScreen
                 className="w-full h-full"
               />
             </div>
           ) : lightboxImage.isVideo ? (
             <video
-              src={lightboxImage.src}
-              className="max-w-full max-h-[85vh] rounded-lg shadow-2xl"
+              src={lightboxImage.videoSrc || lightboxImage.src}
+              className="max-w-full max-h-[85vh] rounded-lg shadow-2xl bg-black"
               controls
               autoPlay
+              muted
+              playsInline
+              preload="auto"
+              crossOrigin="anonymous"
+
               onClick={(e) => e.stopPropagation()}
             />
           ) : (

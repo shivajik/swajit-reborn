@@ -40,6 +40,7 @@ const AdminPageContent = () => {
   const [newMetaSection, setNewMetaSection] = useState('');
   const [newMetaAlt, setNewMetaAlt] = useState('');
   const [newMetaOrder, setNewMetaOrder] = useState<string>('');
+  const [newMetaVideoUrl, setNewMetaVideoUrl] = useState('');
   const [creating, setCreating] = useState(false);
 
   // Edit state
@@ -98,6 +99,7 @@ const AdminPageContent = () => {
     if (newMetaSection.trim()) metadata.section = newMetaSection.trim();
     if (newMetaAlt.trim()) metadata.alt = newMetaAlt.trim();
     if (newMetaOrder.trim()) metadata.image_order = Number(newMetaOrder) || 0;
+    if (newMetaVideoUrl.trim()) metadata.video_url = newMetaVideoUrl.trim();
 
     const { data, error } = await supabase.from('page_content').insert({
       page_key: newPageKey.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_'),
@@ -115,7 +117,7 @@ const AdminPageContent = () => {
       if (data) setItems(prev => [...prev, data]);
       toast({ title: 'Created', description: 'New content section added.' });
       setNewPageKey(''); setNewSectionKey('main'); setNewTitle(''); setNewContent(''); setNewImageUrl('');
-      setNewMetaSection(''); setNewMetaAlt(''); setNewMetaOrder('');
+      setNewMetaSection(''); setNewMetaAlt(''); setNewMetaOrder(''); setNewMetaVideoUrl('');
       setShowCreate(false);
     }
   };
@@ -199,12 +201,13 @@ const AdminPageContent = () => {
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">Image (optional)</Label>
+              <Label className="text-xs">Image / Video / YouTube URL (optional)</Label>
               <ImageUpload
                 value={newImageUrl}
                 onChange={setNewImageUrl}
                 bucket="site-assets"
                 folder="page-content"
+                placeholder="Image, MP4, or YouTube Shorts/watch URL"
               />
             </div>
             <div className="rounded-lg border border-dashed border-border bg-muted/30 p-3 space-y-3">
@@ -235,6 +238,15 @@ const AdminPageContent = () => {
                     onChange={(e) => setNewMetaOrder(e.target.value)}
                   />
                 </div>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Video URL (YouTube or MP4) — optional</Label>
+                <Input
+                  placeholder="e.g. https://youtube.com/shorts/cawQN0ZJXhU"
+                  value={newMetaVideoUrl}
+                  onChange={(e) => setNewMetaVideoUrl(e.target.value)}
+                />
+                <p className="text-[11px] text-muted-foreground">Paste a YouTube (watch/shorts/embed) URL or a direct .mp4 link. Overrides the image for playback.</p>
               </div>
               <p className="text-[11px] text-muted-foreground">
                 Tip: To add a new gallery group, set <code>Page Key = photo_gallery</code>, give each row a unique <code>Section Key</code> (e.g. <code>boiler_sea_1</code>), and use the same <em>Gallery Section Name</em> for all images that should appear together.
@@ -320,12 +332,13 @@ const AdminPageContent = () => {
                                   />
                                 </div>
                                 <div className="space-y-1">
-                                  <Label className="text-xs">Image</Label>
+                                  <Label className="text-xs">Image / Video / YouTube URL</Label>
                                   <ImageUpload
                                     value={item.image_url}
                                     onChange={(url) => updateItem(item.id, 'image_url', url)}
                                     bucket="site-assets"
                                     folder="page-content"
+                                    placeholder="Image, MP4, or YouTube Shorts/watch URL"
                                   />
                                 </div>
                                 <div className="rounded-lg border border-dashed border-border bg-muted/30 p-3 space-y-3">
@@ -353,6 +366,15 @@ const AdminPageContent = () => {
                                         onChange={(e) => updateItemMeta(item.id, 'image_order', Number(e.target.value) || 0)}
                                       />
                                     </div>
+                                  </div>
+                                  <div className="space-y-1">
+                                    <Label className="text-xs">Video URL (YouTube or MP4)</Label>
+                                    <Input
+                                      placeholder="e.g. https://youtube.com/shorts/cawQN0ZJXhU"
+                                      value={(item.metadata as any)?.video_url || ''}
+                                      onChange={(e) => updateItemMeta(item.id, 'video_url', e.target.value)}
+                                    />
+                                    <p className="text-[11px] text-muted-foreground">Paste a YouTube (watch/shorts/embed) URL or a direct .mp4 link. Overrides the image for playback.</p>
                                   </div>
                                 </div>
                                 <div className="space-y-1">

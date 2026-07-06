@@ -5,6 +5,27 @@ import { Input } from '@/components/ui/input';
 import { Upload, Loader2, ImageIcon, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+const VIDEO_EXTENSION_RE = /\.(mp4|webm|mov|m4v|ogg)(\?|#|$)/i;
+
+function extractYouTubeId(url: string): string | null {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, '').replace(/^m\./, '');
+    if (host === 'youtu.be') return parsed.pathname.split('/').filter(Boolean)[0] || null;
+    if (host.endsWith('youtube.com')) {
+      const watchId = parsed.searchParams.get('v');
+      if (watchId) return watchId;
+      const [type, id] = parsed.pathname.split('/').filter(Boolean);
+      if (['shorts', 'embed', 'live'].includes(type) && id) return id;
+    }
+  } catch {
+    // Fall back to regex for pasted values without protocol.
+  }
+  const match = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+  return match ? match[1] : null;
+}
+
 interface ImageUploadProps {
   value: string;
   onChange: (url: string) => void;
@@ -64,11 +85,12 @@ const ImageUpload = ({
     const { data } = supabase.storage.from(bucket).getPublicUrl(path);
     onChange(data.publicUrl);
     setUploading(false);
-    toast({ title: 'Image uploaded' });
+    toast({ title: isVideo ? 'Video uploaded' : 'Image uploaded' });
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  const isVideoUrl = !!value && /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(value);
+  const youtubeId = extractYouTubeId(value);
+  const isVideoUrl = !!value && VIDEO_EXTENSION_RE.test(value);
 
   return (
     <div className="space-y-2">
@@ -76,8 +98,14 @@ const ImageUpload = ({
         <div className={`${previewClassName} bg-muted rounded-lg overflow-hidden shrink-0 border border-border flex items-center justify-center relative`}>
           {value ? (
             <>
-              {isVideoUrl ? (
-                <video src={value} className="w-full h-full object-cover bg-black" muted playsInline preload="metadata" />
+              {youtubeId ? (
+                <img
+                  src={`https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`}
+                  alt="YouTube preview"
+                  className="w-full h-full object-cover"
+                />
+              ) : isVideoUrl ? (
+                <video src={`${value}${value.includes('#') ? '' : '#t=1'}`} className="w-full h-full object-cover bg-black" muted playsInline preload="auto" />
               ) : (
                 <img src={value} alt="Preview" className="w-full h-full object-cover" />
               )}
