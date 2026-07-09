@@ -47,13 +47,12 @@ const ProductCategory = () => {
           breadcrumb={`Products > ${category.name}`}
         />
         <section className="section-padding bg-background">
-          <div className="max-w-5xl mx-auto space-y-14">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {products.map((p, i) => (
               <ScrollReveal key={p.id} delay={i * 60}>
-                <article className="bg-card border border-border rounded-2xl shadow-sm p-6 md:p-10">
-                  <div className="grid md:grid-cols-[220px_1fr] gap-6 md:gap-10 items-start">
+                <article className="h-full bg-card border border-border rounded-2xl shadow-sm p-6 md:p-8">
                     {p.image_url && (
-                      <div className="bg-muted rounded-xl p-4 flex items-center justify-center aspect-square">
+                      <div className="bg-muted rounded-xl p-4 flex items-center justify-center aspect-video mb-5">
                         <img
                           src={p.image_url}
                           alt={p.name}
@@ -61,12 +60,11 @@ const ProductCategory = () => {
                         />
                       </div>
                     )}
-                    <div className={p.image_url ? '' : 'md:col-span-2'}>
-                      <h2 className="text-2xl md:text-3xl font-heading font-black text-primary mb-2">
+                      <h2 className="text-xl md:text-2xl font-heading font-black text-primary mb-2">
                         {p.name}
                       </h2>
-                      <div className="w-14 h-1 bg-accent mb-5" />
-                      <div className="space-y-4 text-muted-foreground leading-relaxed">
+                      <div className="w-14 h-1 bg-accent mb-4" />
+                      <div className="space-y-3 text-muted-foreground leading-relaxed">
                         {(p.description || '')
                           .split(/\n\s*\n/)
                           .map((para) => para.trim())
@@ -74,14 +72,12 @@ const ProductCategory = () => {
                           .map((para, idx) => (
                             <p key={idx}>{para}</p>
                           ))}
-                      </div>
-                    </div>
                   </div>
                 </article>
               </ScrollReveal>
             ))}
             {products.length === 0 && (
-              <p className="text-center text-muted-foreground">
+              <p className="md:col-span-2 text-center text-muted-foreground">
                 No products found in this category yet.
               </p>
             )}
