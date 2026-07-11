@@ -1,9 +1,12 @@
 import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ScrollReveal from "@/components/ScrollReveal";
-import { Heart, Play } from "lucide-react";
+import { Heart, Play, Sprout } from "lucide-react";
 import { useState, useRef } from "react";
 import { X } from "lucide-react";
+import tree1 from "@/assets/tree-plantation-1.jpg";
+import tree2 from "@/assets/tree-plantation-2.jpg";
+import tree3 from "@/assets/tree-plantation-3.jpg";
 
 const csrImages = [
   {
@@ -18,6 +21,12 @@ const csrImages = [
     src: "/blood/blood-donation3.jpg",
     alt: "Blood Donation Camp Event 3",
   },
+];
+
+const treePlantationImages = [
+  { src: tree1, alt: "Tree Plantation Drive - Watering the newly planted sapling" },
+  { src: tree2, alt: "Tree Plantation Drive - Planting a mango sapling" },
+  { src: tree3, alt: "Tree Plantation Drive - Nurturing the young tree" },
 ];
 
 const CSR = () => {
@@ -104,6 +113,49 @@ const CSR = () => {
                   </button>
                 ))}
               </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      <section className="py-10 md:py-16 bg-muted/30">
+        <div className="max-w-6xl mx-auto px-4 md:px-8">
+          <ScrollReveal>
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent/10 mb-4">
+                <Sprout className="w-7 h-7 text-accent" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-heading font-bold text-foreground mb-3">
+                🌱 Tree Plantation Drive – A Step Towards a Greener Tomorrow
+              </h2>
+              <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                As part of our Corporate Social Responsibility (CSR) initiative, we successfully conducted a tree plantation drive to promote environmental sustainability and contribute to a greener future.
+              </p>
+              <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed mt-3">
+                Together, let's nurture nature and create a better world for generations to come. 🌿
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {treePlantationImages.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setLightbox(img.src)}
+                  className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 aspect-[3/4] bg-muted focus:outline-none focus:ring-2 focus:ring-accent"
+                >
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/40 transition-colors duration-300 flex items-center justify-center">
+                    <span className="text-primary-foreground font-heading font-semibold text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-accent/90 px-4 py-2 rounded-full">
+                      View
+                    </span>
+                  </div>
+                </button>
+              ))}
             </div>
           </ScrollReveal>
         </div>
