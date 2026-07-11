@@ -29,7 +29,15 @@ const treePlantationImages = [
   { src: tree3, alt: "Tree Plantation Drive - Nurturing the young tree" },
 ];
 
+type TabId = "blood-donation" | "tree-plantation";
+
+const tabs: { id: TabId; label: string; icon: typeof Heart }[] = [
+  { id: "blood-donation", label: "Blood Donation Camp", icon: Heart },
+  { id: "tree-plantation", label: "Tree Plantation Drive", icon: Sprout },
+];
+
 const CSR = () => {
+  const [activeTab, setActiveTab] = useState<TabId>("blood-donation");
   const [lightbox, setLightbox] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -49,6 +57,34 @@ const CSR = () => {
         breadcrumb="CSR"
       />
 
+      {/* Tabs */}
+      <section className="pt-10 md:pt-16 bg-background">
+        <div className="max-w-6xl mx-auto px-4 md:px-8">
+          <ScrollReveal>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-10 md:mb-12">
+              {tabs.map(({ id, label, icon: Icon }) => {
+                const isActive = activeTab === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => setActiveTab(id)}
+                    className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-heading font-semibold text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent ${
+                      isActive
+                        ? "bg-accent text-accent-foreground shadow-lg ring-2 ring-accent ring-offset-2 ring-offset-background"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground border border-border"
+                    }`}
+                  >
+                    <Icon className={`w-5 h-5 ${isActive ? "text-accent-foreground" : ""}`} />
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {activeTab === "blood-donation" && (
       <section className="py-10 md:py-16 bg-background">
         <div className="max-w-6xl mx-auto px-4 md:px-8">
           <ScrollReveal>
@@ -117,7 +153,9 @@ const CSR = () => {
           </ScrollReveal>
         </div>
       </section>
+      )}
 
+      {activeTab === "tree-plantation" && (
       <section className="py-10 md:py-16 bg-muted/30">
         <div className="max-w-6xl mx-auto px-4 md:px-8">
           <ScrollReveal>
@@ -160,6 +198,7 @@ const CSR = () => {
           </ScrollReveal>
         </div>
       </section>
+      )}
 
       {lightbox && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" onClick={() => setLightbox(null)}>
