@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Phone, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
+import indianFlag from "@/assets/Indian_Flag.png";
 import { useNavItems } from "@/hooks/useNavItems";
 
 interface NavLinkItem {
@@ -119,8 +120,9 @@ const Navbar = () => {
   return (
     <nav className={`fixed top-8 md:top-9 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-sm shadow-lg" : "bg-white shadow-none"}`}>
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 h-16 md:h-20">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-3">
           <img src={logo} alt="Swajit Engineering Pvt. Ltd." className="h-12 md:h-16 w-auto" />
+          <img src={indianFlag} alt="Indian Flag" className="h-8 md:h-10 w-auto object-contain" />
         </Link>
 
         <div className="hidden xl:flex items-center gap-0">
