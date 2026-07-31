@@ -2,16 +2,16 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useClients } from "@/hooks/useSupabaseData";
-import ambuja from "@/assets/clients/ambuja-cement.jpg";
-import arm from "@/assets/clients/arm-cement.jpg";
-import bhel from "@/assets/clients/bhel.png";
-import bienHua from "@/assets/clients/bien-hua-sugar.png";
-import shreeRenuka from "@/assets/clients/shree-renuka.jpg";
-import sls from "@/assets/clients/sls-export.jpg";
-import scoul from "@/assets/clients/scoul-export.jpg";
-import addax from "@/assets/clients/addax-bioenergy.jpg";
-import omifco from "@/assets/clients/omifco.jpg";
-import kjs from "@/assets/clients/kjs-cement.jpg";
+import ambuja from "@/../public/clients/ambuja-cement.jpg";
+import arm from "@/../public/clients/arm-cement.jpg";
+import bhel from "@/../public/clients/bhel.png";
+import bienHua from "@/../public/clients/bien-hua-sugar.png";
+import shreeRenuka from "@/../public/clients/shree-renuka.jpg";
+import sls from "@/../public/clients/sls-export.jpg";
+import scoul from "@/../public/clients/scoul-export.jpg";
+import addax from "@/../public/clients/addax-bioenergy.jpg";
+import omifco from "@/../public/clients/omifco.jpg";
+import kjs from "@/../public/clients/kjs-cement.jpg";
 
 const fallbackLogos = [
   { src: ambuja, alt: "Ambuja Cement" },
