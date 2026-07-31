@@ -14,36 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
-      notifications: {
+      ledgerly_app_state: {
         Row: {
-          created_at: string
-          id: number
-          is_read: boolean
-          message: string | null
-          reference_id: number | null
-          title: string
-          type: Database["public"]["Enums"]["notification_type"]
-          user_id: number
+          id: string
+          state: Json
+          updated_at: string
+          version: number
         }
         Insert: {
-          created_at?: string
-          id?: number
-          is_read?: boolean
-          message?: string | null
-          reference_id?: number | null
-          title: string
-          type?: Database["public"]["Enums"]["notification_type"]
-          user_id: number
+          id: string
+          state: Json
+          updated_at?: string
+          version?: number
         }
         Update: {
-          created_at?: string
-          id?: number
-          is_read?: boolean
-          message?: string | null
-          reference_id?: number | null
-          title?: string
-          type?: Database["public"]["Enums"]["notification_type"]
-          user_id?: number
+          id?: string
+          state?: Json
+          updated_at?: string
+          version?: number
         }
         Relationships: []
       }
@@ -55,12 +43,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      notification_type:
-        | "event_approved"
-        | "event_rejected"
-        | "business_approved"
-        | "business_rejected"
-        | "general"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -187,14 +170,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      notification_type: [
-        "event_approved",
-        "event_rejected",
-        "business_approved",
-        "business_rejected",
-        "general",
-      ],
-    },
+    Enums: {},
   },
 } as const

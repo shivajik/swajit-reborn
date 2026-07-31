@@ -13,6 +13,7 @@ import {
 import { Save, Plus, Trash2, FileText, Pencil, X, ChevronDown, ChevronRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ImageUpload from '@/components/admin/ImageUpload';
+import { deleteFromBlob } from '@/lib/blob';
 
 interface PageContent {
   id: string;
@@ -128,6 +129,7 @@ const AdminPageContent = () => {
     if (error) {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
     } else {
+      void deleteFromBlob(deleteTarget.image_url);
       setItems(prev => prev.filter(i => i.id !== deleteTarget.id));
       toast({ title: 'Deleted', description: `Removed "${deleteTarget.page_key} › ${deleteTarget.section_key}".` });
     }

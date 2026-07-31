@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, Pencil, Trash2, Save, X, Upload, ImageIcon, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { deleteFromBlob } from '@/lib/blob';
 
 interface HeroSlide {
   id: string;
@@ -147,8 +148,10 @@ const AdminHeroSlides = () => {
 
   const deleteSlide = async (id: string) => {
     if (!confirm('Delete this slide?')) return;
+    const removed = slides.find(s => s.id === id);
     const { error } = await supabase.from('hero_slides').delete().eq('id', id);
     if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+    void deleteFromBlob(removed?.image_url);
     setSlides(prev => prev.filter(s => s.id !== id));
     toast({ title: 'Deleted' });
   };
