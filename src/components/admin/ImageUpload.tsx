@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Upload, Loader2, ImageIcon, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { uploadToBlob, deleteFromBlob } from '@/lib/blob';
+
 
 const VIDEO_EXTENSION_RE = /\.(mp4|webm|mov|m4v|ogg)(\?|#|$)/i;
 
@@ -64,30 +65,31 @@ const ImageUpload = ({
       return;
     }
     setUploading(true);
-    const ext = file.name.split('.').pop();
-    const path = `${folder ? folder + '/' : ''}${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error } = await supabase.storage.from(bucket).upload(path, file, {
-      cacheControl: '3600',
-      contentType: file.type || undefined,
-      upsert: false,
-    });
-    if (error) {
+    const previous = value;
+    try {
+      const url = await uploadToBlob(file, folder);
+      onChange(url);
+      // Replacing an existing blob file — remove the old one from storage.
+      void deleteFromBlob(previous);
+      toast({ title: isVideo ? 'Video uploaded' : 'Image uploaded' });
+    } catch (err) {
       toast({
         title: 'Upload failed',
-        description: error.message.includes('not found')
-          ? `Bucket "${bucket}" missing. Run docs/storage-and-rls-setup.sql in Supabase.`
-          : error.message,
+        description: err instanceof Error ? err.message : 'Unknown error',
         variant: 'destructive',
       });
+    } finally {
       setUploading(false);
-      return;
+      if (inputRef.current) inputRef.current.value = '';
     }
-    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-    onChange(data.publicUrl);
-    setUploading(false);
-    toast({ title: isVideo ? 'Video uploaded' : 'Image uploaded' });
-    if (inputRef.current) inputRef.current.value = '';
   };
+
+  const handleRemove = () => {
+    const previous = value;
+    onChange('');
+    void deleteFromBlob(previous);
+  };
+
 
   const youtubeId = extractYouTubeId(value);
   const isVideoUrl = !!value && VIDEO_EXTENSION_RE.test(value);
@@ -111,7 +113,7 @@ const ImageUpload = ({
               )}
               <button
                 type="button"
-                onClick={() => onChange('')}
+                onClick={handleRemove}
                 className="absolute top-1 right-1 bg-background/80 hover:bg-background rounded-full p-0.5"
                 title="Remove"
               >

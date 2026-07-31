@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import ImageUpload from '@/components/admin/ImageUpload';
 import { Plus, Pencil, Trash2, Save, X, ImageIcon, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { deleteFromBlob } from '@/lib/blob';
 
 interface GalleryItem {
   id: string;
@@ -108,8 +109,10 @@ const AdminGallery = () => {
 
   const remove = async (id: string) => {
     if (!confirm('Delete this image?')) return;
+    const removed = items.find(i => i.id === id);
     const { error } = await (supabase as any).from('gallery_items').delete().eq('id', id);
     if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+    void deleteFromBlob(removed?.image_url);
     setItems(prev => prev.filter(i => i.id !== id));
     toast({ title: 'Deleted' });
   };

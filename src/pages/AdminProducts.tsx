@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus, Pencil, Trash2, Save, X, ArrowUp, ArrowDown, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ImageUpload from '@/components/admin/ImageUpload';
+import { deleteFromBlob } from '@/lib/blob';
 
 interface Category {
   id: string;
@@ -135,8 +136,10 @@ const AdminProducts = () => {
 
   const deleteProduct = async (id: string) => {
     if (!confirm('Delete this product?')) return;
+    const removed = products.find(p => p.id === id);
     const { error } = await supabase.from('products').delete().eq('id', id);
     if (error) { toast({ title: 'Error', description: error.message, variant: 'destructive' }); return; }
+    void deleteFromBlob(removed?.image_url);
     setProducts(prev => prev.filter(p => p.id !== id));
     toast({ title: 'Deleted', description: 'Product deleted.' });
   };
