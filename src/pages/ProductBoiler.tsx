@@ -2,16 +2,11 @@ import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ProductCategoryGrid, { ProductItem } from "@/components/ProductCategoryGrid";
 
-import imgAsh from "@/assets/products/boiler-ash-handling.jpg";
-import imgDrag from "@/assets/products/boiler-drag-redler.jpg";
-import imgGate from "@/assets/products/boiler-gate-chain.jpg";
-import imgGrate from "@/assets/products/boiler-travelling-grate.jpg";
-
 const products: ProductItem[] = [
-  { name: "Ash Handling Chain", image: imgAsh },
-  { name: "Drag/Redler Chain", image: imgDrag },
-  { name: "Gate Chain", image: imgGate },
-  { name: "Traveling Grate Chain", image: imgGrate },
+  { name: "Ash Handling Chain", image: "/products/boiler-ash-handling.jpg" },
+  { name: "Drag/Redler Chain", image: "/products/boiler-drag-redler.jpg" },
+  { name: "Gate Chain", image: "/products/boiler-gate-chain.jpg" },
+  { name: "Traveling Grate Chain", image: "/products/boiler-travelling-grate.jpg" },
 ];
 
 const ProductBoiler = () => (

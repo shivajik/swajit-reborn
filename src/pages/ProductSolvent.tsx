@@ -2,14 +2,10 @@ import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ProductCategoryGrid, { ProductItem } from "@/components/ProductCategoryGrid";
 
-import imgBucket from "@/assets/products/chemical-bucket-elevator.jpg";
-import imgDrag from "@/assets/products/cement-enmass-conveyor.jpg";
-import imgExtractor from "@/assets/products/solvent-extractor.jpg";
-
 const products: ProductItem[] = [
-  { name: "Bucket Elevator Chain", image: imgBucket },
-  { name: "Drag Chain / Enmass Conveyor Chain", image: imgDrag },
-  { name: "Extractor Chain", image: imgExtractor },
+  { name: "Bucket Elevator Chain", image: "/products/chemical-bucket-elevator.jpg" },
+  { name: "Drag Chain / Enmass Conveyor Chain", image: "/products/cement-enmass-conveyor.jpg" },
+  { name: "Extractor Chain", image: "/products/solvent-extractor.jpg" },
 ];
 
 const ProductSolvent = () => (

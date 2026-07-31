@@ -2,32 +2,20 @@ import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ProductCategoryGrid, { ProductItem } from "@/components/ProductCategoryGrid";
 
-import imgAppron from "@/assets/products/cement-appron-feeder.jpg";
-import imgBucket0800 from "@/assets/products/cement-bucket-elevator-0800.jpg";
-import imgBucket75mm from "@/assets/products/cement-bucket-elevator-75mm.jpg";
-import imgCoal from "@/assets/products/cement-coal-feeder.jpg";
-import imgDrag from "@/assets/products/boiler-ash-handling.jpg";
-import imgEnmass from "@/assets/products/cement-enmass-conveyor.jpg";
-import imgHaulege from "@/assets/products/cement-haulege.jpg";
-import imgPan from "@/assets/products/cement-pan-conveyor.jpg";
-import imgPaul from "@/assets/products/cement-paul-retarder.jpg";
-import imgScrapper from "@/assets/products/cement-scrapper-reclaimer.jpg";
-import imgTransport from "@/assets/products/cement-transportation.jpg";
-
 const products: ProductItem[] = [
-  { name: "Appron Feeder Chain", image: imgAppron },
-  { name: "Bucket Elevator Chain – SWAJIT 0800 to 0864", image: imgBucket0800 },
-  { name: "Bucket Elevator Chain – SWAJIT 2301 to 2308", image: imgBucket0800 },
-  { name: "Bucket Elevator Chain 75 mm & 76.2 mm Pitch", image: imgBucket75mm },
-  { name: "Coal Feeder Chain", image: imgCoal },
-  { name: "Deep Bucket Elevator Chain", image: imgBucket75mm },
-  { name: "Drag & Flow Conveyor Chain", image: imgDrag },
-  { name: "Enmass Conveyor Chain", image: imgEnmass },
-  { name: "Haulege Chain", image: imgHaulege },
-  { name: "Pan Conveyor Chain", image: imgPan },
-  { name: "Paul Retarder Chain", image: imgPaul },
-  { name: "Scrapper Reclaimer Chain", image: imgScrapper },
-  { name: "Transportation Chain", image: imgTransport },
+  { name: "Appron Feeder Chain", image: "/products/cement-appron-feeder.jpg" },
+  { name: "Bucket Elevator Chain – SWAJIT 0800 to 0864", image: "/products/cement-bucket-elevator-0800.jpg" },
+  { name: "Bucket Elevator Chain – SWAJIT 2301 to 2308", image: "/products/cement-bucket-elevator-0800.jpg" },
+  { name: "Bucket Elevator Chain 75 mm & 76.2 mm Pitch", image: "/products/cement-bucket-elevator-75mm.jpg" },
+  { name: "Coal Feeder Chain", image: "/products/cement-coal-feeder.jpg" },
+  { name: "Deep Bucket Elevator Chain", image: "/products/cement-bucket-elevator-75mm.jpg" },
+  { name: "Drag & Flow Conveyor Chain", image: "/products/boiler-ash-handling.jpg" },
+  { name: "Enmass Conveyor Chain", image: "/products/cement-enmass-conveyor.jpg" },
+  { name: "Haulege Chain", image: "/products/cement-haulege.jpg" },
+  { name: "Pan Conveyor Chain", image: "/products/cement-pan-conveyor.jpg" },
+  { name: "Paul Retarder Chain", image: "/products/cement-paul-retarder.jpg" },
+  { name: "Scrapper Reclaimer Chain", image: "/products/cement-scrapper-reclaimer.jpg" },
+  { name: "Transportation Chain", image: "/products/cement-transportation.jpg" },
 ];
 
 const ProductCement = () => (

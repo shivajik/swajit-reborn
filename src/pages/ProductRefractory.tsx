@@ -2,14 +2,11 @@ import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ProductCategoryGrid, { ProductItem } from "@/components/ProductCategoryGrid";
 
-import imgEnmass from "@/assets/products/cement-enmass-conveyor.jpg";
-import imgRedler from "@/assets/products/boiler-drag-redler.jpg";
-
 const products: ProductItem[] = [
-  { name: "Bucket Elevator Chain 100 mm Pitch", image: imgRedler },
-  { name: "Bucket Elevator Chain 150 mm Pitch", image: imgRedler },
-  { name: "Drag / Enmass Conveyor Chain", image: imgEnmass },
-  { name: "Redler Chain", image: imgRedler },
+  { name: "Bucket Elevator Chain 100 mm Pitch", image: "/products/boiler-drag-redler.jpg" },
+  { name: "Bucket Elevator Chain 150 mm Pitch", image: "/products/boiler-drag-redler.jpg" },
+  { name: "Drag / Enmass Conveyor Chain", image: "/products/cement-enmass-conveyor.jpg" },
+  { name: "Redler Chain", image: "/products/boiler-drag-redler.jpg" },
 ];
 
 const ProductRefractory = () => (

@@ -2,16 +2,11 @@ import PageLayout from "@/components/PageLayout";
 import PageBanner from "@/components/PageBanner";
 import ProductCategoryGrid, { ProductItem } from "@/components/ProductCategoryGrid";
 
-import imgBucket from "@/assets/products/chemical-bucket-elevator.jpg";
-import imgCoal from "@/assets/products/cement-coal-feeder.jpg";
-import imgDrag from "@/assets/products/cement-enmass-conveyor.jpg";
-import imgRedler from "@/assets/products/boiler-drag-redler.jpg";
-
 const products: ProductItem[] = [
-  { name: "Bucket Elevator Chain", image: imgBucket },
-  { name: "Coal Feeder Chain", image: imgCoal },
-  { name: "Drag Chain", image: imgDrag },
-  { name: "Enmass Conveyor Chain (Redler)", image: imgRedler },
+  { name: "Bucket Elevator Chain", image: "/products/chemical-bucket-elevator.jpg" },
+  { name: "Coal Feeder Chain", image: "/products/cement-coal-feeder.jpg" },
+  { name: "Drag Chain", image: "/products/cement-enmass-conveyor.jpg" },
+  { name: "Enmass Conveyor Chain (Redler)", image: "/products/boiler-drag-redler.jpg" },
 ];
 
 const ProductPaper = () => (
